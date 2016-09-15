@@ -1,0 +1,202 @@
+/*
+Dealer Name: Crestron Electronics
+Programmer:  Monte Thyden
+Comments: Scenes partially implemented needs work in SIMPLSharp to align the scenes with the correct room.
+*/
+
+//*****     COMPILER     *****
+#DEFAULT_VOLATILE
+#ENABLE_STACK_CHECKING
+#PRINT_TO_TRACE
+#ENABLE_TRACE
+
+#HELP_BEGIN
+This implementation of the Phillips Hue Will pole the local network for a Phillips Hue Bridge, 
+if Bridge is on DHCP I would create a nightly routine to request bridge IP.
+
+50 bulbs are supported in this module since a single bridge can only support 50 bulbs
+however this module could be easily augmented to increase the bulb count.
+
+After the IP for a bridge is established the Register function must run. 
+To Register press the physical button on the top of the bridge and then trigger the register function. 
+A digital feedback will show successful registration. Registration will determine the username (AKA API Key)
+used to send all commands. When the API key is parsed it is stored in the CrestronDataStore. 
+After reboots or program uploads, the regitration sequence will attempt to read from the DataStore
+before requiring the manual button on the HueBridge being pushed.
+
+Then a bulb request should be issued which will parse all the bulbs currently on the HueBridge, 
+if Bulbs are changed our, names, etc a new bulb quest query should be issued.
+#HELP_END
+
+//*****    INCLUDES      *****
+#USER_SIMPLSHARP_LIBRARY "HueLights"
+
+//*****       IOs        *****
+digital_input getBridgeIP, getRegister;
+digital_input getBulbData, getGroupData, getSceneData;
+
+digital_input lightOn[50], lightOff[50];
+digital_input groupsOn[25], groupsOff[25]; 
+/*
+group1Scene[5], group2Scene[5], group3Sene[5], group4Scene[5], group5Scene[6]
+group6Scene[5], group7Scene[5], group8Scene[5], group9Scene[5], group10Scene[5], group11Scene[5], group12Scene[5]
+group13Scene[5],group14Scene[5],group15Scene[5],group16Scene[5],group17Scene[5],group18Scene[5],group19Scene[5]
+group20Scene[5],group21Scene[5],group22Scene[5],group23Scene[5],group24Scene[5],group22Scene[5];
+*/                                                               
+analog_input LightIn[50], LightHue[50], LightSat[50], RoomValIn[25];
+
+string_output IPAddress, BridgeKey, _skip_;
+
+digital_output BridgeAuthorized, _skip_, _skip_, _skip_, _skip_;
+analog_output BulbsNum, RoomsNum; 
+digital_output LoadIsOn[50], LoadReachable[50], LoadIsColor[50];
+String_output LightName[50], LightType[50]; 
+Analog_output LightLoad[50], HueOut[50], SatOut[50];
+
+string_output RoomName[25];
+digital_output RoomIsOn[25];
+
+HueLight myLights;
+
+string group[6], type[3];
+integer i;
+
+function BulbOn(integer i)
+{
+    myLights.LightsOn(i);
+}
+
+function BulbOff(integer i)
+{
+    myLights.LightsOff(i);
+}
+
+
+//*****     EVENTS       *****
+
+push getBridgeIP
+{
+    myLights.getIP();
+    IPAddress = myLights.IPAddress;
+    BridgeAuthorized = myLights.Authorized;
+}
+
+push getRegister
+{
+    myLights.Register();
+    BridgeAuthorized = myLights.Authorized;
+    BridgeKey = myLights.APIKey;
+}
+
+push getBulbData
+{
+    myLights.getBulbs();
+    BulbsNum = myLights.BulbNum;
+    for(i = 1 to 50)
+    {
+        LightName[i] = myLights.BulbName[i];
+        LightType[i] = myLights.BulbType[i];
+        LightLoad[i] = myLights.BulbBri[i];
+        LoadIsOn[i] = myLights.BulbIsOn[i];
+        LoadReachable[i] = myLights.Reachable[i]; 
+		if(find("color",myLights.BulbType[i]))
+		{
+			LoadIsColor[i] = 1;
+			HueOut[i] = myLights.BulbHue[i];
+			SatOut[i] = myLights.BulbSat[i];
+		}
+		Else
+		{
+			LoadIsColor[i] = 0; 
+		}      
+    }
+
+}
+
+push getGroupData
+{
+    myLights.getRooms();
+    RoomsNum = myLights.GroupNum;
+    for(i = 1 to 25)
+    {
+        RoomName[i] = myLights.GroupName[i];
+        RoomIsOn[i] = myLights.GroupIsOn[i];
+    }
+}
+
+push getSceneData
+{
+    myLights.getScenes();
+}
+
+push LightOn
+{
+    i = getlastmodifiedarrayindex();
+    BulbOn(i);
+    LoadIsOn[i] = myLights.BulbIsOn[i];
+}
+
+push LightOff
+{
+    i = getlastmodifiedarrayindex();
+    BulbOff(i);
+    LoadIsOn[i] = myLights.BulbIsOn[i];
+}
+
+push groupsOn
+{
+    i = getlastmodifiedarrayindex();
+    myLights.GroupOn(i);
+    RoomIsOn[i] = myLights.GroupIsOn[i];
+}
+
+push groupsOff
+{
+    i = getlastmodifiedarrayindex();
+    myLights.GroupOff(i);
+    RoomIsOn[i] = myLights.GroupIsOn[i]; 
+}
+
+threadsafe change LightIn
+{ 
+    group = "lights";
+    type = "bri";
+    i = getlastmodifiedarrayindex();    
+    myLights.LightsVal(LightIn[i], i, group, type);
+	LightLoad[i] = myLights.BulbBri[i];
+}
+
+threadsafe change LightHue
+{
+    group = "lights";
+    type = "hue";
+    i = getlastmodifiedarrayindex();    
+    myLights.LightsVal(LightHue[i], i, group, type);
+	HueOut[i] = myLights.BulbHue[i];
+}
+
+threadsafe change LightSat
+{
+    group = "lights";
+    type = "sat";
+    i = getlastmodifiedarrayindex();    
+    myLights.LightsVal(LightSat[i], i, group, type);
+	SatOut[i] = myLights.BulbSat[i];
+}
+
+threadsafe change RoomValIn
+{ 
+    group = "groups";
+    type = "bri";
+    i = getlastmodifiedarrayindex();    
+    myLights.LightsVal(LightIn[i], i, group, type);
+}
+/*
+push group1Scene
+{
+    integer i;
+    i = getlastmodifiedarrayindex();
+    
+    myLights.SetScene("1",i);
+}*/
+
