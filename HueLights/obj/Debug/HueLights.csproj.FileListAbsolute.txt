@@ -6,3 +6,11 @@ C:\Dropbox\Projects\SIMPL#\HueLights\HueLights\obj\Debug\ResolveAssemblyReferenc
 C:\Dropbox\Projects\SIMPL#\HueLights\HueLights\obj\Debug\HueLights.dll
 C:\Dropbox\Projects\SIMPL#\HueLights\HueLights\obj\Debug\HueLights.pdb
 C:\Dropbox\Projects\SIMPL#\HueLights\HueLights\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\Dropbox\Projects\SIMPL#\PhillipsHueSIMPLSharp\HueLights\bin\Debug\HueLights.dll
+C:\Dropbox\Projects\SIMPL#\PhillipsHueSIMPLSharp\HueLights\bin\Debug\HueLights.pdb
+C:\Dropbox\Projects\SIMPL#\PhillipsHueSIMPLSharp\HueLights\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\Dropbox\Projects\SIMPL#\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Dropbox\Projects\SIMPL#\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSharpHelperInterface.dll
+C:\Dropbox\Projects\SIMPL#\PhillipsHueSIMPLSharp\HueLights\obj\Debug\ResolveAssemblyReference.cache
+C:\Dropbox\Projects\SIMPL#\PhillipsHueSIMPLSharp\HueLights\obj\Debug\HueLights.dll
+C:\Dropbox\Projects\SIMPL#\PhillipsHueSIMPLSharp\HueLights\obj\Debug\HueLights.pdb

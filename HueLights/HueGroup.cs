@@ -14,6 +14,7 @@ namespace HueLights
         public uint Bri;
         public string Alert;
         public string AssignedLoad;
+        public string[] loads = new string[20];
         public string[] SceneName = new string[5];
         public string[] SceneID = new string[5];
 
