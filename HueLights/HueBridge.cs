@@ -13,9 +13,13 @@ namespace HueLights
 {
     public static class HueBridge
     {
-        public static ushort Authorized;
+        public static bool Authorized;
         public static string BridgeIp;
         public static string BridgeApi;
+
+        public static List<HueBulb> HueBulbs = new List<HueBulb>();
+        public static List<HueGroup> HueGroups = new List<HueGroup>();
+        public static List<HueScene> HueScenes = new List<HueScene>();
         
         public static void register()
         {
@@ -35,12 +39,12 @@ namespace HueLights
                 CrestronConsole.PrintLine("response is {0}", jsontext);
                 if (jsontext.Contains("link button not pressed"))
                 {
-                    Authorized = 0;
+                    Authorized = false;
                     CrestronConsole.PrintLine("Registration incomplete press button and retry...");
                 }
                 else if (jsontext.Contains("username"))
                 {
-                    Authorized = 1;
+                    Authorized = true;
                     JArray data = JArray.Parse(jsontext);
                     BridgeApi = (String)data[0]["success"]["username"];
                     CrestronConsole.PrintLine("API key is {0}",BridgeApi);
@@ -117,7 +121,7 @@ namespace HueLights
             return jsontext;
         }
 
-        public static string SetLights(string settype, ushort setid, string value, string cmdtype)
+        public static string SetOnOff(string settype, ushort setid, string value, string cmdtype)
         {
             var setLights = new HttpClient();
             setLights.KeepAlive = false;
@@ -133,32 +137,34 @@ namespace HueLights
             return jsontext;
         }
 
-        public static string SetScene(string groupid, ushort sceneid, string payload)
+        public static string SetScene(ushort setid, string payload)
         {
-            var setLights = new HttpClient();
-            setLights.KeepAlive = false;
-            setLights.Accept = "application/json";
-            HttpClientRequest lightRequest = new HttpClientRequest();
-            string url = string.Format("http://{0}/api/{1}/groups/{2}/action", HueBridge.BridgeIp, HueBridge.BridgeApi, groupid);
-            lightRequest.RequestType = Crestron.SimplSharp.Net.Http.RequestType.Put;
-            lightRequest.Url.Parse(url);
-            lightRequest.ContentString = payload;
-            HttpClientResponse lResponse = setLights.Dispatch(lightRequest);
-            String jsontext = lResponse.ContentString;
-            return jsontext;
+                var setLights = new HttpClient();
+                setLights.KeepAlive = false;
+                setLights.Accept = "application/json";
+                HttpClientRequest lightRequest = new HttpClientRequest();
+                string url = string.Format("http://{0}/api/{1}/groups/{2}/action", HueBridge.BridgeIp, HueBridge.BridgeApi, setid);
+                lightRequest.RequestType = Crestron.SimplSharp.Net.Http.RequestType.Put;
+                lightRequest.Url.Parse(url);
+                lightRequest.ContentString = payload;
+                HttpClientResponse lResponse = setLights.Dispatch(lightRequest);
+                String jsontext = lResponse.ContentString;
+                return jsontext;
         }
 
-        public static string SetBri(string settype, string lvltype, ushort setid, ushort value)
+        public static string SetLvl(string settype, string lvltype, ushort setid, ushort value, string cmdtype )
         {
             var setLights = new HttpClient();
             setLights.KeepAlive = false;
             setLights.Accept = "application/json";
             HttpClientRequest lightRequest = new HttpClientRequest();
-            string url = string.Format("http://{0}/api/{1}/lights/{2}/state", HueBridge.BridgeIp, HueBridge.BridgeApi, setid);
+            string url = string.Format("http://{0}/api/{1}/{2}/{3}/{4}", HueBridge.BridgeIp, HueBridge.BridgeApi, settype, setid, cmdtype);
             lightRequest.RequestType = Crestron.SimplSharp.Net.Http.RequestType.Put;
             lightRequest.Url.Parse(url);
+            CrestronConsole.PrintLine("url: {0}", url);
             string tempVal = "{\"" + lvltype + "\":" + value.ToString() + "}";
             lightRequest.ContentString = tempVal;
+            CrestronConsole.PrintLine("payload: {0}", tempVal);
             HttpClientResponse lResponse = setLights.Dispatch(lightRequest);
             String jsontext = lResponse.ContentString;
             return jsontext;
