@@ -16,6 +16,7 @@ namespace HueLights
         public ushort RoomBri;
         public ushort RoomHue;
         public ushort RoomSat;
+        public ushort SceneNum;
         public string[] SceneName = new string[20];
         public string[] SceneID = new string[20];
 
@@ -30,17 +31,35 @@ namespace HueLights
         {
             try
             {
-                GroupName = HueBridge.HueGroups[RoomID - 1].RoomName;
-                GroupIsOn = (ushort)(HueBridge.HueGroups[RoomID - 1].On ? 1 : 0);
-                RoomBri = (ushort)HueBridge.HueGroups[RoomID - 1].Bri;
-                RoomHue = (ushort)HueBridge.HueGroups[RoomID - 1].Hue;
-                RoomSat = (ushort)HueBridge.HueGroups[RoomID - 1].Sat;
-                for (int i = 1; i <= 20; i++)
+                if (HueBridge.Authorized == true)
                 {
-                    SceneName[i] = HueBridge.HueGroups[RoomID - 1].SceneName[i];
-                    SceneID[i] = HueBridge.HueGroups[RoomID - 1].SceneID[i];
+
+                    GroupName = HueBridge.HueGroups[RoomID - 1].RoomName;
+                    GroupIsOn = (ushort)(HueBridge.HueGroups[RoomID - 1].On ? 1 : 0);
+                    RoomBri = (ushort)HueBridge.HueGroups[RoomID - 1].Bri;
+                    RoomHue = (ushort)HueBridge.HueGroups[RoomID - 1].Hue;
+                    RoomSat = (ushort)HueBridge.HueGroups[RoomID - 1].Sat;
+                    for (int i = 1; i <= 20; i++)
+                    {
+                        if (HueBridge.HueGroups[RoomID - 1].SceneName[i] != null)
+                        {
+                            SceneName[i] = HueBridge.HueGroups[RoomID - 1].SceneName[i];
+                            SceneID[i] = HueBridge.HueGroups[RoomID - 1].SceneID[i];
+                        }
+                        else
+                        {
+                            int x;
+                            x = i - 1;
+                            SceneNum = (ushort)x;
+                            break;
+                        }
+                    }
+                    CrestronConsole.PrintLine("Get Room{0} is complete", RoomID);
                 }
-                CrestronConsole.PrintLine("Get Room{0} is complete", RoomID);
+                else
+                {
+                    CrestronConsole.PrintLine("Bridge not authorized");
+                }
             }
             catch (Exception e)
             {
@@ -83,6 +102,31 @@ namespace HueLights
                     {
                         HueBridge.HueGroups[RoomID - 1].On = false;
                         GroupIsOn = 0;
+                    }
+                }
+                else
+                {
+                    CrestronConsole.PrintLine("Bridge not authorized");
+                }
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Exception is {0}", e);
+            }
+        }
+
+        public void RecallRaw(string rawID)
+        {
+            try
+            {
+                CrestronConsole.PrintLine("Scene Raw should be working");
+                if (HueBridge.Authorized == true)
+                {
+                    String payload = String.Format("{0}\"scene\":\"{1}\"{2}", '{', rawID, '}');
+                    String json = HueBridge.SetScene(RoomID, payload);
+                    if (json.Contains("success"))
+                    {
+                        CrestronConsole.PrintLine("Successfully changed scenes");
                     }
                 }
                 else

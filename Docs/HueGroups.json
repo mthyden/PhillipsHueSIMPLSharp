@@ -1,0 +1,1 @@
+{"1":{"name":"Living room","lights":["1"],"type":"Room","state":{"all_on":false,"any_on":false},"class":"Living room","action":{"on":false,"bri":254,"alert":"none"}},"2":{"name":"Bedroom","lights":["2"],"type":"Room","state":{"all_on":false,"any_on":false},"class":"Living room","action":{"on":false,"bri":254,"alert":"none"}}}

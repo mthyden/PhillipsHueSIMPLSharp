@@ -57,7 +57,6 @@ namespace HueLights
                     {
                         JArray JData = JArray.Parse(json);
                         string NodeVal = "/" + settype + "/" + BulbID + "/state/" + lvltype;
-                        CrestronConsole.PrintLine("NodeVal: {0}", NodeVal);
                         HueBridge.HueBulbs[BulbID - 1].Bri = (uint)JData[0]["success"][NodeVal];
                         switch (lvltype)
                         {

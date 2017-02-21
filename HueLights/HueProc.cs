@@ -13,6 +13,7 @@ namespace HueLights
     {
         public delegate ushort DelegateValueUpdate();
 
+        public String IPSet;
         public String IPAddress;    //IP Address for a Hue Bridge
         public ushort Authorized;   //Reports if the API key has been acquired
         public String APIKey;       //API Key used to control Hue devices (stored in CrestronDataStore
@@ -60,6 +61,11 @@ namespace HueLights
                 IPAddress = HueBridge.getIP();
                 HueBridge.Authorized = false;
                 Authorized = (ushort)(HueBridge.Authorized ? 1 : 0);
+        }
+
+        public void setIP(string str)
+        {
+            HueBridge.BridgeIp = str;
         }
 
         public void getBulbs()

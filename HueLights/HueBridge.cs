@@ -161,10 +161,10 @@ namespace HueLights
             string url = string.Format("http://{0}/api/{1}/{2}/{3}/{4}", HueBridge.BridgeIp, HueBridge.BridgeApi, settype, setid, cmdtype);
             lightRequest.RequestType = Crestron.SimplSharp.Net.Http.RequestType.Put;
             lightRequest.Url.Parse(url);
-            CrestronConsole.PrintLine("url: {0}", url);
+            //CrestronConsole.PrintLine("url: {0}", url);
             string tempVal = "{\"" + lvltype + "\":" + value.ToString() + "}";
             lightRequest.ContentString = tempVal;
-            CrestronConsole.PrintLine("payload: {0}", tempVal);
+            //CrestronConsole.PrintLine("payload: {0}", tempVal);
             HttpClientResponse lResponse = setLights.Dispatch(lightRequest);
             String jsontext = lResponse.ContentString;
             return jsontext;
