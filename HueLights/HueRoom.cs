@@ -17,6 +17,7 @@ namespace HueLights
         public ushort RoomHue;
         public ushort RoomSat;
         public ushort SceneNum;
+        public ushort RoomOnline;
         public string[] SceneName = new string[20];
         public string[] SceneID = new string[20];
 
@@ -33,28 +34,46 @@ namespace HueLights
             {
                 if (HueBridge.Authorized == true)
                 {
-
-                    GroupName = HueBridge.HueGroups[RoomID - 1].RoomName;
-                    GroupIsOn = (ushort)(HueBridge.HueGroups[RoomID - 1].On ? 1 : 0);
-                    RoomBri = (ushort)HueBridge.HueGroups[RoomID - 1].Bri;
-                    RoomHue = (ushort)HueBridge.HueGroups[RoomID - 1].Hue;
-                    RoomSat = (ushort)HueBridge.HueGroups[RoomID - 1].Sat;
-                    for (int i = 1; i <= 20; i++)
+                    for (ushort i = 1; i <= 20; i++)
                     {
-                        if (HueBridge.HueGroups[RoomID - 1].SceneName[i] != null)
+                        if (HueBridge.HueGroups[i - 1].RoomName == GroupName)
                         {
-                            SceneName[i] = HueBridge.HueGroups[RoomID - 1].SceneName[i];
-                            SceneID[i] = HueBridge.HueGroups[RoomID - 1].SceneID[i];
-                        }
-                        else
-                        {
-                            int x;
-                            x = i - 1;
-                            SceneNum = (ushort)x;
+                            RoomID = i;
+                            RoomOnline = 1;
+                            TriggerRoomOnlineUpdate();
                             break;
                         }
                     }
-                    CrestronConsole.PrintLine("Get Room{0} is complete", RoomID);
+                    if (RoomID > 0)
+                    {
+
+                        GroupIsOn = (ushort)(HueBridge.HueGroups[RoomID - 1].On ? 1 : 0);
+                        RoomBri = (ushort)HueBridge.HueGroups[RoomID - 1].Bri;
+                        RoomHue = (ushort)HueBridge.HueGroups[RoomID - 1].Hue;
+                        RoomSat = (ushort)HueBridge.HueGroups[RoomID - 1].Sat;
+                        for (int i = 1; i <= 20; i++)
+                        {
+                            if (HueBridge.HueGroups[RoomID - 1].SceneName[i] != null)
+                            {
+                                SceneName[i] = HueBridge.HueGroups[RoomID - 1].SceneName[i];
+                                SceneID[i] = HueBridge.HueGroups[RoomID - 1].SceneID[i];
+                            }
+                            else
+                            {
+                                int x;
+                                x = i - 1;
+                                SceneNum = (ushort)x;
+                                break;
+                            }
+                        }
+                        CrestronConsole.PrintLine("Get {0} is complete", GroupName);
+                    }
+                    else
+                    {
+                        RoomOnline = 0;
+                        CrestronConsole.PrintLine("{0} doesn't exist on Hue Bridge", GroupName);
+                        TriggerRoomOnlineUpdate();
+                    }
                 }
                 else
                 {
@@ -164,6 +183,40 @@ namespace HueLights
             }
         }
 
+        public event EventHandler RoomBriUpdate;
+
+        public event EventHandler RoomHueUpdate;
+
+        public event EventHandler RoomSatUpdate;
+
+        public event EventHandler RoomOnlineUpdate;
+
+        public void TriggerRoomBriUpdate()
+        {
+            RoomBriUpdate(this, new EventArgs());
+        }
+
+        public void TriggerRoomHueUpdate()
+        {
+            RoomHueUpdate(this, new EventArgs());
+        }
+
+        public void TriggerRoomSatUpdate()
+        {
+            RoomSatUpdate(this, new EventArgs());
+        }
+
+        public void TriggerRoomOnlineUpdate()
+        {
+            RoomOnlineUpdate(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// test
+        /// </summary>
+        /// <param name="settype"></param>
+        /// <param name="lvltype"></param>
+        /// <param name="val"></param>
         public void LightsVal(string settype, string lvltype, ushort val)
         {
             try
@@ -181,19 +234,22 @@ namespace HueLights
                             case "bri":
                                 {
                                     HueBridge.HueGroups[RoomID - 1].Bri = (uint)JData[0]["success"][NodeVal];
-                                    RoomBri = (ushort)HueBridge.HueBulbs[RoomID - 1].Bri;
+                                    RoomBri = (ushort)HueBridge.HueGroups[RoomID - 1].Bri;
+                                    TriggerRoomBriUpdate();
                                     break;
                                 }
                             case "hue":
                                 {
                                     HueBridge.HueGroups[RoomID - 1].Hue = (uint)JData[0]["success"][NodeVal];
-                                    RoomHue = (ushort)HueBridge.HueBulbs[RoomID - 1].Hue;
+                                    RoomHue = (ushort)HueBridge.HueGroups[RoomID - 1].Hue;
+                                    TriggerRoomHueUpdate();
                                     break;
                                 }
                             case "sat":
                                 {
                                     HueBridge.HueGroups[RoomID - 1].Sat = (uint)JData[0]["success"][NodeVal];
-                                    RoomSat = (ushort)HueBridge.HueBulbs[RoomID - 1].Sat;
+                                    RoomSat = (ushort)HueBridge.HueGroups[RoomID - 1].Sat;
+                                    TriggerRoomSatUpdate();
                                     break;
                                 }
                             default:

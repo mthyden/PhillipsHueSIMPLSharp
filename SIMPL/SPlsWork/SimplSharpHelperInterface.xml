@@ -7925,11 +7925,6 @@
             A constant used to specify an infinite waiting period. This field is constant.
             </summary>
         </member>
-        <member name="T:Crestron.SimplSharp.CEvent">
-            <summary>
-            Class for the crestron Event
-            </summary>
-        </member>
         <member name="T:Crestron.SimplSharp.CEventHandle">
             <summary>
             Base class for the crestron CEvent.
@@ -7961,7 +7956,7 @@
         </member>
         <member name="M:Crestron.SimplSharp.CEventHandle.Dispose">
             <summary>
-            Clean up of unmanaged resources.
+            Clean up of resources.
             </summary>
         </member>
         <member name="M:Crestron.SimplSharp.CEventHandle.Dispose(System.Boolean)">
@@ -7980,10 +7975,58 @@
             Destructor for the CEvent class
             </summary>
         </member>
+        <member name="T:Crestron.SimplSharp.CNamedEvent">
+            <summary>
+            Class to create instances of crestron named events.
+            A named event can be shared across multiple programs
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.CEvent">
+            <summary>
+            Class to create instances of crestron events.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CEvent.m_NamedEventHandle">
+            <summary>
+            Unmanaged event handle.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CEvent.m_event">
+            <summary>
+            .NET event handle.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.CEvent.#ctor(System.Threading.WaitHandle)">
+            <summary>
+            Constructor to set the .NET Event handle and use that instead of native.
+            </summary>
+            <param name="eventHandle">.NET Event handle to use</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.CEvent.#ctor(System.String,System.Boolean)">
+            <summary>
+            Default constructor for the Crestron event class.
+            Creates an Auto Reset Event with the event set to be signaled.
+            If a name is specified, this can be used to synchronize across multiple programs.
+            </summary>
+            <param name="eventName">Name of the event</param>
+            <param name="bLogInfoIfEventAlreadyExists">If true will log an info message if the event already exists (created by another program)</param>
+            <exception cref="T:System.Exception">Unable to create event</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.CEvent.#ctor(System.Boolean,System.Boolean,System.String,System.Boolean)">
+            <summary>
+            Constructor for the Crestron event class.
+            If a name is specifiedl, this can be used to synchronize across multiple programs
+            </summary>
+            <param name="bAutoOrManualEvent">If true indicates Auto Reset event / False indicates Manual Reset Event</param>
+            <param name="bInitialState">If true indicates event is signaled</param>
+            <param name="eventName">Name of the event </param>
+            <param name="bLogInfoIfEventAlreadyExists">If true will log an info message if the event already exists (created by another program)</param>
+            <exception cref="T:System.Exception">Unable to create event</exception>
+        </member>
         <member name="M:Crestron.SimplSharp.CEvent.#ctor">
             <summary>
             Default constructor for the CEvent
-            Creates an Auto Reset Event with the event set to be signaled
+            Creates an Auto Reset Event with the event set to be signaled.
             </summary>
         </member>
         <member name="M:Crestron.SimplSharp.CEvent.#ctor(System.Boolean,System.Boolean)">
@@ -8007,6 +8050,13 @@
             <returns>true if the operation succeeds; otherwise, false.</returns>
             <exception cref="T:System.Exception"> Object not initialized</exception>
         </member>
+        <member name="M:Crestron.SimplSharp.CEvent.Wait">
+            <summary>
+            Function to wait for the event to be signaled. This will block indefinitely until the event is signaled.
+            </summary>
+            <returns>True if the current instance receives a signal otherwise false.</returns>
+            <exception cref="T:System.Exception"> Object not initialized</exception>
+        </member>
         <member name="M:Crestron.SimplSharp.CEvent.Wait(System.Int32)">
             <summary>
             Function to wait for the event to be signaled
@@ -8015,22 +8065,9 @@
             <returns>True if the current instance receives a signal otherwise false.</returns>
             <exception cref="T:System.Exception"> Object not initialized</exception>
         </member>
-        <member name="M:Crestron.SimplSharp.CEvent.Wait">
-            <summary>
-            Function to indefinitely wait for the event to be signaled
-            </summary>
-            <returns>True if the current instance receives a signal otherwise false.</returns>
-            <exception cref="T:System.Exception"> Object not initialized</exception>
-        </member>
         <member name="M:Crestron.SimplSharp.CEvent.Close">
             <summary>
-            Closes the Event
-            </summary>
-        </member>
-        <member name="T:Crestron.SimplSharp.CNamedEvent">
-            <summary>
-            Class for the crestron Named Event
-            A named event can be shared across multiple programs
+            Close the event to release all resources used by this instance.
             </summary>
         </member>
         <member name="M:Crestron.SimplSharp.CNamedEvent.#ctor(System.String,System.Boolean)">
@@ -8054,66 +8091,16 @@
             <param name="bLogInfoIfEventAlreadyExists">If true will log an info message if the event already exists (created by another program)</param>
             <exception cref="T:System.Exception">Unable to create event</exception>
         </member>
-        <member name="M:Crestron.SimplSharp.CNamedEvent.Set">
-            <summary>
-            Function to set the event
-            </summary>
-            <returns>true if the operation succeeds; otherwise, false.</returns>
-            <exception cref="T:System.Exception"> Object not initialized</exception>
-        </member>
-        <member name="M:Crestron.SimplSharp.CNamedEvent.Reset">
-            <summary>
-            Function to reset the specified event
-            </summary>
-            <returns>true if the operation succeeds; otherwise, false.</returns>
-            <exception cref="T:System.Exception"> Object not initialized</exception>
-        </member>
         <member name="M:Crestron.SimplSharp.CNamedEvent.Pulse">
             <summary>
-            Function to pulse the specified event
+            Function to pulse the specified event.
             </summary>
             <returns>true if the operation succeeds; otherwise, false.</returns>
             <exception cref="T:System.Exception"> Object not initialized</exception>
-        </member>
-        <member name="M:Crestron.SimplSharp.CNamedEvent.Wait">
-            <summary>
-            Function to wait for the event to be signaled.This will block indefinitely until the event is signaled
-            </summary>
-            <returns>True if the current instance receives a signal otherwise false.</returns>
-            <exception cref="T:System.Exception"> Object not initialized</exception>
-        </member>
-        <member name="M:Crestron.SimplSharp.CNamedEvent.Wait(System.Int32)">
-            <summary>
-            Function to wait for the event to be signaled
-            </summary>
-            <param name="timeOutInms">Timeout in milliseconds or Timeout.Infinite to wait indefinitely</param>
-            <returns>True if the current instance receives a signal otherwise false.</returns>
-            <exception cref="T:System.Exception"> Object not initialized</exception>
-        </member>
-        <member name="M:Crestron.SimplSharp.CNamedEvent.Finalize">
-            <summary>
-            Destructor for the CEvent class
-            </summary>
-        </member>
-        <member name="M:Crestron.SimplSharp.CNamedEvent.Dispose">
-            <summary>
-            Clean up of unmanaged resources.
-            </summary>
-        </member>
-        <member name="M:Crestron.SimplSharp.CNamedEvent.Dispose(System.Boolean)">
-            <summary>
-            Dispose implementation
-            </summary>
-            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        </member>
-        <member name="M:Crestron.SimplSharp.CNamedEvent.Close">
-            <summary>
-            Closes the Event
-            </summary>
         </member>
         <member name="P:Crestron.SimplSharp.CNamedEvent.Name">
             <summary>
-            Property to get the name of the event
+            Property to get the name of the event.
             </summary>
         </member>
         <member name="T:Crestron.SimplSharp.CrestronStringEncoding">
@@ -17030,6 +17017,17 @@
             <summary>
             Represents remote connection information class.
             </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.Ssh.ConnectionInfo.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.Ssh.ConnectionInfo.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         </member>
         <member name="M:Crestron.SimplSharp.Ssh.ConnectionInfo.#ctor(System.String,System.String,Crestron.SimplSharp.Ssh.AuthenticationMethod[])">
             <summary>
@@ -31643,6 +31641,26 @@
             The data.
             </value>
         </member>
+        <member name="M:Crestron.SimplSharp.Ssh.Security.KeyExchangeDiffieHellmanGroupExchangeShaBase.CalculateHash">
+            <summary>
+            Calculates key exchange hash value.
+            </summary>
+            <returns>
+            Key exchange hash.
+            </returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.Ssh.Security.KeyExchangeDiffieHellmanGroupExchangeShaBase.Start(Crestron.SimplSharp.Ssh.Session,Crestron.SimplSharp.Ssh.Messages.Transport.KeyExchangeInitMessage)">
+            <summary>
+            Starts key exchange algorithm
+            </summary>
+            <param name="session">The session.</param>
+            <param name="message">Key exchange init message.</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.Ssh.Security.KeyExchangeDiffieHellmanGroupExchangeShaBase.Finish">
+            <summary>
+            Finishes key exchange algorithm.
+            </summary>
+        </member>
         <member name="P:Crestron.SimplSharp.Ssh.Security.Cryptography.SHA512Hash.HashSize">
             <summary>
             Gets the size, in bits, of the computed hash code.
@@ -33808,26 +33826,6 @@
             Represents "diffie-hellman-group-exchange-sha1" algorithm implementation.
             </summary>
         </member>
-        <member name="M:Crestron.SimplSharp.Ssh.Security.KeyExchangeDiffieHellmanGroupExchangeSha1.CalculateHash">
-            <summary>
-            Calculates key exchange hash value.
-            </summary>
-            <returns>
-            Key exchange hash.
-            </returns>
-        </member>
-        <member name="M:Crestron.SimplSharp.Ssh.Security.KeyExchangeDiffieHellmanGroupExchangeSha1.Start(Crestron.SimplSharp.Ssh.Session,Crestron.SimplSharp.Ssh.Messages.Transport.KeyExchangeInitMessage)">
-            <summary>
-            Starts key exchange algorithm
-            </summary>
-            <param name="session">The session.</param>
-            <param name="message">Key exchange init message.</param>
-        </member>
-        <member name="M:Crestron.SimplSharp.Ssh.Security.KeyExchangeDiffieHellmanGroupExchangeSha1.Finish">
-            <summary>
-            Finishes key exchange algorithm.
-            </summary>
-        </member>
         <member name="P:Crestron.SimplSharp.Ssh.Security.KeyExchangeDiffieHellmanGroupExchangeSha1.Name">
             <summary>
             Gets algorithm name.
@@ -33842,6 +33840,17 @@
             <summary>
             Base class for asymmetric cipher algorithms
             </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.Ssh.Security.Key.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged ResourceMessages.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.Ssh.Security.Key.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged ResourceMessages.</param>
         </member>
         <member name="F:Crestron.SimplSharp.Ssh.Security.Key._privateKey">
             <summary>
@@ -33917,11 +33926,6 @@
             <param name="g">The g.</param>
             <param name="y">The y.</param>
             <param name="x">The x.</param>
-        </member>
-        <member name="M:Crestron.SimplSharp.Ssh.Security.DsaKey.Dispose">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged ResourceMessages.
-            </summary>
         </member>
         <member name="M:Crestron.SimplSharp.Ssh.Security.DsaKey.Dispose(System.Boolean)">
             <summary>
@@ -34273,11 +34277,6 @@
             <param name="proxyPort">The proxy port.</param>
             <param name="proxyUsername">The proxy username.</param>
             <param name="proxyPassword">The proxy password.</param>
-        </member>
-        <member name="M:Crestron.SimplSharp.Ssh.KeyboardInteractiveConnectionInfo.Dispose">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
         </member>
         <member name="M:Crestron.SimplSharp.Ssh.KeyboardInteractiveConnectionInfo.Dispose(System.Boolean)">
             <summary>
@@ -39212,26 +39211,6 @@
             Represents "diffie-hellman-group-exchange-sha256" algorithm implementation.
             </summary>
         </member>
-        <member name="M:Crestron.SimplSharp.Ssh.Security.KeyExchangeDiffieHellmanGroupExchangeSha256.Start(Crestron.SimplSharp.Ssh.Session,Crestron.SimplSharp.Ssh.Messages.Transport.KeyExchangeInitMessage)">
-            <summary>
-            Starts key exchange algorithm
-            </summary>
-            <param name="session">The session.</param>
-            <param name="message">Key exchange init message.</param>
-        </member>
-        <member name="M:Crestron.SimplSharp.Ssh.Security.KeyExchangeDiffieHellmanGroupExchangeSha256.Finish">
-            <summary>
-            Finishes key exchange algorithm.
-            </summary>
-        </member>
-        <member name="M:Crestron.SimplSharp.Ssh.Security.KeyExchangeDiffieHellmanGroupExchangeSha256.CalculateHash">
-            <summary>
-            Calculates key exchange hash value.
-            </summary>
-            <returns>
-            Key exchange hash.
-            </returns>
-        </member>
         <member name="M:Crestron.SimplSharp.Ssh.Security.KeyExchangeDiffieHellmanGroupExchangeSha256.Hash(System.Byte[])">
             <summary>
             Hashes the specified data bytes.
@@ -39614,11 +39593,6 @@
             <param name="proxyPort">The proxy port.</param>
             <param name="proxyUsername">The proxy username.</param>
             <param name="proxyPassword">The proxy password.</param>
-        </member>
-        <member name="M:Crestron.SimplSharp.Ssh.PasswordConnectionInfo.Dispose">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
         </member>
         <member name="M:Crestron.SimplSharp.Ssh.PasswordConnectionInfo.Dispose(System.Boolean)">
             <summary>
@@ -44090,6 +44064,19 @@
             could be that there are duplicate Id's on your network. In that case please execute the <see cref="M:Crestron.SimplSharp.CrestronCresnetHelper.DiscoverAllDevices"/> function. </remarks>
             <returns>eCresnetDiscoveryReturnValues - enum indicating return value</returns>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.ParseString(System.String@,System.Boolean,System.Byte@,System.String@,System.UInt32@,System.String@)">
+            <summary>
+            Method to parse the string...
+            this is only used for the ReportCresnet currently and not for PPNDIscover
+            </summary>
+            <param name="ResponseFromCommand"></param>
+            <param name="reportCresnet"></param>
+            <param name="cresnetId"></param>
+            <param name="deviceName"></param>
+            <param name="tsid"></param>
+            <param name="version"></param>
+            <returns></returns>
+        </member>
         <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.ReportDevices">
             <summary>
             Function to report the cresnet devices present in the system. If there are multiple devices at the same Id, then this will just report
@@ -44407,11 +44394,6 @@
             <param name="p">The p.</param>
             <param name="q">The q.</param>
             <param name="inverseQ">The inverse Q.</param>
-        </member>
-        <member name="M:Crestron.SimplSharp.Ssh.Security.RsaKey.Dispose">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged ResourceMessages.
-            </summary>
         </member>
         <member name="M:Crestron.SimplSharp.Ssh.Security.RsaKey.Dispose(System.Boolean)">
             <summary>
@@ -45938,11 +45920,6 @@
             <param name="proxyUsername">The proxy username.</param>
             <param name="proxyPassword">The proxy password.</param>
             <param name="keyFiles">The key files.</param>
-        </member>
-        <member name="M:Crestron.SimplSharp.Ssh.PrivateKeyConnectionInfo.Dispose">
-            <summary>
-            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
         </member>
         <member name="M:Crestron.SimplSharp.Ssh.PrivateKeyConnectionInfo.Dispose(System.Boolean)">
             <summary>
@@ -51410,6 +51387,12 @@
         <member name="F:Crestron.SimplSharp.eSystemEventType.DiskRemoved">
             <summary>
             Removable media removed
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eSystemEventType.TimeChange">
+            <summary>
+            Time/Timezone Changed event
+            Use <see cref="M:Crestron.SimplSharp.CrestronEnvironment.GetLocalTime"/> to get the updated time and <see cref="O:Crestron.SimplSharp.CrestronEnvironment.GetTimeZone"/> to get the updated timezone.
             </summary>
         </member>
         <member name="T:Crestron.SimplSharp.SystemEventHandler">

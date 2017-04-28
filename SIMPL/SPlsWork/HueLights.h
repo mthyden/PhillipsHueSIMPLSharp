@@ -39,6 +39,10 @@ namespace HueLights;
         // class delegates
 
         // class events
+        EventHandler RoomBriUpdate ( HueRoom sender, EventArgs e );
+        EventHandler RoomHueUpdate ( HueRoom sender, EventArgs e );
+        EventHandler RoomSatUpdate ( HueRoom sender, EventArgs e );
+        EventHandler RoomOnlineUpdate ( HueRoom sender, EventArgs e );
 
         // class functions
         FUNCTION GetRoom ();
@@ -46,6 +50,10 @@ namespace HueLights;
         FUNCTION GroupOff ();
         FUNCTION RecallRaw ( STRING rawID );
         FUNCTION RecallScene ( INTEGER i );
+        FUNCTION TriggerRoomBriUpdate ();
+        FUNCTION TriggerRoomHueUpdate ();
+        FUNCTION TriggerRoomSatUpdate ();
+        FUNCTION TriggerRoomOnlineUpdate ();
         FUNCTION LightsVal ( STRING settype , STRING lvltype , INTEGER val );
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
@@ -58,6 +66,7 @@ namespace HueLights;
         INTEGER RoomHue;
         INTEGER RoomSat;
         INTEGER SceneNum;
+        INTEGER RoomOnline;
         STRING SceneName[][];
         STRING SceneID[][];
 

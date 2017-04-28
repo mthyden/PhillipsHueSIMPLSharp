@@ -36,7 +36,7 @@ namespace HueLights
                 HueBridge.SetupDataStore();
                 string tempapi;
                 tempapi = HueBridge.GetDataStore();
-                CrestronConsole.PrintLine("api is {0}", tempapi);
+                //CrestronConsole.PrintLine("api is {0}", tempapi);
                 if (tempapi != null)
                 {
                     HueBridge.BridgeApi = tempapi;
@@ -110,7 +110,7 @@ namespace HueLights
             }
             catch (Exception e)
             {
-                CrestronConsole.PrintLine("Exception is {0}", e);
+                CrestronConsole.PrintLine("Error getting bulbs {0}", e);
             }
         }
 
@@ -127,11 +127,13 @@ namespace HueLights
                     {
                         string name = (string)JData[i.ToString()]["name"];
                         string load = (string)JData[i.ToString()]["lights"][0];
+                        JArray LoadList = (JArray)JData[i.ToString()]["lights"];
+                        string[] loads = LoadList.ToObject<string[]>();
                         string type = (string)JData[i.ToString()]["type"];
                         bool on = (bool)JData[i.ToString()]["action"]["on"];
                         uint bri = (uint)JData[i.ToString()]["action"]["bri"];
                         string alert = (string)JData[i.ToString()]["action"]["alert"];
-                        HueBridge.HueGroups.Add(new HueGroup(name, type, on, bri, alert, load));
+                        HueBridge.HueGroups.Add(new HueGroup(name, type, on, bri, alert, load, loads));
                         Array.Clear(HueBridge.HueGroups[i - 1].SceneName, 0, 20);
                         Array.Clear(HueBridge.HueGroups[i - 1].SceneID, 0, 20);
                     }
@@ -145,7 +147,7 @@ namespace HueLights
             }
             catch (Exception e)
             {
-                CrestronConsole.PrintLine("Exception is {0}", e);
+                CrestronConsole.PrintLine("Error getting rooms: {0}", e);
             }
         }
 
@@ -178,7 +180,7 @@ namespace HueLights
                         JText = JText.Remove(0, pos5);
                         for (int x = 0; x < (HueBridge.HueGroups.Count); x++)
                         {
-                            if (load == HueBridge.HueGroups[x].AssignedLoad)
+                            if(HueBridge.HueGroups[x].loads.Contains(load))               
                             {
                                 for (int y = 1; y < 20; y++)
                                 {

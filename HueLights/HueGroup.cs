@@ -21,7 +21,7 @@ namespace HueLights
         public string[] SceneName = new string[20];
         public string[] SceneID = new string[20];
 
-        public HueGroup(string roomname, string roomtype, bool on, uint bri, string alert, string load)
+        public HueGroup(string roomname, string roomtype, bool on, uint bri, string alert, string load, string[] loads)
         {
             this.RoomName = roomname;
             this.RoomType = roomtype;
@@ -29,6 +29,7 @@ namespace HueLights
             this.Bri = bri;
             this.Alert = alert;
             this.AssignedLoad = load;
+            this.loads = loads;
         }
     }
 }
