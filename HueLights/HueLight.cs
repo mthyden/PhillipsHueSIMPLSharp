@@ -97,7 +97,7 @@ namespace HueLights
             {
                 if (HueBridge.Authorized == true)
                 {
-                    String json = HueBridge.SetOnOff("lights", BulbID, "true", "state");
+                    String json = HueBridge.SetOnOff("lights", BulbID, "true", "state", "none");
                     if (json.Contains("success"))
                     {
                         HueBridge.HueBulbs[BulbID - 1].On = true;
@@ -121,7 +121,7 @@ namespace HueLights
             {
                 if (HueBridge.Authorized == true)
                 {
-                    String json = HueBridge.SetOnOff("lights", BulbID, "false", "state");
+                    String json = HueBridge.SetOnOff("lights", BulbID, "false", "state", "none");
                     if (json.Contains("success"))
                     {
                         HueBridge.HueBulbs[BulbID - 1].On = false;

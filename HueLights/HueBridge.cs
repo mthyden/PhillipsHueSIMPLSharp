@@ -21,6 +21,9 @@ namespace HueLights
         public static List<HueGroup> HueGroups = new List<HueGroup>();
         public static List<HueScene> HueScenes = new List<HueScene>();
         
+        /// <summary>
+        /// registers with bridge, authorizes a user based on API key from the pairing
+        /// </summary>
         public static void register()
         {
             CrestronConsole.PrintLine("registering with bridge...");
@@ -59,6 +62,9 @@ namespace HueLights
             }
         }
 
+        /// <summary>
+        /// sets up datastore for storing the bridge API key
+        /// </summary>
         public static void SetupDataStore()
         {
             try
@@ -72,6 +78,10 @@ namespace HueLights
             }
         }
 
+        /// <summary>
+        /// pulls API key from datastore
+        /// </summary>
+        /// <returns></returns>
         public static string GetDataStore()
         {
             string temp;
@@ -80,6 +90,10 @@ namespace HueLights
             return temp;
         }
 
+        /// <summary>
+        /// gets the IP of the local bridge, currently one bridge is supported
+        /// </summary>
+        /// <returns></returns>
         public static string getIP()
         {
             try
@@ -108,6 +122,11 @@ namespace HueLights
             return BridgeIp;
         }
 
+        /// <summary>
+        /// generic request for lights, groups, scenes returns a JSON string to be parsed
+        /// </summary>
+        /// <param name="infotype"></param>
+        /// <returns></returns>
         public static string GetBridgeInfo(string infotype)
         {
             var getLights = new HttpClient();
@@ -121,22 +140,44 @@ namespace HueLights
             return jsontext;
         }
 
-        public static string SetOnOff(string settype, ushort setid, string value, string cmdtype)
+        /// <summary>
+        /// generic on/off method for individual bulbs or groups
+        /// </summary>
+        /// <param name="settype">"lights" or "group"</param>
+        /// <param name="setid">ID of group or light</param>
+        /// <param name="value">body argument, ie "on" or "off"</param>
+        /// <param name="cmdtype">command type</param>
+        /// <returns></returns>
+        public static string SetOnOff(string settype, ushort setid, string value, string cmdtype, string effect)
         {
-            var setLights = new HttpClient();
-            setLights.KeepAlive = false;
-            setLights.Accept = "application/json";
-            HttpClientRequest lightRequest = new HttpClientRequest();
-            string url = string.Format("http://{0}/api/{1}/{2}/{3}/{4}", HueBridge.BridgeIp, HueBridge.BridgeApi, settype, setid, cmdtype);
-            lightRequest.RequestType = Crestron.SimplSharp.Net.Http.RequestType.Put;
-            lightRequest.Url.Parse(url);
-            String payload = String.Format("{0}\"on\":{1}{2}",'{', value, '}');
-            lightRequest.ContentString = payload;
-            HttpClientResponse lResponse = setLights.Dispatch(lightRequest);
-            String jsontext = lResponse.ContentString;
-            return jsontext;
+            try
+            {
+                var setLights = new HttpClient();
+                setLights.KeepAlive = false;
+                setLights.Accept = "application/json";
+                HttpClientRequest lightRequest = new HttpClientRequest();
+                string url = string.Format("http://{0}/api/{1}/{2}/{3}/{4}", HueBridge.BridgeIp, HueBridge.BridgeApi, settype, setid, cmdtype);
+                lightRequest.RequestType = Crestron.SimplSharp.Net.Http.RequestType.Put;
+                lightRequest.Url.Parse(url);
+                String payload = String.Format("{0}\"on\":{1},\"effect\":\"{2}\"{3}", '{', value, effect, '}');
+                lightRequest.ContentString = payload;
+                HttpClientResponse lResponse = setLights.Dispatch(lightRequest);
+                String jsontext = lResponse.ContentString;
+                return jsontext;
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Exception is {0}", e);
+                return e.ToString();
+            }
         }
 
+        /// <summary>
+        /// sets scene method
+        /// </summary>
+        /// <param name="setid"></param>
+        /// <param name="payload"></param>
+        /// <returns></returns>
         public static string SetScene(ushort setid, string payload)
         {
                 var setLights = new HttpClient();

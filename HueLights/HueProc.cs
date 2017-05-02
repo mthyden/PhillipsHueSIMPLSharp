@@ -24,11 +24,17 @@ namespace HueLights
 
         public DelegateValueUpdate ValueUpdate {get; set;}
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public HueProc()
         {
 
         }
 
+        /// <summary>
+        /// Registers the app to the bridge, if API key already exists in datastore will pull
+        /// </summary>
         public void Register()
         {
             try
@@ -56,6 +62,9 @@ namespace HueLights
             }
         }
 
+        /// <summary>
+        /// gets bridge IP from the broker server www.meethue.com/api/nupnp
+        /// </summary>
         public void getIP()
         {
                 IPAddress = HueBridge.getIP();
@@ -63,11 +72,18 @@ namespace HueLights
                 Authorized = (ushort)(HueBridge.Authorized ? 1 : 0);
         }
 
+        /// <summary>
+        /// Sets the IP if one exists from SIMPL
+        /// </summary>
+        /// <param name="str"></param>
         public void setIP(string str)
         {
             HueBridge.BridgeIp = str;
         }
 
+        /// <summary>
+        /// Pulls all the bulbs and their current state from the bridge
+        /// </summary>
         public void getBulbs()
         {
             try
@@ -114,6 +130,9 @@ namespace HueLights
             }
         }
 
+        /// <summary>
+        /// Pulls all the groups/rooms from the bridge
+        /// </summary>
         public void getRooms()
         {
             try
@@ -151,6 +170,9 @@ namespace HueLights
             }
         }
 
+        /// <summary>
+        /// Pulls all the scenes from the bridge and assigns them to their appropriate room based on the assigned bulbs 
+        /// </summary>
         public void getScenes()
         {
             try
@@ -208,6 +230,5 @@ namespace HueLights
                 CrestronConsole.PrintLine("Error getting scenes: {0}",e);
             }
         }
-
     }
 }

@@ -86,66 +86,30 @@ namespace HueLights
             }
         }
 
-        public void GroupOn()
+        /// <summary>
+        /// Sets a group to be on/off/scene select
+        /// </summary>
+        /// <param name="action">"true", "false", "scene"</param>
+        public void GroupAction(string actiontype, string actioncmd, string effect)
         {
             try
             {
                 if (HueBridge.Authorized == true)
                 {
-                    String json = HueBridge.SetOnOff("groups", RoomID, "true", "action");
-                    if (json.Contains("success"))
+                    String json = HueBridge.SetOnOff("groups", RoomID, actioncmd, "action", effect);
+                    JArray JReturn = JArray.Parse(json);
+                    for (int i = 1; i < JReturn.Count; i++)
                     {
-                        HueBridge.HueGroups[RoomID - 1].On = true;
-                        GroupIsOn = 1;
-                    }
-                }
-                else
-                {
-                    CrestronConsole.PrintLine("Bridge not authorized");
-                }
-            }
-            catch (Exception e)
-            {
-                CrestronConsole.PrintLine("Exception is {0}", e);
-            }
-        }
-
-        public void GroupOff()
-        {
-            try
-            {
-                if (HueBridge.Authorized == true)
-                {
-                    String json = HueBridge.SetOnOff("groups", RoomID, "false", "action");
-                    if (json.Contains("success"))
-                    {
-                        HueBridge.HueGroups[RoomID - 1].On = false;
-                        GroupIsOn = 0;
-                    }
-                }
-                else
-                {
-                    CrestronConsole.PrintLine("Bridge not authorized");
-                }
-            }
-            catch (Exception e)
-            {
-                CrestronConsole.PrintLine("Exception is {0}", e);
-            }
-        }
-
-        public void RecallRaw(string rawID)
-        {
-            try
-            {
-                CrestronConsole.PrintLine("Scene Raw should be working");
-                if (HueBridge.Authorized == true)
-                {
-                    String payload = String.Format("{0}\"scene\":\"{1}\"{2}", '{', rawID, '}');
-                    String json = HueBridge.SetScene(RoomID, payload);
-                    if (json.Contains("success"))
-                    {
-                        CrestronConsole.PrintLine("Successfully changed scenes");
+                        if (json.Contains("success"))
+                        {
+                            var JData = JReturn[i].SelectToken("success");
+                            string tokenreturn = "/groups/" + RoomID + "/action/" + actiontype;
+                            if (JData.Contains(tokenreturn))
+                            {
+                                HueBridge.HueGroups[RoomID - 1].On = (bool)JData[tokenreturn];
+                                GroupIsOn = (ushort)(HueBridge.HueGroups[RoomID - 1].On ? 1 : 0);
+                            }
+                        }
                     }
                 }
                 else
@@ -169,7 +133,7 @@ namespace HueLights
                     String json = HueBridge.SetScene(RoomID, payload);
                     if (json.Contains("success"))
                     {
-                        CrestronConsole.PrintLine("Successfully changed scenes");
+                        CrestronConsole.PrintLine("Scene changed");
                     }
                 }
                 else

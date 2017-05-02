@@ -46,9 +46,7 @@ namespace HueLights;
 
         // class functions
         FUNCTION GetRoom ();
-        FUNCTION GroupOn ();
-        FUNCTION GroupOff ();
-        FUNCTION RecallRaw ( STRING rawID );
+        FUNCTION GroupAction ( STRING actiontype , STRING actioncmd , STRING effect );
         FUNCTION RecallScene ( INTEGER i );
         FUNCTION TriggerRoomBriUpdate ();
         FUNCTION TriggerRoomHueUpdate ();
@@ -85,7 +83,7 @@ namespace HueLights;
         static STRING_FUNCTION GetDataStore ();
         static STRING_FUNCTION getIP ();
         static STRING_FUNCTION GetBridgeInfo ( STRING infotype );
-        static STRING_FUNCTION SetOnOff ( STRING settype , INTEGER setid , STRING value , STRING cmdtype );
+        static STRING_FUNCTION SetOnOff ( STRING settype , INTEGER setid , STRING value , STRING cmdtype , STRING effect );
         static STRING_FUNCTION SetScene ( INTEGER setid , STRING payload );
         static STRING_FUNCTION SetLvl ( STRING settype , STRING lvltype , INTEGER setid , INTEGER value , STRING cmdtype );
         STRING_FUNCTION ToString ();
