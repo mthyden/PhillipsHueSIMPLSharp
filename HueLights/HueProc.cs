@@ -42,7 +42,6 @@ namespace HueLights
                 HueBridge.SetupDataStore();
                 string tempapi;
                 tempapi = HueBridge.GetDataStore();
-                //CrestronConsole.PrintLine("api is {0}", tempapi);
                 if (tempapi != null)
                 {
                     HueBridge.BridgeApi = tempapi;
@@ -68,8 +67,6 @@ namespace HueLights
         public void getIP()
         {
                 IPAddress = HueBridge.getIP();
-                HueBridge.Authorized = false;
-                Authorized = (ushort)(HueBridge.Authorized ? 1 : 0);
         }
 
         /// <summary>
@@ -93,31 +90,32 @@ namespace HueLights
                     string json = HueBridge.GetBridgeInfo("lights");
                     JObject JData = JObject.Parse(json);
                     HueBridge.HueBulbs.Clear();
-                    for (int i = 1; i <= JData.Count; i++)
+                    foreach( var bulb in JData)
                     {
-                        bool on = (bool)JData[i.ToString()]["state"]["on"];
-                        uint bri = (uint)JData[i.ToString()]["state"]["bri"];
-                        string alert = (string)JData[i.ToString()]["state"]["alert"];
-                        bool reachable = (bool)JData[i.ToString()]["state"]["reachable"];
-                        string type = (string)JData[i.ToString()]["type"];
-                        string name = (string)JData[i.ToString()]["name"];
-                        string model = (string)JData[i.ToString()]["modelid"];
-                        string manufacturer = (string)JData[i.ToString()]["manufacturername"];
-                        string uid = (string)JData[i.ToString()]["uniqueid"];
-                        string swver = (string)JData[i.ToString()]["swversion"];
-                        if (type.Contains("color"))
+                        string id = bulb.Key;
+                        bool on = (bool)JData[id]["state"]["on"];
+                        uint bri = (uint)JData[id]["state"]["bri"];
+                        string alert = (string)JData[id]["state"]["alert"];
+                        bool reachable = (bool)JData[id]["state"]["reachable"];
+                        string type = (string)JData[id]["type"];
+                        string name = (string)JData[id]["name"];
+                        string model = (string)JData[id]["modelid"];
+                        string manufacturer = (string)JData[id]["manufacturername"];
+                        string uid = (string)JData[id]["uniqueid"];
+                        string swver = (string)JData[id]["swversion"];
+                        if (type.Contains("color") || type.Contains("Color"))
                         {
-                            uint hue = (uint)JData[i.ToString()]["state"]["hue"];
-                            uint sat = (uint)JData[i.ToString()]["state"]["sat"];
-                            HueBridge.HueBulbs.Add(new HueBulb(on, bri, hue, sat, alert, reachable, type, name, model, manufacturer, uid, swver));
+                            uint hue = (uint)JData[id]["state"]["hue"];
+                            uint sat = (uint)JData[id]["state"]["sat"];
+                            HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, alert, reachable, type, name, model, manufacturer, uid, swver));
                         }
                         else
                         {
-                            HueBridge.HueBulbs.Add(new HueBulb(on, bri, alert, reachable, type, name, model, manufacturer, uid, swver));
+                            HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, alert, reachable, type, name, model, manufacturer, uid, swver));
                         }
                     }
                     BulbNum = (ushort)HueBridge.HueBulbs.Count;
-                    CrestronConsole.PrintLine("Get Bulbs is complete...");
+                    CrestronConsole.PrintLine("{0} Bulbs discovered", BulbNum);
                 }
                 else
                 {
@@ -142,22 +140,27 @@ namespace HueLights
                     string json = HueBridge.GetBridgeInfo("groups");
                     JObject JData = JObject.Parse(json);
                     HueBridge.HueGroups.Clear();
-                    for (int i = 1; i <= JData.Count; i++)
+                    foreach (var group in JData)
                     {
-                        string name = (string)JData[i.ToString()]["name"];
-                        string load = (string)JData[i.ToString()]["lights"][0];
-                        JArray LoadList = (JArray)JData[i.ToString()]["lights"];
+                        string id = group.Key;
+                        string name = (string)JData[group.Key]["name"];
+                        string load = (string)JData[group.Key]["lights"][0];
+                        JArray LoadList = (JArray)JData[group.Key]["lights"];
                         string[] loads = LoadList.ToObject<string[]>();
-                        string type = (string)JData[i.ToString()]["type"];
-                        bool on = (bool)JData[i.ToString()]["action"]["on"];
-                        uint bri = (uint)JData[i.ToString()]["action"]["bri"];
-                        string alert = (string)JData[i.ToString()]["action"]["alert"];
+                        string type = (string)JData[group.Key]["type"];
+                        bool on = (bool)JData[group.Key]["action"]["on"];
+                        uint bri = (uint)JData[group.Key]["action"]["bri"];
+                        string alert = (string)JData[group.Key]["action"]["alert"];
                         HueBridge.HueGroups.Add(new HueGroup(name, type, on, bri, alert, load, loads));
-                        Array.Clear(HueBridge.HueGroups[i - 1].SceneName, 0, 20);
-                        Array.Clear(HueBridge.HueGroups[i - 1].SceneID, 0, 20);
                     }
-                    GroupNum = (ushort)HueBridge.HueGroups.Count;
-                    CrestronConsole.PrintLine("Get Rooms is complete...");
+                    for (int i = 0; i < JData.Count; i++)
+                    {
+                        Array.Clear(HueBridge.HueGroups[i].SceneName, 0, 20);
+                        Array.Clear(HueBridge.HueGroups[i].SceneID, 0, 20);
+                    }
+
+                        GroupNum = (ushort)HueBridge.HueGroups.Count;
+                    CrestronConsole.PrintLine("{0} Rooms discovered", GroupNum);
                 }
                 else
                 {
@@ -181,43 +184,29 @@ namespace HueLights
                 {
                     string json = HueBridge.GetBridgeInfo("scenes");
                     JObject JData = JObject.Parse(json);
-                    string JText = JData.ToString();
                     HueBridge.HueScenes.Clear();
-                    for (int i = 1; i <= JData.Count; i++)
+                    foreach (var scene in JData)
                     {
-                        int pos1 = JText.IndexOf("\"");
-                        string ID = JText.Substring(pos1 + 1, 15);
-                        pos1 = JText.IndexOf("name\"");
-                        int pos2 = JText.IndexOf(",", pos1);
-                        string name = JText.Substring(pos1 + 8, ((pos2 - 1) - (pos1 + 8)));
-                        pos2 = JText.IndexOf("lights");
-                        pos1 = JText.IndexOf("[", pos2);
-                        pos1 = JText.IndexOf("\"", pos1)+1;
-                        pos2 = JText.IndexOf("\"", pos1);
-                        string load = JText.Substring(pos1, (pos2 - pos1));
-                        HueBridge.HueScenes.Add(new HueScene(ID, name, load));
-                        int pos3 = JText.IndexOf("lastupdated");
-                        int pos4 = JText.IndexOf("version", pos3);
-                        int pos5 = JText.IndexOf("}", pos4);
-                        JText = JText.Remove(0, pos5);
+                        string id = scene.Key;
+                        string name = (string)JData[id]["name"];
+                        string load = (string)JData[id]["lights"][0];
                         for (int x = 0; x < (HueBridge.HueGroups.Count); x++)
                         {
-                            if(HueBridge.HueGroups[x].loads.Contains(load))               
+                            if (HueBridge.HueGroups[x].loads.Contains(load))
                             {
                                 for (int y = 1; y < 20; y++)
                                 {
                                     if (HueBridge.HueGroups[x].SceneName[y] == null)
                                     {
                                         HueBridge.HueGroups[x].SceneName[y] = name;
-                                        HueBridge.HueGroups[x].SceneID[y] = ID;
+                                        HueBridge.HueGroups[x].SceneID[y] = id;
                                         break;
                                     }
                                 }
                             }
                         }
                     }
-
-                    CrestronConsole.PrintLine("Get Scenes is complete...");
+                    CrestronConsole.PrintLine("{0} Scenes discovered", JData.Count);
                 }
                 else
                 {

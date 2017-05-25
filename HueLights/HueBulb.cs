@@ -8,6 +8,7 @@ namespace HueLights
 {
     public class HueBulb
     {
+        public string Id;
         public bool On;
         public uint Bri;
         public uint Hue;
@@ -23,8 +24,9 @@ namespace HueLights
         public String Uid;
         public String SwVer;
 
-        public HueBulb(bool on, uint bri, string alert, bool reachable, string type, string name, string model, string manufacturer, string uid, string swver)
+        public HueBulb(string id, bool on, uint bri, string alert, bool reachable, string type, string name, string model, string manufacturer, string uid, string swver)
         {
+            this.Id = id;
             this.On = on;
             this.Bri = bri;
             this.Alert = alert;
@@ -37,8 +39,9 @@ namespace HueLights
             this.SwVer = swver;
         }
 
-        public HueBulb(bool on, uint bri, uint hue, uint sat, string alert, bool reachable, string type, string name, string model, string manufacturer, string uid, string swver)
+        public HueBulb(string id, bool on, uint bri, uint hue, uint sat, string alert, bool reachable, string type, string name, string model, string manufacturer, string uid, string swver)
         {
+            this.Id = id;
             this.On = on;
             this.Bri = bri;
             this.Hue = hue;
