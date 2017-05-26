@@ -98,19 +98,34 @@ namespace HueLights
                 {
                     String json = HueBridge.SetOnOff("groups", RoomID, actioncmd, "action", effect);
                     JArray JReturn = JArray.Parse(json);
-                    for (int i = 1; i < JReturn.Count; i++)
+                    string tokenreturn = "/groups/" + RoomID + "/action/" + actiontype;
+                    foreach (var Jobj in JReturn)
+                    {
+                        var myaction = Jobj["success"];
+                        string whodidwhat = myaction.ToString();
+                        if (whodidwhat.Contains(tokenreturn))
+                        {
+                            HueBridge.HueGroups[RoomID - 1].On = (bool)myaction[tokenreturn];
+                            GroupIsOn = (ushort)(HueBridge.HueGroups[RoomID - 1].On ? 1 : 0);
+                            CrestronConsole.PrintLine("yep this worked");
+                        }
+                    }
+
+                    /*
+                    for (int i = 0; i < JReturn.Count; i++)
                     {
                         if (json.Contains("success"))
                         {
                             var JData = JReturn[i].SelectToken("success");
-                            string tokenreturn = "/groups/" + RoomID + "/action/" + actiontype;
+                            //string tokenreturn = "/groups/" + RoomID + "/action/" + actiontype;
+                            string tokenreturn = "/groups/" + RoomID + "/action/on";
                             if (JData.Contains(tokenreturn))
                             {
-                                HueBridge.HueGroups[RoomID - 1].On = (bool)JData[tokenreturn];
-                                GroupIsOn = (ushort)(HueBridge.HueGroups[RoomID - 1].On ? 1 : 0);
+
+                                break;
                             }
                         }
-                    }
+                    }*/
                 }
                 else
                 {
