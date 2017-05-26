@@ -25,6 +25,7 @@ namespace UserModule_HUELIGHTSROOM_R1_2
         Crestron.Logos.SplusObjects.AnalogInput ROOMBRIIN;
         Crestron.Logos.SplusObjects.AnalogInput ROOMHUEIN;
         Crestron.Logos.SplusObjects.AnalogInput ROOMSATIN;
+        InOutArray<Crestron.Logos.SplusObjects.AnalogInput> XYVAL;
         InOutArray<Crestron.Logos.SplusObjects.DigitalInput> SCENES;
         Crestron.Logos.SplusObjects.DigitalOutput ROOMONLINE;
         Crestron.Logos.SplusObjects.DigitalOutput ROOMISON;
@@ -258,6 +259,25 @@ object ROOMSATIN_OnChange_8 ( Object __EventInfo__ )
     
 }
 
+object XYVAL_OnChange_9 ( Object __EventInfo__ )
+
+    { 
+    Crestron.Logos.SplusObjects.SignalEventArgs __SignalEventArg__ = (Crestron.Logos.SplusObjects.SignalEventArgs)__EventInfo__;
+    try
+    {
+        SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
+        
+        __context__.SourceCodeLine = 125;
+        MYROOM . XYVal ( "groups", (ushort)( XYVAL[ 1 ] .UshortValue ), (ushort)( XYVAL[ 2 ] .UshortValue )) ; 
+        
+        
+    }
+    catch(Exception e) { ObjectCatchHandler(e); }
+    finally { ObjectFinallyHandler( __SignalEventArg__ ); }
+    return this;
+    
+}
+
 public void MYBRIHANDLER ( object __sender__ /*HueLights.HueRoom SENDER */, EventArgs ARGS ) 
     { 
     HueRoom  SENDER  = (HueRoom )__sender__;
@@ -265,10 +285,10 @@ public void MYBRIHANDLER ( object __sender__ /*HueLights.HueRoom SENDER */, Even
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 125;
+        __context__.SourceCodeLine = 130;
         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SENDER == MYROOM))  ) ) 
             { 
-            __context__.SourceCodeLine = 127;
+            __context__.SourceCodeLine = 132;
             ROOMBRIOUT  .Value = (ushort) ( MYROOM.RoomBri ) ; 
             } 
         
@@ -285,10 +305,10 @@ public void MYHUEHANDLER ( object __sender__ /*HueLights.HueRoom SENDER */, Even
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 133;
+        __context__.SourceCodeLine = 138;
         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SENDER == MYROOM))  ) ) 
             { 
-            __context__.SourceCodeLine = 135;
+            __context__.SourceCodeLine = 140;
             ROOMHUEOUT  .Value = (ushort) ( MYROOM.RoomHue ) ; 
             } 
         
@@ -305,10 +325,10 @@ public void MYSATHANDLER ( object __sender__ /*HueLights.HueRoom SENDER */, Even
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 141;
+        __context__.SourceCodeLine = 146;
         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SENDER == MYROOM))  ) ) 
             { 
-            __context__.SourceCodeLine = 143;
+            __context__.SourceCodeLine = 148;
             ROOMSATOUT  .Value = (ushort) ( MYROOM.RoomSat ) ; 
             } 
         
@@ -325,10 +345,10 @@ public void MYONLINEHANDLER ( object __sender__ /*HueLights.HueRoom SENDER */, E
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 149;
+        __context__.SourceCodeLine = 154;
         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SENDER == MYROOM))  ) ) 
             { 
-            __context__.SourceCodeLine = 151;
+            __context__.SourceCodeLine = 156;
             ROOMONLINE  .Value = (ushort) ( MYROOM.RoomOnline ) ; 
             } 
         
@@ -344,21 +364,21 @@ public override object FunctionMain (  object __obj__ )
     {
         SplusExecutionContext __context__ = SplusFunctionMainStartCode();
         
-        __context__.SourceCodeLine = 157;
+        __context__.SourceCodeLine = 162;
         WaitForInitializationComplete ( ) ; 
-        __context__.SourceCodeLine = 158;
+        __context__.SourceCodeLine = 163;
         // RegisterEvent( MYROOM , ROOMBRIUPDATE , MYBRIHANDLER ) 
         try { g_criticalSection.Enter(); MYROOM .RoomBriUpdate  += MYBRIHANDLER; } finally { g_criticalSection.Leave(); }
         ; 
-        __context__.SourceCodeLine = 159;
+        __context__.SourceCodeLine = 164;
         // RegisterEvent( MYROOM , ROOMHUEUPDATE , MYHUEHANDLER ) 
         try { g_criticalSection.Enter(); MYROOM .RoomHueUpdate  += MYHUEHANDLER; } finally { g_criticalSection.Leave(); }
         ; 
-        __context__.SourceCodeLine = 160;
+        __context__.SourceCodeLine = 165;
         // RegisterEvent( MYROOM , ROOMSATUPDATE , MYSATHANDLER ) 
         try { g_criticalSection.Enter(); MYROOM .RoomSatUpdate  += MYSATHANDLER; } finally { g_criticalSection.Leave(); }
         ; 
-        __context__.SourceCodeLine = 161;
+        __context__.SourceCodeLine = 166;
         // RegisterEvent( MYROOM , ROOMONLINEUPDATE , MYONLINEHANDLER ) 
         try { g_criticalSection.Enter(); MYROOM .RoomOnlineUpdate  += MYONLINEHANDLER; } finally { g_criticalSection.Leave(); }
         ; 
@@ -412,6 +432,13 @@ public override void LogosSplusInitialize()
     ROOMSATIN = new Crestron.Logos.SplusObjects.AnalogInput( ROOMSATIN__AnalogSerialInput__, this );
     m_AnalogInputList.Add( ROOMSATIN__AnalogSerialInput__, ROOMSATIN );
     
+    XYVAL = new InOutArray<AnalogInput>( 2, this );
+    for( uint i = 0; i < 2; i++ )
+    {
+        XYVAL[i+1] = new Crestron.Logos.SplusObjects.AnalogInput( XYVAL__AnalogSerialInput__ + i, XYVAL__AnalogSerialInput__, this );
+        m_AnalogInputList.Add( XYVAL__AnalogSerialInput__ + i, XYVAL[i+1] );
+    }
+    
     SCENESNUM = new Crestron.Logos.SplusObjects.AnalogOutput( SCENESNUM__AnalogSerialOutput__, this );
     m_AnalogOutputList.Add( SCENESNUM__AnalogSerialOutput__, SCENESNUM );
     
@@ -446,6 +473,9 @@ public override void LogosSplusInitialize()
     ROOMBRIIN.OnAnalogChange.Add( new InputChangeHandlerWrapper( ROOMBRIIN_OnChange_6, true ) );
     ROOMHUEIN.OnAnalogChange.Add( new InputChangeHandlerWrapper( ROOMHUEIN_OnChange_7, true ) );
     ROOMSATIN.OnAnalogChange.Add( new InputChangeHandlerWrapper( ROOMSATIN_OnChange_8, true ) );
+    for( uint i = 0; i < 2; i++ )
+        XYVAL[i+1].OnAnalogChange.Add( new InputChangeHandlerWrapper( XYVAL_OnChange_9, true ) );
+        
     
     _SplusNVRAM.PopulateCustomAttributeList( true );
     
@@ -473,6 +503,7 @@ const uint COLORLOOPON__DigitalInput__ = 4;
 const uint ROOMBRIIN__AnalogSerialInput__ = 0;
 const uint ROOMHUEIN__AnalogSerialInput__ = 1;
 const uint ROOMSATIN__AnalogSerialInput__ = 2;
+const uint XYVAL__AnalogSerialInput__ = 3;
 const uint SCENES__DigitalInput__ = 5;
 const uint ROOMONLINE__DigitalOutput__ = 0;
 const uint ROOMISON__DigitalOutput__ = 1;

@@ -2,9 +2,9 @@
 ObjTp=FSgntr
 Sgntr=SGD
 RelVrs=3
-VTProeVer=6.1.03
+VTProeVer=6.1.04
 Schema=1
-CRCGUID=6944BBD0-7C6D-4FDE-B3A7-5EFD0BA29663
+CRCGUID=DE044CEB-0E59-42A4-8ECA-E889C1551D65
 ]
 ;================================================================================
 [
@@ -15,13 +15,13 @@ VtpGuid=42505A69-18DC-4131-BC0B-AC38E4714F05
 ;================================================================================
 [
 ObjTp=Symbol
-Name=PhillipsHue_r1_Page1_bulb list.ced
+Name=PhillipsHue_r1_[sub]sliders_bulb list.ced
 Hint=bulb list (Smart Object ID=1)
 Code=1
 SGControlType=Subpage Reference List Vertical
 SGControlName=bulb list
-GUID=08494DB9-EC4A-4DCF-9D57-8C92CD967B22
-SmplCName=PhillipsHue_r1_Page1_bulb list.ced
+GUID=3B305BB6-94E6-4A15-A7FA-1377E0EA6BFC
+SmplCName=PhillipsHue_r1_[sub]sliders_bulb list.ced
 SMWRev=4.02.20
 Expand=expand_random
 HelpID=10125
@@ -600,7 +600,7 @@ Sgn=0
 [
 ObjTp=CED
 H=1
-Name=PhillipsHue_r1_Page1_bulb list.ced
+Name=PhillipsHue_r1_[sub]sliders_bulb list.ced
 ;Cedver is the version of the Smart Graphics control, not the CED file format.
 ;If the control definition changes, increment this.
 CedVer=1
@@ -608,13 +608,13 @@ CedVer=1
 ;================================================================================
 [
 ObjTp=Symbol
-Name=PhillipsHue_r1_Page1_group list.ced
+Name=PhillipsHue_r1_[sub]sliders_group list.ced
 Hint=group list (Smart Object ID=2)
 Code=2
 SGControlType=Subpage Reference List Vertical
 SGControlName=group list
-GUID=DA165860-1508-4507-AD17-B21D89370A15
-SmplCName=PhillipsHue_r1_Page1_group list.ced
+GUID=1981161A-F199-46AD-A7A7-B9A723BF8BE3
+SmplCName=PhillipsHue_r1_[sub]sliders_group list.ced
 SMWRev=4.02.20
 Expand=expand_random
 HelpID=10125
@@ -1193,7 +1193,7 @@ Sgn=0
 [
 ObjTp=CED
 H=2
-Name=PhillipsHue_r1_Page1_group list.ced
+Name=PhillipsHue_r1_[sub]sliders_group list.ced
 ;Cedver is the version of the Smart Graphics control, not the CED file format.
 ;If the control definition changes, increment this.
 CedVer=1

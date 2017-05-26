@@ -53,6 +53,7 @@ namespace HueLights;
         FUNCTION TriggerRoomSatUpdate ();
         FUNCTION TriggerRoomOnlineUpdate ();
         FUNCTION LightsVal ( STRING settype , STRING lvltype , INTEGER val );
+        FUNCTION XYVal ( STRING settype , INTEGER xval , INTEGER yval );
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 
@@ -63,6 +64,8 @@ namespace HueLights;
         INTEGER RoomBri;
         INTEGER RoomHue;
         INTEGER RoomSat;
+        INTEGER RoomXVal;
+        INTEGER RoomYVal;
         INTEGER SceneNum;
         INTEGER RoomOnline;
         STRING SceneName[][];
@@ -85,7 +88,7 @@ namespace HueLights;
         static STRING_FUNCTION GetBridgeInfo ( STRING infotype );
         static STRING_FUNCTION SetOnOff ( STRING settype , INTEGER setid , STRING value , STRING cmdtype , STRING effect );
         static STRING_FUNCTION SetScene ( INTEGER setid , STRING payload );
-        static STRING_FUNCTION SetLvl ( STRING settype , STRING lvltype , INTEGER setid , INTEGER value , STRING cmdtype );
+        static STRING_FUNCTION SetLvl ( STRING settype , INTEGER setid , STRING cmdtype , STRING cmdval );
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 
@@ -107,9 +110,7 @@ namespace HueLights;
         FUNCTION Register ();
         FUNCTION getIP ();
         FUNCTION setIP ( STRING str );
-        FUNCTION getBulbs ();
-        FUNCTION getRooms ();
-        FUNCTION getScenes ();
+        FUNCTION getData ();
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 

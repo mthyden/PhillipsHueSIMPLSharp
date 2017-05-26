@@ -14,6 +14,7 @@ namespace HueLights
     public static class HueBridge
     {
         public static bool Authorized;
+        public static bool Populated;
         public static string BridgeIp;
         public static string BridgeApi;
 
@@ -193,7 +194,7 @@ namespace HueLights
                 return jsontext;
         }
 
-        public static string SetLvl(string settype, string lvltype, ushort setid, ushort value, string cmdtype )
+        public static string SetLvl(string settype, ushort setid, string cmdtype, string cmdval )
         {
             var setLights = new HttpClient();
             setLights.KeepAlive = false;
@@ -202,10 +203,7 @@ namespace HueLights
             string url = string.Format("http://{0}/api/{1}/{2}/{3}/{4}", HueBridge.BridgeIp, HueBridge.BridgeApi, settype, setid, cmdtype);
             lightRequest.RequestType = Crestron.SimplSharp.Net.Http.RequestType.Put;
             lightRequest.Url.Parse(url);
-            //CrestronConsole.PrintLine("url: {0}", url);
-            string tempVal = "{\"" + lvltype + "\":" + value.ToString() + "}";
-            lightRequest.ContentString = tempVal;
-            //CrestronConsole.PrintLine("payload: {0}", tempVal);
+            lightRequest.ContentString = cmdval;
             HttpClientResponse lResponse = setLights.Dispatch(lightRequest);
             String jsontext = lResponse.ContentString;
             return jsontext;

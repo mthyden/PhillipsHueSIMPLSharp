@@ -78,10 +78,21 @@ namespace HueLights
             HueBridge.BridgeIp = str;
         }
 
+        public void getData()
+        {
+            var bvalid = getBulbs();
+            var gvalid = getRooms();
+            var svalid = getScenes();
+            if (bvalid == 1 && gvalid == 1 && svalid == 1)
+                HueBridge.Populated = true;
+            else
+                HueBridge.Populated = false;
+        }
+
         /// <summary>
         /// Pulls all the bulbs and their current state from the bridge
         /// </summary>
-        public void getBulbs()
+        ushort getBulbs()
         {
             try
             {
@@ -116,22 +127,25 @@ namespace HueLights
                     }
                     BulbNum = (ushort)HueBridge.HueBulbs.Count;
                     CrestronConsole.PrintLine("{0} Bulbs discovered", BulbNum);
+                    return 1;
                 }
                 else
                 {
                     CrestronConsole.PrintLine("Bridge not authorized");
+                    return 0;
                 }
             }
             catch (Exception e)
             {
                 CrestronConsole.PrintLine("Error getting bulbs {0}", e);
+                return 0;
             }
         }
 
         /// <summary>
         /// Pulls all the groups/rooms from the bridge
         /// </summary>
-        public void getRooms()
+        ushort getRooms()
         {
             try
             {
@@ -161,22 +175,25 @@ namespace HueLights
 
                         GroupNum = (ushort)HueBridge.HueGroups.Count;
                     CrestronConsole.PrintLine("{0} Rooms discovered", GroupNum);
+                    return 1;
                 }
                 else
                 {
                     CrestronConsole.PrintLine("Bridge not authorized");
+                    return 0;
                 }
             }
             catch (Exception e)
             {
                 CrestronConsole.PrintLine("Error getting rooms: {0}", e);
+                return 0;
             }
         }
 
         /// <summary>
         /// Pulls all the scenes from the bridge and assigns them to their appropriate room based on the assigned bulbs 
         /// </summary>
-        public void getScenes()
+        ushort getScenes()
         {
             try
             {
@@ -207,16 +224,19 @@ namespace HueLights
                         }
                     }
                     CrestronConsole.PrintLine("{0} Scenes discovered", JData.Count);
+                    return 1;
                 }
                 else
                 {
                     CrestronConsole.PrintLine("Bridge not authorized");
+                    return 0;
                 }
 
             }
             catch (Exception e)
             {
                 CrestronConsole.PrintLine("Error getting scenes: {0}",e);
+                return 0;
             }
         }
     }

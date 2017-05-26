@@ -16,6 +16,8 @@ namespace HueLights
         public ushort RoomBri;
         public ushort RoomHue;
         public ushort RoomSat;
+        public ushort RoomXVal;
+        public ushort RoomYVal;
         public ushort SceneNum;
         public ushort RoomOnline;
         public string[] SceneName = new string[20];
@@ -32,7 +34,7 @@ namespace HueLights
         {
             try
             {
-                if (HueBridge.Authorized == true)
+                if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
                     for (ushort i = 1; i <= 20; i++)
                     {
@@ -94,7 +96,7 @@ namespace HueLights
         {
             try
             {
-                if (HueBridge.Authorized == true)
+                if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
                     String json = HueBridge.SetOnOff("groups", RoomID, actioncmd, "action", effect);
                     JArray JReturn = JArray.Parse(json);
@@ -107,7 +109,6 @@ namespace HueLights
                         {
                             HueBridge.HueGroups[RoomID - 1].On = (bool)myaction[tokenreturn];
                             GroupIsOn = (ushort)(HueBridge.HueGroups[RoomID - 1].On ? 1 : 0);
-                            CrestronConsole.PrintLine("yep this worked");
                         }
                     }
 
@@ -142,7 +143,7 @@ namespace HueLights
         {
             try
             {
-                if (HueBridge.Authorized == true)
+                if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
                     String payload = String.Format("{0}\"scene\":\"{1}\"{2}", '{', SceneID[i], '}');
                     String json = HueBridge.SetScene(RoomID, payload);
@@ -200,10 +201,10 @@ namespace HueLights
         {
             try
             {
-                if (HueBridge.Authorized == true)
+                if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
-
-                    String json = HueBridge.SetLvl(settype, lvltype, RoomID, val, "action");
+                    String cmdval = "{\"" + lvltype + "\":" + val.ToString() + "}";
+                    String json = HueBridge.SetLvl(settype, RoomID, "action", cmdval);
                     if (json.Contains("success"))
                     {
                         JArray JData = JArray.Parse(json);
@@ -239,6 +240,24 @@ namespace HueLights
                 else
                 {
                     CrestronConsole.PrintLine("Bridge not authorized");
+                }
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Exception is {0}", e);
+            }
+        }
+
+        public void XYVal(string settype, ushort xval, ushort yval)
+        {
+            try
+            {
+                if (HueBridge.Authorized == true && HueBridge.Populated == true)
+                {
+                    decimal x = (decimal)xval / 100;
+                    decimal y = (decimal)yval / 100;
+                    String cmdval = "{\"xy\":[" + x.ToString() + "," + y.ToString() + "]}";
+                    String json = HueBridge.SetLvl(settype, RoomID, "action", cmdval);
                 }
             }
             catch (Exception e)

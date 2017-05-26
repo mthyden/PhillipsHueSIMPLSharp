@@ -52,7 +52,8 @@ namespace HueLights
             {
                 if (HueBridge.Authorized == true)
                 {
-                    String json = HueBridge.SetLvl(settype, lvltype, BulbID, val, "state");
+                    String cmdval = "{\"" + lvltype + "\":" + val.ToString() + "}";
+                    String json = HueBridge.SetLvl(settype, BulbID, "state", cmdval);
                     if (json.Contains("success"))
                     {
                         JArray JData = JArray.Parse(json);
