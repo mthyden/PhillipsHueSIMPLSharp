@@ -11,8 +11,16 @@ using Crestron.SimplSharp.CrestronDataStore;
 
 namespace HueLights
 {
+    public class InfoEventArgs : EventArgs
+    {
+        public String InfoType { get; set; }
+        public String JsonData { get; set; }
+    }
+
     public static class HueBridge
     {
+        public static event EventHandler<InfoEventArgs> InfoReceived;  //event handler indicating data received 
+
         public static bool Authorized;
         public static bool Populated;
         public static string BridgeIp;
@@ -128,17 +136,26 @@ namespace HueLights
         /// </summary>
         /// <param name="infotype"></param>
         /// <returns></returns>
-        public static string GetBridgeInfo(string infotype)
+        public static void GetBridgeInfo(string infotype)
         {
-            var getLights = new HttpClient();
-            getLights.KeepAlive = false;
-            getLights.Accept = "application/json";
-            HttpClientRequest bridgeRequest = new HttpClientRequest();
-            string url = string.Format("http://{0}/api/{1}/{2}", HueBridge.BridgeIp, HueBridge.BridgeApi, infotype);
-            bridgeRequest.Url.Parse(url);
-            HttpClientResponse lResponse = getLights.Dispatch(bridgeRequest);
-            String jsontext = lResponse.ContentString;
-            return jsontext;
+            try
+            {
+                var getLights = new HttpClient();
+                getLights.KeepAlive = false;
+                getLights.Accept = "application/json";
+                HttpClientRequest bridgeRequest = new HttpClientRequest();
+                string url = string.Format("http://{0}/api/{1}/{2}", HueBridge.BridgeIp, HueBridge.BridgeApi, infotype);
+                bridgeRequest.Url.Parse(url);
+                HttpClientResponse lResponse = getLights.Dispatch(bridgeRequest);
+                String jsontext = lResponse.ContentString;
+                OnInfoReceived(infotype, jsontext);
+                CrestronConsole.PrintLine("getting bridge info: {0}", infotype);
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Exception: {0}",e);
+            }
+
         }
 
         /// <summary>
@@ -207,6 +224,12 @@ namespace HueLights
             HttpClientResponse lResponse = setLights.Dispatch(lightRequest);
             String jsontext = lResponse.ContentString;
             return jsontext;
+        }
+
+        static void OnInfoReceived(String infotype, string jsondata)
+        {
+            if(infotype != null)
+                InfoReceived(null, new InfoEventArgs(){InfoType = infotype, JsonData = jsondata});
         }
     }
 }

@@ -3,6 +3,7 @@ namespace HueLights;
          class HueLight;
          class HueRoom;
          class HueGroup;
+         class InfoEventArgs;
          class HueBridge;
          class HueProc;
          class HueBulb;
@@ -74,6 +75,24 @@ namespace HueLights;
         // class properties
     };
 
+     class InfoEventArgs 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        STRING InfoType[];
+        STRING JsonData[];
+    };
+
     static class HueBridge 
     {
         // class delegates
@@ -85,7 +104,7 @@ namespace HueLights;
         static FUNCTION SetupDataStore ();
         static STRING_FUNCTION GetDataStore ();
         static STRING_FUNCTION getIP ();
-        static STRING_FUNCTION GetBridgeInfo ( STRING infotype );
+        static FUNCTION GetBridgeInfo ( STRING infotype );
         static STRING_FUNCTION SetOnOff ( STRING settype , INTEGER setid , STRING value , STRING cmdtype , STRING effect );
         static STRING_FUNCTION SetScene ( INTEGER setid , STRING payload );
         static STRING_FUNCTION SetLvl ( STRING settype , INTEGER setid , STRING cmdtype , STRING cmdval );
@@ -105,12 +124,14 @@ namespace HueLights;
         delegate INTEGER_FUNCTION DelegateValueUpdate ( );
 
         // class events
+        EventHandler InitComplete ( HueProc sender, EventArgs e );
 
         // class functions
         FUNCTION Register ();
         FUNCTION getIP ();
         FUNCTION setIP ( STRING str );
         FUNCTION getData ();
+        FUNCTION OnInitComplete ();
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 
@@ -121,6 +142,7 @@ namespace HueLights;
         STRING APIKey[];
         INTEGER BulbNum;
         INTEGER GroupNum;
+        INTEGER HueOnline;
 
         // class properties
         DelegateProperty DelegateValueUpdate ValueUpdate;

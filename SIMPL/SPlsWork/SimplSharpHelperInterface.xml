@@ -8310,6 +8310,16 @@
             Specifies whether user issued Disconnect command or not
             </summary>
         </member>
+        <member name="F:Crestron.SimplSharp.Ssh.Session._bytesReadFromSocket">
+            <summary>
+            WaitHandle to signal that bytes have been read from the socket.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.Ssh.Session._socketReadLock">
+            <summary>
+            Holds the lock object to ensure read access to the socket is synchronized.
+            </summary>
+        </member>
         <member name="M:Crestron.SimplSharp.Ssh.Session.#ctor(Crestron.SimplSharp.Ssh.ConnectionInfo)">
             <summary>
             Initializes a new instance of the <see cref="T:Crestron.SimplSharp.Ssh.Session"/> class.
@@ -17665,6 +17675,11 @@
         <member name="T:Crestron.SimplSharp.Net.Http.HttpServerRequest">
             <summary>
             HTTP Server Request Class.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.Net.Http.HttpServerRequest.NotSupportedRequest">
+            <summary>
+            Property to indicate if the header of this request is valid or supported.
             </summary>
         </member>
         <member name="M:Crestron.SimplSharp.Net.Http.HttpServerRequest.#ctor(Crestron.SimplSharp.Net.Connection,Crestron.SimplSharp.Net.Http.HttpHeaders)">
@@ -30686,6 +30701,31 @@
             it does not automatically add the new object to the document tree. To add the new object, you must 
             explicitly call one of the node insert methods</remarks>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronXml.XmlDocument.CreateWhitespace(System.String)">
+            <summary>
+            Creates a <see cref="T:Crestron.SimplSharp.CrestronXml.XmlWhitespace"/> node
+            </summary>
+            <param name="text">The string must contain one or more space characters, carriage returns, line feeds, or tabs</param>
+            <returns>A new <see cref="T:Crestron.SimplSharp.CrestronXml.XmlWhitespace"/> node</returns>
+            <remarks>This method is a Microsoft extension to the Document Object Model (DOM).
+            It is used when you want to manually format your document.
+            Although this method creates the new object in the context of the document, 
+            it does not automatically add the new object to the document tree. To add the new object, you must 
+            explicitly call one of the node insert methods</remarks>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronXml.XmlDocument.CreateTextNode(System.String)">
+            <summary>
+            Creates a <see cref="T:Crestron.SimplSharp.CrestronXml.XmlText"/> with the specified text.
+            </summary>
+            <param name="text">The text for the Text node.</param>
+            <returns>The new <see cref="T:Crestron.SimplSharp.CrestronXml.XmlText"/> node</returns>
+            <remarks>Although this method creates the new object in the context of the document, 
+            it does not automatically add the new object to the document tree. To add the new object, 
+            you must explicitly call one of the node insert methods.
+            According to the W3C Extensible Markup Language (XML) 1.0 recommendation
+            www.w3.org/TR/1998/REC-xml-19980210), Text nodes are only allowed within Element, Attribute
+            and EntityReference nodes.</remarks>
+        </member>
         <member name="M:Crestron.SimplSharp.CrestronXml.XmlDocument.ImportNode(Crestron.SimplSharp.CrestronXml.XmlNode,System.Boolean)">
             <summary>
             Imports a node from another document to the current document.
@@ -31013,6 +31053,144 @@
             <exception cref="T:System.ArgumentException">Setting Value to invalid white space characters</exception>
             <remarks>When setting this property, valid white space characters must be specified. 
             White space can consist of one or more space characters, carriage returns, line feeds, or tabs</remarks>
+        </member>
+        <member name="T:Crestron.SimplSharp.CrestronXml.XmlWhitespace">
+            <summary>
+            Represents white space in element content.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronXml.XmlWhitespace.#ctor(System.Xml.XmlWhitespace)">
+            <summary>
+            For internal use
+            </summary>
+            <param name="whitespace">The System.Xml.XmlWhitespace to use</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronXml.XmlWhitespace.#ctor(System.String,Crestron.SimplSharp.CrestronXml.XmlDocument)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Crestron.SimplSharp.CrestronXml.XmlWhitespace"/> class
+            </summary>
+            <param name="strData">The white space characters of the node</param>
+            <param name="doc">The <see cref="T:Crestron.SimplSharp.CrestronXml.XmlDocument"/> object</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronXml.XmlWhitespace.CloneNode(System.Boolean)">
+            <summary>
+            Creates a duplicate of this node
+            </summary>
+            <param name="deep">true to recursively clone the subtree under the specified node; 
+            false to clone only the node itself. For white space nodes,
+            the cloned node always includes the data value, regardless of the parameter setting.</param>
+            <returns>The cloned node</returns>
+            <remarks>The cloned node has no parent. ParentNode returns null</remarks>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronXml.XmlWhitespace.WriteContentTo(Crestron.SimplSharp.CrestronXml.XmlWriter)">
+            <summary>
+            Saves all the children of the node to the specified XmlWriter
+            </summary>
+            <param name="w">The XmlWriter to which you want to save</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronXml.XmlWhitespace.WriteTo(Crestron.SimplSharp.CrestronXml.XmlWriter)">
+            <summary>
+            Saves the node to the specified XmlWriter
+            </summary>
+            <param name="w">The XmlWriter to which you want to save</param>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronXml.XmlWhitespace.LocalName">
+            <summary>
+            Gets the local name of the node
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronXml.XmlWhitespace.Name">
+            <summary>
+            Gets the qualified name of the node
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronXml.XmlWhitespace.NodeType">
+            <summary>
+            Gets the type of the current node
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronXml.XmlWhitespace.ParentNode">
+            <summary>
+            Gets the parent of the current node
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronXml.XmlWhitespace.Value">
+            <summary>
+            Gets or sets the value of the node
+            </summary>
+            <exception cref="T:System.ArgumentException">Setting Value to invalid white space characters</exception>
+            <remarks>When setting this property, valid white space characters must be specified. 
+            White space can consist of one or more space characters, carriage returns, line feeds, or tabs</remarks>
+        </member>
+        <member name="T:Crestron.SimplSharp.CrestronXml.XmlText">
+            <summary>
+            Represents the text content of an element or attribute.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronXml.XmlText.#ctor(System.Xml.XmlText)">
+            <summary>
+            For internal use
+            </summary>
+            <param name="text">The System.Xml.XmlText to use</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronXml.XmlText.#ctor(System.String,Crestron.SimplSharp.CrestronXml.XmlDocument)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Crestron.SimplSharp.CrestronXml.XmlText"/> class
+            </summary>
+            <param name="strData">The content of the node; see the Value property.</param>
+            <param name="doc">The parent<see cref="T:Crestron.SimplSharp.CrestronXml.XmlDocument"/> document</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronXml.XmlText.CloneNode(System.Boolean)">
+            <summary>
+            Creates a duplicate of this node
+            </summary>
+            <param name="deep">true to recursively clone the subtree under the specified node; 
+            false to clone only the node itself.</param>
+            <returns>The cloned node</returns>
+            <remarks>
+            CloneNode serves as a copy constructor for nodes. For text nodes, the cloned node always 
+            includes the data value. To see how this method behaves with other node types, 
+            see the CloneNode method in the XmlNode class.
+            The cloned node has no parent. (ParentNode returns null)
+            </remarks>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronXml.XmlText.WriteContentTo(Crestron.SimplSharp.CrestronXml.XmlWriter)">
+            <summary>
+            Saves all the children of the node to the specified XmlWriter
+            </summary>
+            <param name="w">The XmlWriter to which you want to save</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronXml.XmlText.WriteTo(Crestron.SimplSharp.CrestronXml.XmlWriter)">
+            <summary>
+            Saves the node to the specified XmlWriter
+            </summary>
+            <param name="w">The XmlWriter to which you want to save</param>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronXml.XmlText.LocalName">
+            <summary>
+            Gets the local name of the node
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronXml.XmlText.Name">
+            <summary>
+            Gets the qualified name of the node
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronXml.XmlText.NodeType">
+            <summary>
+            Gets the type of the current node
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronXml.XmlText.ParentNode">
+            <summary>
+            Gets the parent of the current node
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronXml.XmlText.Value">
+            <summary>
+            Gets or sets the value of the node
+            </summary>
+            <remarks>The content of the text node.</remarks>
         </member>
         <member name="T:Crestron.SimplSharp.CrestronXml.XmlNodeChangedEventArgs">
             <summary>
@@ -35150,7 +35328,7 @@
         </member>
         <member name="T:Crestron.SimplSharp.Net.AuthMethod">
             <summary>
-            The method of authentication to a proxy or an http server
+            The method of authentication to an HTTPS server
             </summary>
         </member>
         <member name="F:Crestron.SimplSharp.Net.AuthMethod.NONE">
@@ -36458,18 +36636,21 @@
             <summary>
             Local Address of server that accepted a connection.
             This assumes a single client is connected to the server and returns the local address of that server connection.
+            If no client is connected - it returns String.Empty.
             </summary>
         </member>
         <member name="P:Crestron.SimplSharp.CrestronSockets.TCPServer.AddressServerAcceptedConnectionFrom">
             <summary>
             Address of the client which got connected to the server.
-            This assumes a single client is connected to the server and returns the address of that client
+            This assumes a single client is connected to the server and returns the address of that client.
+            If no client is connected - it returns String.Empty
             </summary>
         </member>
         <member name="P:Crestron.SimplSharp.CrestronSockets.TCPServer.PortNumberServerAcceptedConnectionFrom">
             <summary>
             Source Port number of the client which got connected to the server.
-            This assumes a single client is connected to the server and returns the source port number of that client
+            This assumes a single client is connected to the server and returns the source port number of that client.
+            If no client is connected - it returns 0.
             </summary>
         </member>
         <member name="P:Crestron.SimplSharp.CrestronSockets.TCPServer.IncomingDataBuffer">
@@ -36501,6 +36682,36 @@
             Socket timer timeout function
             </summary>
             <param name="currentSocket"> current active socket</param>
+        </member>
+        <member name="T:Crestron.SimplSharp.CrestronSockets.SecureTcpListener2">
+            <summary>
+            Listens for secure connections from TCP network clients.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronSockets.SecureTcpListener2.#ctor(System.Net.IPAddress,System.Int32,Crestron.CrestronSecureSockets.SecurityOptions)">
+            <summary>
+            Initializes a new instance of the SecureTcpListener class that listens to the specified IP address and port.
+            </summary>
+            <param name="localaddr">The local IP address.</param>
+            <param name="port">The port on which to listen.</param>
+            <param name="options">The security options to use.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="localaddr"/> is a null reference (<b>Nothing</b> in Visual Basic).</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="port"/> is not between MinPort and MaxPort.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronSockets.SecureTcpListener2.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            Initializes a new instance of the SecureTcpListener class that listens to the specified IP address and port.
+            </summary>
+            <param name="localaddr">The local IP address.</param>
+            <param name="port">The port on which to listen.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="localaddr"/> is a null reference (<b>Nothing</b> in Visual Basic).</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="port"/> is not between MinPort and MaxPort.</exception>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronSockets.SecureTcpListener2.SecurityOptions">
+            <summary>
+            Gets the security options that are used for incoming connections.
+            </summary>
+            <value>A <see cref="P:Crestron.SimplSharp.CrestronSockets.SecureTcpListener2.SecurityOptions"/> instance.</value>
         </member>
         <member name="T:Crestron.SimplSharp.CrestronSockets.SecureTCPServer">
             <summary>
@@ -44064,13 +44275,12 @@
             could be that there are duplicate Id's on your network. In that case please execute the <see cref="M:Crestron.SimplSharp.CrestronCresnetHelper.DiscoverAllDevices"/> function. </remarks>
             <returns>eCresnetDiscoveryReturnValues - enum indicating return value</returns>
         </member>
-        <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.ParseString(System.String@,System.Boolean,System.Byte@,System.String@,System.UInt32@,System.String@)">
+        <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.ParseString(System.String@,System.Byte@,System.String@,System.UInt32@,System.String@)">
             <summary>
             Method to parse the string...
             this is only used for the ReportCresnet currently and not for PPNDIscover
             </summary>
             <param name="ResponseFromCommand"></param>
-            <param name="reportCresnet"></param>
             <param name="cresnetId"></param>
             <param name="deviceName"></param>
             <param name="tsid"></param>
@@ -45523,6 +45733,18 @@
         <member name="P:Crestron.SimplSharp.InitialParametersClass.ProgramDirectory">
             <summary>
             String to store the program directory
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.InitialParametersClass.ExServiceCipToAppMsgQSize">
+            <summary>
+            Returns the maximum number of CIP to Application queue entries 
+            for extended service in the system.
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.InitialParametersClass.ExServiceAppToCipMsgQSize">
+            <summary>
+            Returns the maximum number of Application to CIP queue entries 
+            for extended service in the system. 
             </summary>
         </member>
         <member name="P:Crestron.SimplSharp.InitialParametersClass.ResolveHostName">
@@ -49850,6 +50072,15 @@
             Default is null.
             </summary>
         </member>
+        <member name="P:Crestron.SimplSharp.Net.Https.HttpsClient.AuthenticationMethod">
+            <summary>
+            Sets or gets the server authentication method to be used instead of the default one.
+            </summary>
+            <remarks>
+            This is a bitmask, to tell the client which HTTP authentication method(s) you want it to use for your server authentication.
+            If more than one bit is set, the client will first query the site to see what authentication methods it supports and then pick the best one you allow it to use.
+            </remarks>
+        </member>
         <member name="T:Crestron.SimplSharp.Net.Https.HttpsClient.DISPATCHASYNC_ERROR">
             <summary>
             ERROR definitions for launching Async operations 
@@ -51146,9 +51377,22 @@
         </member>
         <member name="M:Crestron.SimplSharp.EthernetAutodiscovery.Query">
             <summary>
-            Function to initiate an Autodiscovery query. Will populate the DiscoveredElementsList.
-            This function needs to be invoked before a call can be made to any of the autodiscovery related functions
+            Function to initiate an Autodiscovery query on all the adapters. Will populate the DiscoveredElementsList.
+            This function needs to be invoked before a call can be made to any of the autodiscovery related functions.
             </summary>
+            <remarks> On a successful response , the DiscoveredElementsList gets populated.</remarks>
+            <returns>eAutoDiscoveryErrors - enum indicating return value</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.EthernetAutodiscovery.Query(Crestron.SimplSharp.EthernetAdapterType)">
+            <summary>
+            Function to initiate an Autodiscovery query on the specified adapter. Will populate the DiscoveredElementsList.
+            This function needs to be invoked before a call can be made to any of the autodiscovery related functions.
+            The parameter is only supported on firmware version 1.502.0018 and higher.
+            </summary>
+            <param name="adapterToQuery">Indicates which adapter to query. The valid values are <see cref="F:Crestron.SimplSharp.EthernetAdapterType.EthernetLANAdapter"/> for LAN side ,
+            <see cref="F:Crestron.SimplSharp.EthernetAdapterType.EthernetCSAdapter"/> for CS side and <see cref="F:Crestron.SimplSharp.EthernetAdapterType.EthernetUnknownAdapter"/> for both sides. 
+             <see cref="F:Crestron.SimplSharp.EthernetAdapterType.EthernetUnknownAdapter"/> is the default value. This value is only used for a unit with a router. For all other
+             units this value is ignored.</param>
             <remarks> On a successful response , the DiscoveredElementsList gets populated.</remarks>
             <returns>eAutoDiscoveryErrors - enum indicating return value</returns>
         </member>
@@ -51158,7 +51402,7 @@
             </summary>
             <param name="IPAddressForSpecificElement"> IP address </param>
             <returns> Element in the discovered list corresponding to the specified address or NULL</returns>
-            <remarks> Invoke the <see cref="M:Crestron.SimplSharp.EthernetAutodiscovery.Query"/> function to populate the discovered element list.</remarks>
+            <remarks> Invoke the "Query" function to populate the discovered element list.</remarks>
         </member>
         <member name="M:Crestron.SimplSharp.EthernetAutodiscovery.GetDeviceElementForSpecifiedHostName(System.String)">
             <summary>
@@ -51166,7 +51410,7 @@
             </summary>
             <param name="hostNameForSpecificElement"> hostname to search for </param>
             <returns> Element in the discovered list corresponding to the specified address or NULL</returns>
-            <remarks> Invoke the <see cref="M:Crestron.SimplSharp.EthernetAutodiscovery.Query"/> function to populate the discovered element list.</remarks>
+            <remarks> Invoke the "Query" function to populate the discovered element list.</remarks>
         </member>
         <member name="M:Crestron.SimplSharp.EthernetAutodiscovery.SetIPTableEntryOnSpecifiedDevice(Crestron.SimplSharp.EthernetAutodiscovery.AutoDiscoveredDeviceElement,System.UInt16,System.Int32)">
             <summary>
@@ -51179,7 +51423,7 @@
             </param>       
             <returns> eAutoDiscoveryErrors Enum indicating failure or success</returns>
             <remarks> Call will return when we invoke the stop function / timeout expires / device responds to the autodiscovery command.
-            Invoke the <see cref="M:Crestron.SimplSharp.EthernetAutodiscovery.Query"/> function to populate the discovered element list.</remarks>
+            Invoke the "Query" function to populate the discovered element list.</remarks>
         </member>
         <member name="M:Crestron.SimplSharp.EthernetAutodiscovery.LightSpecifiedDevice(Crestron.SimplSharp.EthernetAutodiscovery.AutoDiscoveredDeviceElement,System.Int32)">
             <summary>
@@ -51192,7 +51436,7 @@
             <returns> eAutoDiscoveryErrors Enum indicating failure or success</returns>
             <remarks> Call will return when we invoke the stop function / timeout expires / device responds to the autodiscovery command.
             This requires a minimum firmware version of 1.011.0011 and higher.
-            Invoke the <see cref="M:Crestron.SimplSharp.EthernetAutodiscovery.Query"/> function to populate the discovered element list.</remarks>
+            Invoke the "Query" function to populate the discovered element list.</remarks>
         </member>
         <member name="M:Crestron.SimplSharp.EthernetAutodiscovery.ClearIPTableEntryOnSpecifiedDevice(Crestron.SimplSharp.EthernetAutodiscovery.AutoDiscoveredDeviceElement)">
             <summary>
@@ -51200,7 +51444,7 @@
             </summary>
             <param name="discoveredElement"> Specific device within the discovered list</param>
             <returns> Boolean indicating failure or success</returns>
-            <remarks> Invoke the <see cref="M:Crestron.SimplSharp.EthernetAutodiscovery.Query"/> function to populate the discovered element list.</remarks>
+            <remarks> Invoke the "Query" function to populate the discovered element list.</remarks>
         </member>
         <member name="M:Crestron.SimplSharp.EthernetAutodiscovery.SetIPTableEntryOnSpecifiedDeviceType(System.String,System.UInt16,System.Int32,System.Boolean)">
             <summary>
@@ -51214,7 +51458,7 @@
             <param name="noForceAllDevices"> If set to true will not force all devices into light and poll mode if the specified device type is not found. This requires firmware version 1.013.0000 and higher.</param>
             <returns> eAutoDiscoveryErrors enum indicating failure or success</returns>
             <remarks> Call will return when we invoke the stop function / timeout expires / device responds to the autodiscovery command.
-            Invoke the <see cref="M:Crestron.SimplSharp.EthernetAutodiscovery.Query"/> function to populate the discovered element list.</remarks>
+            Invoke the "Query" function to populate the discovered element list.</remarks>
         </member>
         <member name="M:Crestron.SimplSharp.EthernetAutodiscovery.SetIPTableEntryOnSpecifiedDeviceType(System.String,System.UInt16,System.Int32)">
             <summary>
@@ -51227,7 +51471,7 @@
             </param>
             <returns> eAutoDiscoveryErrors enum indicating failure or success</returns>
             <remarks> Call will return when we invoke the stop function / timeout expires / device responds to the autodiscovery command.
-            Invoke the <see cref="M:Crestron.SimplSharp.EthernetAutodiscovery.Query"/> function to populate the discovered element list.</remarks>
+            Invoke the "Query" function to populate the discovered element list.</remarks>
         </member>
         <member name="M:Crestron.SimplSharp.EthernetAutodiscovery.ClearIPTableEntryOnSpecifiedDeviceType(System.String)">
             <summary>
@@ -51235,7 +51479,7 @@
             </summary>
             <param name="deviceType">Indicates the device type</param>
             <returns> eAutoDiscoveryErrors enum indicating failure or success</returns>
-            <remarks> Invoke the <see cref="M:Crestron.SimplSharp.EthernetAutodiscovery.Query"/> function to populate the discovered element list.</remarks>
+            <remarks> Invoke the "Query" function to populate the discovered element list.</remarks>
         </member>
         <member name="M:Crestron.SimplSharp.EthernetAutodiscovery.ForceIPTableEntryOnSpecifiedDeviceType(System.String,System.UInt16)">
             <summary>
@@ -51245,7 +51489,7 @@
             <param name="newIdInHexToSetSpecifiedDeviceTo"> New IP Id to set the device to. Adds/Modifies an entry within the IPTable on the device</param>        
             <returns> eAutoDiscoveryErrors enum indicating failure or success</returns>
             <remarks> Forces an iptable entry on the device of the specified type.
-            Invoke the <see cref="M:Crestron.SimplSharp.EthernetAutodiscovery.Query"/> function to populate the discovered element list.</remarks>
+            Invoke the "Query" function to populate the discovered element list.</remarks>
         </member>
         <member name="M:Crestron.SimplSharp.EthernetAutodiscovery.StopLightAndPoll">
             <summary>
@@ -51261,7 +51505,7 @@
             <param name="newHostNameForSpecifiedDevice"> New hostname to set on the device</param>
             <returns>eAutoDiscoveryErrors enum indicating failure or success</returns>
             <remarks> The device might not accept the new hostname until a reboot.
-            Invoke the <see cref="M:Crestron.SimplSharp.EthernetAutodiscovery.Query"/> function to populate the discovered element list.</remarks>
+            Invoke the "Query" function to populate the discovered element list.</remarks>
         </member>
         <member name="P:Crestron.SimplSharp.EthernetAutodiscovery.DiscoveredElementsList">
             <summary>

@@ -40,6 +40,7 @@ namespace HueLights
         }
 
         public HueBulb(string id, bool on, uint bri, uint hue, uint sat, string alert, bool reachable, string type, string name, string model, string manufacturer, string uid, string swver)
+
         {
             this.Id = id;
             this.On = on;
