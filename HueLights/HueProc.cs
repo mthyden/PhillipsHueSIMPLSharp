@@ -98,7 +98,6 @@ namespace HueLights
 
         public void getData()
         {
-            CrestronConsole.PrintLine("getting data...");
             try
             {
                 if (HueBridge.Authorized == true)
@@ -219,7 +218,7 @@ namespace HueLights
                         string alert = (string)jData[group.Key]["action"]["alert"];
                         HueBridge.HueGroups.Add(new HueGroup(name, type, on, bri, alert, load, loads));
                     }
-                    for (int i = 0; i < jData.Count - 1; i++)
+                    for (int i = 0; i < jData.Count; i++)
                     {
                         Array.Clear(HueBridge.HueGroups[i].SceneName, 0, 20);
                         Array.Clear(HueBridge.HueGroups[i].SceneID, 0, 20);
