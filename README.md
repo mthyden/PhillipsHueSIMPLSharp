@@ -1,4 +1,4 @@
-# PhillipsHueSIMPLSharp
+# PhilipsHueSIMPLSharp
 Crestron SIMPLSharp Phillips Hue Implementation
 
 Current features
