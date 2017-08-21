@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Text;
 using Crestron.SimplSharp;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 
 namespace HueLights
 {
@@ -19,6 +16,16 @@ namespace HueLights
         public ushort Reachable;
 
         //^^^^^ Signals for SIMPL+ ^^^^^^^^
+
+        public event EventHandler BulbBriUpdate;
+
+        public event EventHandler BulbHueUpdate;
+
+        public event EventHandler BulbSatUpdate;
+
+        public event EventHandler BulbOnlineUpdate;
+
+        public event EventHandler BulbOnOffUpdate;
 
         public HueLight()
         {
@@ -64,16 +71,19 @@ namespace HueLights
                             case "bri":
                                 {
                                     BulbBri = (ushort)HueBridge.HueBulbs[BulbID - 1].Bri;
+                                    TriggerBulbBriUpdate();
                                     break;
                                 }
                             case "hue":
                                 {
                                     BulbHue = (ushort)HueBridge.HueBulbs[BulbID - 1].Hue;
+                                    TriggerBulbHueUpdate();
                                     break;
                                 }
                             case "sat":
                                 {
                                     BulbSat = (ushort)HueBridge.HueBulbs[BulbID - 1].Sat;
+                                    TriggerBulbSatUpdate();
                                     break;
                                 }
                             default:
@@ -92,7 +102,7 @@ namespace HueLights
             }
         }
 
-        public void LightsOn()
+        public void LightsAction(string actiontype, string actioncmd, string effect)
         {
             try
             {
@@ -103,6 +113,7 @@ namespace HueLights
                     {
                         HueBridge.HueBulbs[BulbID - 1].On = true;
                         BulbIsOn = 1;
+                        TriggerBulbOnOffUpdate();
                     }
                 }
                 else
@@ -116,28 +127,29 @@ namespace HueLights
             }
         }
 
-        public void LightsOff()
+        public void TriggerBulbBriUpdate()
         {
-            try
-            {
-                if (HueBridge.Authorized == true)
-                {
-                    String json = HueBridge.SetOnOff("lights", BulbID, "false", "state", "none");
-                    if (json.Contains("success"))
-                    {
-                        HueBridge.HueBulbs[BulbID - 1].On = false;
-                        BulbIsOn = 0;
-                    }
-                }
-                else
-                {
-                    CrestronConsole.PrintLine("Bridge not authorized");
-                }
-            }
-            catch (Exception e)
-            {
-                CrestronConsole.PrintLine("Exception is {0}", e);
-            }
+            BulbBriUpdate(this, new EventArgs());
+        }
+
+        public void TriggerBulbHueUpdate()
+        {
+            BulbHueUpdate(this, new EventArgs());
+        }
+
+        public void TriggerBulbSatUpdate()
+        {
+            BulbSatUpdate(this, new EventArgs());
+        }
+
+        public void TriggerBulbOnOffUpdate()
+        {
+            BulbOnOffUpdate(this, new EventArgs());
+        }
+
+        public void TriggerBulbOnlineUpdate()
+        {
+            BulbOnlineUpdate(this, new EventArgs());
         }
     }
 }

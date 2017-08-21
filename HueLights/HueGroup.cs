@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Crestron.SimplSharp;
-
+﻿
 namespace HueLights
 {
     public class HueGroup
     {
         public string RoomName;
+        public ushort RoomID;
         public string RoomType;
         public bool On;
         public uint Bri;
@@ -21,8 +17,9 @@ namespace HueLights
         public string[] SceneName = new string[20];
         public string[] SceneID = new string[20];
 
-        public HueGroup(string roomname, string roomtype, bool on, uint bri, string alert, string load, string[] loads)
+        public HueGroup(ushort roomid, string roomname, string roomtype, bool on, uint bri, string alert, string load, string[] loads)
         {
+            this.RoomID = roomid;
             this.RoomName = roomname;
             this.RoomType = roomtype;
             this.On = on;

@@ -13,12 +13,21 @@ namespace HueLights;
         // class delegates
 
         // class events
+        EventHandler BulbBriUpdate ( HueLight sender, EventArgs e );
+        EventHandler BulbHueUpdate ( HueLight sender, EventArgs e );
+        EventHandler BulbSatUpdate ( HueLight sender, EventArgs e );
+        EventHandler BulbOnlineUpdate ( HueLight sender, EventArgs e );
+        EventHandler BulbOnOffUpdate ( HueLight sender, EventArgs e );
 
         // class functions
         FUNCTION GetBulb ();
         FUNCTION LightsVal ( STRING settype , STRING lvltype , INTEGER val );
-        FUNCTION LightsOn ();
-        FUNCTION LightsOff ();
+        FUNCTION LightsAction ( STRING actiontype , STRING actioncmd , STRING effect );
+        FUNCTION TriggerBulbBriUpdate ();
+        FUNCTION TriggerBulbHueUpdate ();
+        FUNCTION TriggerBulbSatUpdate ();
+        FUNCTION TriggerBulbOnOffUpdate ();
+        FUNCTION TriggerBulbOnlineUpdate ();
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 
@@ -43,6 +52,7 @@ namespace HueLights;
         EventHandler RoomBriUpdate ( HueRoom sender, EventArgs e );
         EventHandler RoomHueUpdate ( HueRoom sender, EventArgs e );
         EventHandler RoomSatUpdate ( HueRoom sender, EventArgs e );
+        EventHandler RoomOnOffUpdate ( HueRoom sender, EventArgs e );
         EventHandler RoomOnlineUpdate ( HueRoom sender, EventArgs e );
 
         // class functions
@@ -52,6 +62,7 @@ namespace HueLights;
         FUNCTION TriggerRoomBriUpdate ();
         FUNCTION TriggerRoomHueUpdate ();
         FUNCTION TriggerRoomSatUpdate ();
+        FUNCTION TriggerRoomOnOffUpdate ();
         FUNCTION TriggerRoomOnlineUpdate ();
         FUNCTION LightsVal ( STRING settype , STRING lvltype , INTEGER val );
         FUNCTION XYVal ( STRING settype , INTEGER xval , INTEGER yval );
@@ -70,7 +81,7 @@ namespace HueLights;
         INTEGER SceneNum;
         INTEGER RoomOnline;
         STRING SceneName[][];
-        STRING SceneID[][];
+        STRING SceneId[][];
 
         // class properties
     };
@@ -103,6 +114,7 @@ namespace HueLights;
         static FUNCTION register ();
         static FUNCTION SetupDataStore ();
         static STRING_FUNCTION GetDataStore ();
+        static FUNCTION ResetDataStore ();
         static STRING_FUNCTION getIP ();
         static FUNCTION GetBridgeInfo ( STRING infotype );
         static STRING_FUNCTION SetOnOff ( STRING settype , INTEGER setid , STRING value , STRING cmdtype , STRING effect );
@@ -128,6 +140,7 @@ namespace HueLights;
 
         // class functions
         FUNCTION Register ();
+        FUNCTION ResetAPI ();
         FUNCTION getIP ();
         FUNCTION setIP ( STRING str );
         FUNCTION getData ();

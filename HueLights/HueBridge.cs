@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Crestron.SimplSharp;
 using Crestron.SimplSharp.Net.Https;
 using Crestron.SimplSharp.Net.Http;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Crestron.SimplSharp.CrestronDataStore;
 
@@ -99,6 +96,12 @@ namespace HueLights
             return temp;
         }
 
+        public static void ResetDataStore()
+        {
+           if(CrestronDataStoreStatic.SetLocalStringValue("apikey", null) != CrestronDataStore.CDS_ERROR.CDS_SUCCESS)
+               CrestronConsole.PrintLine("Error removing API key");
+        }
+
         /// <summary>
         /// gets the IP of the local bridge, currently one bridge is supported
         /// </summary>
@@ -155,7 +158,6 @@ namespace HueLights
             {
                 CrestronConsole.PrintLine("Exception: {0}",e);
             }
-
         }
 
         /// <summary>

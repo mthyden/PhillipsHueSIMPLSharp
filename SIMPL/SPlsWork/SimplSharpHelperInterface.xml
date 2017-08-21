@@ -2831,6 +2831,87 @@
             Get the keys associated with this dictionary.
             </summary>
         </member>
+        <member name="T:Crestron.Infrastructure.EX_SERVICE_TYPES">
+            <summary>
+            Extended Service Type Enumeration for internal use.
+            </summary>
+        </member>
+        <member name="T:Crestron.Infrastructure.EX_SERVICE_INTERFACE_STATUS_TYPES">
+            <summary>
+            Extended Service Interface status types for
+            Extended Service Status message.
+            </summary>
+        </member>
+        <member name="T:Crestron.Infrastructure.ExServiceConfigBitField">
+            <summary>
+            Configuration bit field for Ex-Service Request/or Response.
+            </summary>
+        </member>
+        <member name="T:Crestron.Infrastructure.EX_SERVICE_REQUEST">
+            <summary>
+            Extended Service Request.
+            </summary>
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_REQUEST_MESSAGE_STRUCT.messageLength">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_REQUEST_MESSAGE_STRUCT.messageType">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_REQUEST_MESSAGE_STRUCT.serviceType">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_REQUEST_MESSAGE_STRUCT.cipId">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_REQUEST_MESSAGE_STRUCT.requestBitField">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_RESPONSE_MESSAGE_STRUCT.messageLength">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_RESPONSE_MESSAGE_STRUCT.messageType">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_RESPONSE_MESSAGE_STRUCT.serviceType">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_RESPONSE_MESSAGE_STRUCT.cipId">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_RESPONSE_MESSAGE_STRUCT.responseBitField">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_STATUS_MESSAGE_STRUCT.messageLength">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_STATUS_MESSAGE_STRUCT.messageType">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_STATUS_MESSAGE_STRUCT.serviceType">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_STATUS_MESSAGE_STRUCT.cipId">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_STATUS_MESSAGE_STRUCT.status">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_DATA_MESSAGE_STRUCT.messageLength">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_DATA_MESSAGE_STRUCT.messageType">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_DATA_MESSAGE_STRUCT.serviceType">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_DATA_MESSAGE_STRUCT.cipId">
+            unsigned int
+        </member>
+        <member name="F:Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_DATA_MESSAGE_STRUCT.data">
+            unsigned char[]
+        </member>
         <member name="T:Crestron.SimplSharp.Ssh.Sftp.SftpFile">
             <summary>
             Represents SFTP file information
@@ -5438,7 +5519,8 @@
             Constructor for the CTimer
             </summary>
             <param name="callbackFunction">Timer Callback Function to invoke</param>
-            <param name="dueTime">due time in milliseconds</param>
+            <param name="dueTime"> The amount of time to delay before callback is invoked, in milliseconds.
+            Specify Timeout.Infinite to prevent the timer from starting. Specify zero (0) to start the timer immediately.</param>
         </member>
         <member name="M:Crestron.SimplSharp.CTimer.#ctor(Crestron.SimplSharp.CTimerCallbackFunction,System.Object,System.Int64)">
             <summary>
@@ -5446,7 +5528,8 @@
             </summary>
             <param name="callbackFunction">Timer Callback Function to invoke</param>
             <param name="callbackObject">Object to pass to the function </param>
-            <param name="dueTime">due time in milliseconds</param>
+            <param name="dueTime"> The amount of time to delay before callback is invoked, in milliseconds.
+            Specify Timeout.Infinite to prevent the timer from starting. Specify zero (0) to start the timer immediately.</param>
         </member>
         <member name="M:Crestron.SimplSharp.CTimer.#ctor(Crestron.SimplSharp.CTimerCallbackFunction,System.Object,System.Int64,System.Int64)">
             <summary>
@@ -5454,8 +5537,9 @@
             </summary>
             <param name="callbackFunction">Timer Callback Function to invoke</param>
             <param name="callbackObject">Object to pass to the function</param>
-            <param name="dueTime">due time in milliseconds</param>
-            <param name="repeatPeriod">repeat period in milliseconds</param>
+            <param name="dueTime"> The amount of time to delay before callback is invoked, in milliseconds.
+            Specify Timeout.Infinite to prevent the timer from starting. Specify zero (0) to start the timer immediately.</param>
+            <param name="repeatPeriod">The time interval between invocations of callback, in milliseconds. Specify Timeout.Infinite to disable periodic signaling.</param>
         </member>
         <member name="M:Crestron.SimplSharp.CTimer.#ctor">
             <summary>
@@ -5780,6 +5864,15 @@
             Crestron Environment class constructor 
             </summary>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronEnvironment.ConvertTSIDToSerialNumber(System.String)">
+            <summary>
+            Method to convert the given TSID to the serial number.
+            This method will only work on firmware versions greater then 1.503.0000.
+            </summary>
+            <param name="TSIDString"> TSID of the device to convert to the serial number.</param>
+            <returns> String containing the serial number or 00000000 if the conversion failed.</returns>
+            <exception cref="T:System.NotSupportedException">Indicates that the current firmware version does not meet the minimum required version</exception>
+        </member>
         <member name="E:Crestron.SimplSharp.CrestronEnvironment.SystemEventHandler">
             <summary>
             System Event Handler.
@@ -5981,6 +6074,40 @@
             Class containing Crestron control system information
             </summary>
         </member>
+        <member name="F:Crestron.SimplSharp.CrestronEnvironment.SystemInfo.m_sSerialNumber">
+            <summary>
+            Property to store the serial number
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronEnvironment.SystemInfo.LoadTSID">
+            <summary>
+            Method to load the TSID 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronEnvironment.SystemInfo.GetSerialNumberOfDevice">
+            <summary>
+            Method to get the serial number of the device
+            </summary>
+            <returns> A serial string representing the serial number</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronEnvironment.SystemInfo.convertTSIDToNewSerial(System.IntPtr,System.IntPtr,System.UInt32)">
+            <summary>
+            This method will return the serial number.
+            </summary>
+            <param name="TSID"> Current TSID to convert to serial number</param>
+            <param name="strSerial"> string to get the serial number</param>
+            <param name="strSerialLength"> length of the buffer passed in ( Max size is 512)</param>
+            <returns>0 for failure else success</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronEnvironment.SystemInfo.ConvertTSIDToSerial(System.String)">
+            <summary>
+            Method to convert the TSID to serial...
+            Calls into the utilities dll 
+            </summary>
+            <param name="tsidStringToConvert"></param>
+            <returns></returns>
+        </member>
         <member name="P:Crestron.SimplSharp.CrestronEnvironment.SystemInfo.RamFree">
             <summary>
             Get the amount of available RAM in bytes.
@@ -5991,6 +6118,12 @@
         <member name="P:Crestron.SimplSharp.CrestronEnvironment.SystemInfo.TotalRamSize">
             <summary>
             Get the total amount of RAM available in the controller
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.CrestronEnvironment.SystemInfo.SerialNumber">
+            <summary>
+            Property to return the serial number of the device.
+            On firmware versions less then 1.503.0000, this returns the TSID of the device.
             </summary>
         </member>
         <member name="T:Crestron.SimplSharp.CrestronIO.AsyncCallback">
@@ -7158,6 +7291,106 @@
             <param name="location">The variable whose value is to be incremented.</param>
             <returns>The incremented value.</returns>
             <exception cref="T:System.ArgumentNullException">The address of location is a null pointer.</exception>
+        </member>
+        <member name="T:Crestron.SimplSharp.SNTP">
+            <summary>
+            Class to provide SNTP functionality.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.SNTP.DoMethod(Microsoft.Win32.RegistryKey,System.Boolean)">
+            <summary>
+            method to enable or disable SNTP on the CE platform
+            </summary>
+            <param name="key"></param>
+            <param name="enableOrDisable"></param>
+        </member>
+        <member name="M:Crestron.SimplSharp.SNTP.SetSNTPServerOnMono(System.String)">
+            <summary>
+            Method to set the SNTP server on Mono. Right now this is only for mercury - so execute the console command.
+            </summary>
+            <param name="serverToSet"></param>
+        </member>
+        <member name="M:Crestron.SimplSharp.SNTP.SetSNTPServerOnCE(System.String)">
+            <summary>
+            Method to set the SNTP server on a CE based control system
+            </summary>
+            <param name="serverToSet"></param>
+        </member>
+        <member name="M:Crestron.SimplSharp.SNTP.EnableOrDisableOrReadParameters(System.Boolean,System.Boolean,System.String[]@,System.UInt32@)">
+            <summary>
+            Method to enable/disable and or read in the state/server/period
+            </summary>
+            <param name="bEnableOrDisable"> Whether enabling or disabling</param>
+            <param name="bReadOnly"> Are we only reading</param>
+            <param name="server"> List of servers</param>
+            <param name="periodInMin"> period Inminutes</param>
+            <returns> Returns current state when reading</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.SNTP.HandleEnableDisableCommandOnMono(System.Boolean)">
+            <summary>
+            Method to enable or disable SNTP on the Mono platform.. This is only on mercury
+            </summary>
+            <param name="enableOrDisable"></param>
+        </member>
+        <member name="M:Crestron.SimplSharp.SNTP.GetSNTPStateOnMono">
+            <summary>
+            Method to get the SNTP state on mono - only used on mercury.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.SNTP.GetSNTPServerOnMono">
+            <summary>
+            Method to get the SNTP server on mono - only used on mercury.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.SNTP.Enable">
+            <summary>
+            Method to enable the SNTP Service
+            </summary>
+            <exception cref="T:System.NotSupportedException"> Operation is not supported</exception>
+            <exception cref="T:System.InvalidOperationException"> Invalid operation exception. Please refer to the message for the actual exception.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.SNTP.Disable">
+            <summary>
+            Method to disable the SNTP Service.
+            This will only disable the periodic sync with the specified SNTP server. The <see cref="M:Crestron.SimplSharp.SNTP.Sync"/> method or the corresponding console command can still be used to
+            force a one time sync.
+            </summary>
+            <exception cref="T:System.NotSupportedException"> Operation is not supported</exception>
+            <exception cref="T:System.InvalidOperationException">Invalid operation exception. Please refer to the message for the actual exception.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.SNTP.SNTPSyncOnCE">
+            <summary>
+            Method to do an SNTP sync on CE
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.SNTP.SNTPSyncOnMono">
+            <summary>
+            Method to perform a sync on Mono - this is only on mercury for the timebeing.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.SNTP.Sync">
+            <summary>
+            Method to force a time sync from the specified SNTP server.
+            </summary>
+            <exception cref="T:System.NotSupportedException"> Operation is not supported</exception>
+            <exception cref="T:System.InvalidOperationException">Invalid operation exception. Please refer to the message for the actual exception.</exception>
+        </member>
+        <member name="P:Crestron.SimplSharp.SNTP.Enabled">
+            <summary>
+            Property to check the state of the SNTP service.
+            </summary>
+            <exception cref="T:System.NotSupportedException"> Operation is not supported</exception>
+            <exception cref="T:System.InvalidOperationException">Invalid operation exception. Please refer to the message for the actual exception.</exception>
+        </member>
+        <member name="P:Crestron.SimplSharp.SNTP.Server">
+            <summary>
+            Property to get/set the SNTP server.
+            </summary>
+            <exception cref="T:System.NotSupportedException"> Operation is not supported</exception>
+            <exception cref="T:System.ArgumentNullException"> Specified Argument is NULL or Empty.</exception>
+            <exception cref="T:System.InvalidOperationException">Invalid operation exception. Please refer to the message for the actual exception.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CyclicRedundancy.Calculate16BitCrcUsingTable(System.Byte*,System.Byte*,System.Byte@,System.Byte@)">
             <summary>
@@ -52026,6 +52259,680 @@
         <member name="P:Crestron.SimplSharp.CrestronConsoleSupportClass.ConsoleRegistered">
             <summary>
             The Command Processor does not register in SIMPL# always return false
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.EX_SERVICE_DATA_MSG">
+            <summary>
+            Internal Extended Service message going between the Backend and Extended Service Device.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.EX_SERVICE_DATA_MSG.messageType">
+            <summary>
+            Message Type.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.EX_SERVICE_DATA_MSG.serviceType">
+            <summary>
+            Extended Service Type
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.EX_SERVICE_DATA_MSG.channel">
+            <summary>
+            Extended Service channel number.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.EX_SERVICE_DATA_MSG.status">
+            <summary>
+            Extended Service status.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.EX_SERVICE_DATA_MSG.data">
+            <summary>
+            Extended Service Data.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.EX_SERVICE_DATA_MSG.dataEncoding">
+            <summary>
+            Extended Service Data Encoding Type.
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.CresnetTypes">
+            <summary>
+            Cresnet packet type supported for the service
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.CresnetTypes.PKT_TYPE_CRESNET_SERIAL_34">
+            <summary>
+            Cresnet serial packer type 34.
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.eCrestronExtendedService">
+            <summary>
+            Crestron Extended Service enumeration.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eCrestronExtendedService.CRPCPacketToUserModule">
+            <summary>
+            This service allows remote devices to exchange
+            Crestron Remote Procedure Call packet directly with
+            user program or program module.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eCrestronExtendedService.NoServiceRegistered">
+            <summary>
+            No service registered with the system yet.
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.ExtendedServiceDevice">
+            <summary>
+            Extended Service Device class is used to send and receive out-of-band information such as extended data service from Crestron Ethernet devices. 
+            <para>If the device or the control system does not support this form of communication, it will never come online.</para>
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevice.Connect(Crestron.SimplSharp.eCrestronExtendedService)">
+            <summary>
+            Method to connect to the application's framework service channel for this device.
+            <para>The device needs to be registered with the control system and to support the Extended Service information protocol. 
+            If the protocol is not supported by the device the <see cref="P:Crestron.SimplSharp.ExtendedServiceDevice.IsOnline"/> member will remain false and the service asked for is unavailable.</para>
+            </summary>
+            <param name="serviceAsked">The service asked for which is represented as enumeration <see cref="T:Crestron.SimplSharp.eCrestronExtendedService"/>. </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">If the serviceAsked is invalid.</exception>
+            <exception cref="T:System.InvalidOperationException">If the service is already registered or connected, or the device is disposed.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevice.UserNotify(Crestron.SimplSharp.ExtendedServiceEventArgs)">
+            <summary>
+            Notify the end user of incoming service data or status.
+            </summary>
+            <param name="arg">Extended service event argument.</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevice.getBytes(System.String,Crestron.SimplSharp.CrestronStringEncoding)">
+            <summary>
+            Convert the string to byte array.
+            </summary>
+            <param name="str">String to convert.</param>
+            <param name="encoding">Outbound string encoding format.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevice.SendString(System.UInt32,System.String,Crestron.SimplSharp.CrestronStringEncoding)">
+            <summary>
+            Method to send a string value to the device.
+            </summary>
+            <param name="channel">The channel (join) number to set this value to. This is a zero based number from 0 to 65535.</param>
+            <param name="value">New string value to send to the device. This string can only be a maximum length of 65535 bytes.</param>
+            <param name="encoding">Outbound string encoding format.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">If channel number, value length or encoding type is invalid.</exception>
+            <exception cref="T:System.InvalidOperationException">If the device is disposed.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevice.SendBool(System.UInt32,System.Boolean)">
+            <summary>
+            Method to send a bool value to the device and this is not supported for now.
+            </summary>
+            <param name="channel">The channel (join) number to set this value to. This is a zero based number from 0 to 65535.</param>
+            <param name="value">New bool value to send to the device.</param>
+            <exception cref="T:System.NotSupportedException">The method is not supported.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevice.SendUShort(System.UInt32,System.UInt16)">
+            <summary>
+            Method to send a ushort value to the device and this is not supported for now.
+            </summary>
+            <param name="channel">The channel (join) number to set this value to. This is a zero based number from 0 to 65535.</param>
+            <param name="value">New ushort (analog) value to send to the device.</param>
+            <exception cref="T:System.NotSupportedException">The method is not supported.</exception>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevice.#ctor(System.UInt32)">
+            <summary>
+            Constructor to instantiate a new Extended Service Device class.
+            </summary>
+            <param name="paramID">The IP ID of the device that the programmer assigned for this application.</param>
+            <remarks>The user of extended service should instantiate the extended service device as soon as the module initialization is done
+            or as soon as the remote device for the service is registered in the program.</remarks>
+            <example>
+            The following example will show basic usage of the Extended Service Device in SIMPLE# module of 3 Series control system. 
+            <code>
+            public class ExtendedServiceDeviceTest
+            {
+                ExtendedServiceDevice myDevice;
+                
+                //The user should start up the extended service as soon as the module initialization is done.
+                public void StartUpExtendedService(uint paramID)
+                { 
+                    //Instantiate the extended service device with the proper IP ID.
+                    myDevice = new ExtendedServiceDevice(paramID);
+                    //Subscribe to the  receive event handler.
+                    myDevice.ReceiveEvent += ReceiveEventHandler;
+                    //Connect to a supported service.
+                    myDevice.Connect(eCrestronExtendedService.CRPCPacketToUserModule);
+                }
+                //Once receive device online event, the user should start the next phase operation like
+                //CRPC registration..
+                public void SendCRPCRegistrationPacketToDevice()
+                {
+                  string CRPCPacketString = "This is a CRPC registration packet in required format";
+                  uint channelNoToUse = 1;
+                  
+                 if(myDevice.IsOnline) 
+                    myDevice.SendString(channelNoToUse,CRPCPacketString,CrestronStringEncoding.eEncodingUTF16);
+                }
+                //Receive Event Handler
+                void ReceiveEventHandler(object sender, ExtendedServiceEventArgs args)
+                {
+                    switch (args.Type)
+                    {
+                        case eExtendedServiceEventType.Online:
+                            ErrorLog.Notice(String.Format("Extended service device online status {0}.\r\n",myDevice.IsOnline));
+                            break;
+                        case eExtendedServiceEventType.String:
+                            ErrorLog.Notice(String.Format("Ex-service device gets incoming string in format {0}: {1}.\r\n", args.IncomingStringEncoding.ToString(),args.StringValue));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            </code>
+            </example>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevice.Dispose">
+            <summary>
+            Dispose Extended Service Device.
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.ExtendedServiceDevice.ID">
+            <summary>
+            IP ID of the device. 
+            This ID is an 8-bit value representation of the device symbol in the SIMPL Windows/SIMPL# Pro application.    
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.ExtendedServiceDevice.Service">
+            <summary>
+            Service ID that associates with the extended service which is requested for.
+            This ID is represented with the enumeration <see cref="T:Crestron.SimplSharp.eCrestronExtendedService"/>.
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.ExtendedServiceDevice.IsOnline">
+            <summary>
+            Get the current online state for the device. 
+            <para>When the property is true, the service requested is connected and the 
+            extended service device is ready for the next phase operation.</para>
+            <para>When the property is false, the service requested is not available.</para>
+            </summary>
+        </member>
+        <member name="E:Crestron.SimplSharp.ExtendedServiceDevice.ReceiveEvent">
+            <summary>
+            Information received from the Service Device will trigger this event. 
+            <para>This includes changes to the <see cref="P:Crestron.SimplSharp.ExtendedServiceDevice.IsOnline"/> property and when a string, bool, or ushort value are received.</para>
+            <para>Currently only string value is supported.</para>
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.ExtendedServiceReceiveEventHandler">
+            <summary>
+            Delegate to define the event method signature when information is received from an Extended Service Device.
+            </summary>
+            <param name="sender">Extended Service Device that the information was received from. Cast to <see cref="T:Crestron.SimplSharp.ExtendedServiceDevice"/> as needed.</param>
+            <param name="args">Event arguments to describe what was received.</param>
+        </member>
+        <member name="T:Crestron.SimplSharp.ExtendedServiceEventArgs">
+            <summary>
+            Extended Service Event Argument class to describe the information received from the device. 
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceEventArgs.#ctor(Crestron.SimplSharp.eExtendedServiceEventType,Crestron.SimplSharp.eCrestronExtendedService,System.UInt32,System.String,System.Boolean,System.UInt32,Crestron.SimplSharp.CrestronStringEncoding)">
+            <summary>
+            Constructor for the extended service event arguments.
+            </summary>
+            <param name="type">extended service event type.</param>
+            <param name="service">extended service type.</param>
+            <param name="channel">extended service channel number.</param>
+            <param name="stringVal">extended service string data.</param>
+            <param name="boolVal">extended service boolean data</param>
+            <param name="ushortVal">extended service unsigned integer data.</param>
+            <param name="stringEncoding">incoming string encoding format.</param>
+        </member>
+        <member name="P:Crestron.SimplSharp.ExtendedServiceEventArgs.Service">
+            <summary>
+            Service ID of the service that the information is received for.
+            <para>This ID is represented by the enumeration <see cref="T:Crestron.SimplSharp.eCrestronExtendedService"/>.</para>
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.ExtendedServiceEventArgs.Type">
+            <summary>
+            Type of change this is. Use this property to determine if the Online state has changed or if a new string/bool/ushort value was received.
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.ExtendedServiceEventArgs.Channel">
+            <summary>
+            The channel id specified by the device this information is for. 
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.ExtendedServiceEventArgs.BoolValue">
+            <summary>
+            New bool value received from the device. Read this if the <see cref="P:Crestron.SimplSharp.ExtendedServiceEventArgs.Type"/> member is set to <see cref="F:Crestron.SimplSharp.eExtendedServiceEventType.Bool"/>.
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.ExtendedServiceEventArgs.StringValue">
+            <summary>
+            New string value received from the device. Read this if the <see cref="P:Crestron.SimplSharp.ExtendedServiceEventArgs.Type"/> member is set to <see cref="F:Crestron.SimplSharp.eExtendedServiceEventType.String"/>.
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.ExtendedServiceEventArgs.UShortValue">
+            <summary>
+            New ushort value received from the device. Read this if the <see cref="P:Crestron.SimplSharp.ExtendedServiceEventArgs.Type"/> member is set to <see cref="F:Crestron.SimplSharp.eExtendedServiceEventType.Ushort"/>.
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.ExtendedServiceEventArgs.IncomingStringEncoding">
+            <summary>
+            Incoming string encoding type of the new string value received. 
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.eExtendedServiceEventType">
+            <summary>
+            Enumeration to describe the various types of information an Extended Service Device can receive.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eExtendedServiceEventType.NA">
+            <summary>
+            No information.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eExtendedServiceEventType.Online">
+            <summary>
+            The value of the <see cref="P:Crestron.SimplSharp.ExtendedServiceDevice.IsOnline"/> member has changed for this device.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eExtendedServiceEventType.String">
+            <summary>
+            A new string value has been received. Read the <see cref="P:Crestron.SimplSharp.ExtendedServiceEventArgs.StringValue"/> member.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eExtendedServiceEventType.Ushort">
+            <summary>
+            A new ushort value has been received. Read the <see cref="P:Crestron.SimplSharp.ExtendedServiceEventArgs.UShortValue"/> member.
+            <para>This type currently is not supported.</para>
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eExtendedServiceEventType.Bool">
+            <summary>
+            A new bool value has been received. Read the <see cref="P:Crestron.SimplSharp.ExtendedServiceEventArgs.BoolValue"/> member.
+            <para>This type currently is not supported.</para>
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.ExtendedServiceDevGroup">
+            <summary>
+            Class of Extended Service Device Group
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevGroup.#ctor(System.UInt32)">
+            <summary>
+            Extended Service Device Group Constructor.
+            </summary>
+            <param name="paramID">ID of this device group.</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevGroup.AddExServiceDevice(Crestron.SimplSharp.ExtendedServiceDevice)">
+            <summary>
+            Add an extended service device to the entry.
+            </summary>
+            <param name="dev"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevGroup.RemoveExServiceDevice(Crestron.SimplSharp.ExtendedServiceDevice)">
+            <summary>
+            Remove an extended service device.
+            </summary>
+            <param name="dev"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevGroup.Find1stDeviceByServiceType(Crestron.SimplSharp.eCrestronExtendedService)">
+            <summary>
+            Find first device by the service type in device group.
+            </summary>
+            <param name="service"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevGroup.NotifyDevicesByServiceType(Crestron.SimplSharp.eCrestronExtendedService,Crestron.SimplSharp.ExtendedServiceEventArgs,System.Boolean)">
+            <summary>
+            Notify the devices which registered with this service in the device group.
+            </summary>
+            <param name="serviceType"></param>
+            <param name="arg"></param>
+            <param name="online"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevGroup.SetDevicesOffline">
+            <summary>
+            Set the device in the group offline.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevGroup.Shutdown">
+            <summary>
+             Method to shutdown and cleanup
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevGroup.PostIncomingDataMsg(Crestron.SimplSharp.EX_SERVICE_DATA_MSG)">
+            <summary>
+            Post the incoming service data message to the user device group receiving queue.
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevGroup.AssembleFullDataMsgAndPostIt(System.UInt32,System.Byte[])">
+            <summary>
+            Assemble a full end-user message to post it to the user device group.
+            </summary>
+            <param name="serviceType">This is the agreed upon service number to include in the ExService device packet. </param>
+            <param name="cresdata">A cresnet packet data array.</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevGroup.SetString(System.Byte[],System.UInt32,System.UInt32,Crestron.SimplSharp.ExtendedServiceDevGroup.eStringEncodingFlags)">
+            <summary>
+            Creates a string based on the data and encoding from the packet.
+            </summary>
+            <param name="data">The byte array that contains the string data.</param>
+            <param name="index">The index in the array for starting decoding.</param>
+            <param name="Length">Length of the string in the data array to be decoded.</param>
+            <param name="encodingFlags">Encoding flags as specified by the packet.</param>
+            <returns>Decoded string</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevGroup.DataPumpThreadFunction">
+            <summary>
+            Running on a receive thread and pump the incoming data to the devices with the same IPID
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceDevGroup.eventForDevice(Crestron.SimplSharp.EX_SERVICE_DATA_MSG,System.Boolean@)">
+            <summary>
+            
+            </summary>
+            <param name="serviceData"></param>
+            <param name="online"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Crestron.SimplSharp.ExtendedServiceDevGroup.eStringEncodingFlags">
+            <summary>
+            String encoding flags for a type 15h/34h packet: xxx###xx
+            This is defined in SimplSharpPro. But we cannont use it here.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceDevGroup.eStringEncodingFlags.eEncodingASCII">
+            <summary>
+            ASCII (Single Byte) encoding in a packet has flags of xxx000xx
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceDevGroup.eStringEncodingFlags.eEncodingUTF16">
+            <summary>
+            UTF-16 encoding in a packet has flags of xxx001xx
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceDevGroup.eStringEncodingFlags.eEncodingUTF8">
+            <summary>
+            UTF-8 encoding in a packet has flags of xxx010xx
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.ExtendedServiceDevGroup.eInboundTextModes">
+            <summary>
+            Enum for the inbound text modes in type 0x34 packet, from the flags byte of the packet:  xxxxxx##
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceDevGroup.eInboundTextModes.e_InboundTextModeAppendToBuffer">
+            <summary>
+            Append incoming data to the buffer
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceDevGroup.eInboundTextModes.e_InboundTextModeClear">
+            <summary>
+            Clear any previous data - start of new data
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceDevGroup.eInboundTextModes.e_InboundTextModeEnd">
+            <summary>
+            Append incoming data to the buffer but the end bit is set
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceDevGroup.eInboundTextModes.e_InboundTextModeClearAndEnd">
+            <summary>
+            Clear any previous data - this is the whole data
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.ExtendedServiceBackend">
+            <summary>
+            Class to allow user subscrib Extended Service via ExService Device.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.Initialize">
+            <summary>
+            Initialize the extended service backend class.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.Shutdown">
+            <summary>
+            Shut down the extended service backend.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.CrestronEnvironment_ProgramStatusEventHandler(Crestron.SimplSharp.eProgramStatusEventType)">
+            <summary>
+            Stop the Ex-service backend when the program stops.
+            </summary>
+            <param name="programEventType"></param>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.ConvertPointerToCIPDataMsg">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.ConvertPointerToCIPRequestMsg">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.ConvertPointerToCIPStatusMsg">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.Start(System.UInt32)">
+            <summary>
+            Start the ex-service backend (set up R/W msg queues) by the user device once initialized.
+            And tell CIP we support ex-service.
+            </summary>
+            <param name="ipID">IPID of the device starts the backend.</param>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.SaveToActiveServiceList(Crestron.Infrastructure.EX_SERVICE_REQUEST)">
+            <summary>
+            Save the service request which is granted for the service from
+            application.
+            </summary>
+            <param name="requestGranted">An request which is granted to be served by the application.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.RemoveFromActiveServiceList(System.UInt32,System.UInt32)">
+            <summary>
+            Remove a service with given IPID and service type from the active list.
+            </summary>
+            <param name="ipID"></param>
+            <param name="serviceType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.FindServiceFromActiveServiceList(System.UInt32,System.UInt32)">
+            <summary>
+            Find a service with given IPID and service type from the active list and return
+            a "true" if find it.
+            </summary>
+            <param name="ipID"></param>
+            <param name="serviceType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.AddDeviceByID(Crestron.SimplSharp.ExtendedServiceDevice,System.UInt32)">
+            <summary>
+            Add an extended service device with given IPID.
+            </summary>
+            <param name="dev"></param>
+            <param name="ipID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.FindDeviceGroupByID(System.UInt32)">
+            <summary>
+            Find a device group by a given IPID.
+            </summary>
+            <param name="ipID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.GetDataArrayFromDataMsg(Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_DATA_MESSAGE_STRUCT)">
+            <summary>
+            Get the data packet array from extended service interface data message.
+            </summary>
+            <param name="msg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.ServiceSupported(System.UInt32)">
+            <summary>
+            Check it the requested service is supported.
+            </summary>
+            <param name="serviceType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.RequestValid(Crestron.Infrastructure.EX_SERVICE_INTERFACE_SERVICE_REQUEST_MESSAGE_STRUCT)">
+            <summary>
+            Check if the remote device's request is valid.
+            The CIP layer could do some preliminary check on the request but
+            the application will make the final decision here.
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.ServiceResponseField(System.UInt32,System.UInt32)">
+            <summary>
+            
+            </summary>
+            <param name="ipId"></param>
+            <param name="serviceType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.SendData(System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.Byte[],Crestron.SimplSharp.CrestronStringEncoding)">
+            <summary>
+            Send data to remote service provider via CIP layer.
+            </summary>
+            <param name="ipID">remote device's IPID</param>
+            <param name="msgType">message type</param>
+            <param name="serviceType">service type</param>
+            <param name="channel">channel number</param>
+            <param name="dataToSend">data to send</param>
+            <param name="encoding">Outbound string encoding format</param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.SendResponse(System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Send response message to CIP.
+            </summary>
+            <param name="ipID"></param>
+            <param name="serviceType"></param>
+            <param name="responseField"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.SendStatus(System.UInt32,System.UInt32,Crestron.Infrastructure.EX_SERVICE_INTERFACE_STATUS_TYPES)">
+            <summary>
+            Send a status message to CIP layer.
+            </summary>
+            <param name="ipID"></param>
+            <param name="serviceType"></param>
+            <param name="statusType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.ExtendedServiceBackend.BuildSend_34hPacketToCIP(System.UInt32,System.UInt32,System.UInt32,System.Byte[],System.Int32,System.Int32,Crestron.SimplSharp.CrestronStringEncoding,System.Byte)">
+            <summary>
+            Build an internal type 0x34 cresnet packet and send it to CIP as an ex-service data message.
+            </summary>
+            <param name="ipID">Device IPID.</param>
+            <param name="serviceType">service type</param>
+            <param name="channel">channel number</param>
+            <param name="dataToSend">the whole user message to send in byte array.</param>
+            <param name="offset">the offset in the byte array to send with the current cresnet packet.</param>
+            <param name="count">the count of bytes to send with the current cresnet packet.</param>
+            <param name="encoding">Outbound string encoding format.</param>
+            <param name="TextAppendModeFlags">the text append mode flag of current cresnet packet.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Crestron.SimplSharp.ExtendedServiceBackend.ApplicationId">
+            <summary>
+            The property to report application Id.
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.ExtendedServiceBackend.eStringEncodingFlags">
+            <summary>
+            String encoding flags for a type 15h/34h packet: xxx###xx
+            This is defined in SimplSharpPro. But we cannont use it here.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceBackend.eStringEncodingFlags.eEncodingASCII">
+            <summary>
+            ASCII (Single Byte) encoding in a packet has flags of xxx000xx
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceBackend.eStringEncodingFlags.eEncodingUTF16">
+            <summary>
+            UTF-16 encoding in a packet has flags of xxx001xx
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceBackend.eStringEncodingFlags.eEncodingUTF8">
+            <summary>
+            UTF-8 encoding in a packet has flags of xxx010xx
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.ExtendedServiceBackend.eOutboundTextModeBits">
+            <summary>
+            Bits for manipulating the flags byte of a type 15h or 34h packet.
+            This is defined in SimplSharpPro. But we cannont use it here.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceBackend.eOutboundTextModeBits.e_TextAppendNone">
+            <summary>
+            No append mode
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceBackend.eOutboundTextModeBits.e_TextAppendStartOfField">
+            <summary>
+            Bit (lsb) high if Start of field.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceBackend.eOutboundTextModeBits.e_TextAppendEndOfField">
+            <summary>
+            Bit 1 high if End of field.
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.ExtendedServiceBackend.eOutboundTextModes">
+            <summary>
+            Modes for specifying how text should be appended.
+            *** If we ever want to let users split strings up manaully, this needs to be exposed as public.
+            This is defined in SimplSharpPro. But we cannont use it here.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceBackend.eOutboundTextModes.e_FirstString">
+            <summary>
+            Used when someone wants to send multiple strings (at least 2) and this is the first one.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceBackend.eOutboundTextModes.e_ContinueOnCurrentLine">
+            <summary>
+            Used to continue on the current line, when this is the 2nd string of at least 3 strings.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceBackend.eOutboundTextModes.e_ContinueOnNextLine">
+            <summary>
+            Used to continue on the next line, when this is the 2nd string of at least 3 strings.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceBackend.eOutboundTextModes.e_LastStringOnCurrentLine">
+            <summary>
+            Used to send the last string in a sequence of at least 2 strings.  The string will appear appended
+            to the end of the previously sent string.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceBackend.eOutboundTextModes.e_LastStringOnNextLine">
+            <summary>
+            Used to send the last string in a sequence of at least 2 strings.  The string will appear on the next line.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.ExtendedServiceBackend.eOutboundTextModes.e_SingleString">
+            <summary>
+            This is used to send an entire string in one shot.
             </summary>
         </member>
         <member name="T:Crestron.SimplSharp.CMonitor">

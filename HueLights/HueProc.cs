@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Crestron.SimplSharp;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace HueLights
@@ -69,6 +67,11 @@ namespace HueLights
             {
                 CrestronConsole.PrintLine("Exception is {0}", e);
             }
+        }
+
+        public void ResetAPI()
+        {
+            HueBridge.ResetDataStore();
         }
 
         /// <summary>
@@ -207,16 +210,29 @@ namespace HueLights
                     HueBridge.HueGroups.Clear();
                     foreach (var group in jData)
                     {
+                        string load;
+                        JArray LoadList;
+                        string[] loads;
                         string id = group.Key;
                         string name = (string)jData[group.Key]["name"];
-                        string load = (string)jData[group.Key]["lights"][0];
-                        JArray LoadList = (JArray)jData[group.Key]["lights"];
-                        string[] loads = LoadList.ToObject<string[]>();
+                        if (jData[group.Key]["lights"][0] != null)
+                        {
+                            load = (string)jData[group.Key]["lights"][0];
+                            LoadList = (JArray)jData[group.Key]["lights"];
+                            loads = LoadList.ToObject<string[]>();
+                        }
+                        else
+                        {
+                            load = "0";
+                            loads = null;
+                        }
+ 
                         string type = (string)jData[group.Key]["type"];
                         bool on = (bool)jData[group.Key]["action"]["on"];
                         uint bri = (uint)jData[group.Key]["action"]["bri"];
                         string alert = (string)jData[group.Key]["action"]["alert"];
-                        HueBridge.HueGroups.Add(new HueGroup(name, type, on, bri, alert, load, loads));
+                        ushort roomid = Convert.ToUInt16(id);
+                        HueBridge.HueGroups.Add(new HueGroup(roomid, name, type, on, bri, alert, load, loads));
                     }
                     for (int i = 0; i < jData.Count; i++)
                     {
