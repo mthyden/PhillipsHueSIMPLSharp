@@ -6,7 +6,7 @@ namespace HueLights
 {
     public class HueRoom
     {
-        public ushort RoomID;
+        public ushort RoomId;
         public ushort GroupIsOn;
         public String GroupName;
         public ushort RoomBri;
@@ -40,25 +40,29 @@ namespace HueLights
         {
             try
             {
-                if (HueBridge.Authorized == true && HueBridge.Populated == true)
+                if (HueBridge.Populated == true)
                 {
                     RoomOnline = 0;
                     foreach (var huegroup in HueBridge.HueGroups)
                     {
-                        if (huegroup.RoomName == GroupName)
+                        if (huegroup.Name == GroupName)
                         {
-                            RoomID = huegroup.RoomID;
+                            RoomId = Convert.ToUInt16(huegroup.Id);
                             RoomOnline = 1;
                             TriggerRoomOnlineUpdate();
                             RoomPopulate();
                             break;
                         }
                     }
+                    if (RoomOnline == 0)
+                    {
+                        CrestronConsole.PrintLine("Room not found");   
+                    }
                 }
                 else
                 {
                     RoomOnline = 0;
-                    CrestronConsole.PrintLine("Bridge not authorized");
+                    CrestronConsole.PrintLine("Error getting {0} data", GroupName);
                     TriggerRoomOnlineUpdate();
                 }
             }
@@ -70,16 +74,16 @@ namespace HueLights
 
         private void RoomPopulate()
         {
-            GroupIsOn = (ushort)(HueBridge.HueGroups[RoomID - 1].On ? 1 : 0);
-            RoomBri = (ushort)HueBridge.HueGroups[RoomID - 1].Bri;
-            RoomHue = (ushort)HueBridge.HueGroups[RoomID - 1].Hue;
-            RoomSat = (ushort)HueBridge.HueGroups[RoomID - 1].Sat;
+            GroupIsOn = (ushort)(HueBridge.HueGroups[RoomId - 1].On ? 1 : 0);
+            RoomBri = (ushort)HueBridge.HueGroups[RoomId - 1].Bri;
+            RoomHue = (ushort)HueBridge.HueGroups[RoomId - 1].Hue;
+            RoomSat = (ushort)HueBridge.HueGroups[RoomId - 1].Sat;
             for (int i = 1; i <= 20; i++)
             {
-                if (HueBridge.HueGroups[RoomID - 1].SceneName[i] != null)
+                if (HueBridge.HueGroups[RoomId - 1].SceneName[i] != null)
                 {
-                    SceneName[i] = HueBridge.HueGroups[RoomID - 1].SceneName[i];
-                    SceneId[i] = HueBridge.HueGroups[RoomID - 1].SceneID[i];
+                    SceneName[i] = HueBridge.HueGroups[RoomId - 1].SceneName[i];
+                    SceneId[i] = HueBridge.HueGroups[RoomId - 1].SceneID[i];
                 }
                 else
                 {
@@ -102,36 +106,20 @@ namespace HueLights
             {
                 if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
-                    String json = HueBridge.SetOnOff("groups", RoomID, actioncmd, "action", effect);
+                    String json = HueBridge.SetOnOff("groups", RoomId, actioncmd, "action", effect);
                     JArray JReturn = JArray.Parse(json);
-                    string tokenreturn = "/groups/" + RoomID + "/action/" + actiontype;
+                    string tokenreturn = "/groups/" + RoomId + "/action/" + actiontype;
                     foreach (var Jobj in JReturn)
                     {
                         var myaction = Jobj["success"];
                         string whodidwhat = myaction.ToString();
                         if (whodidwhat.Contains(tokenreturn))
                         {
-                            HueBridge.HueGroups[RoomID - 1].On = (bool)myaction[tokenreturn];
-                            GroupIsOn = (ushort)(HueBridge.HueGroups[RoomID - 1].On ? 1 : 0);
+                            HueBridge.HueGroups[RoomId - 1].On = (bool)myaction[tokenreturn];
+                            GroupIsOn = (ushort)(HueBridge.HueGroups[RoomId - 1].On ? 1 : 0);
                             TriggerRoomOnOffUpdate();
                         }
                     }
-
-                    /*
-                    for (int i = 0; i < JReturn.Count; i++)
-                    {
-                        if (json.Contains("success"))
-                        {
-                            var JData = JReturn[i].SelectToken("success");
-                            //string tokenreturn = "/groups/" + RoomID + "/action/" + actiontype;
-                            string tokenreturn = "/groups/" + RoomID + "/action/on";
-                            if (JData.Contains(tokenreturn))
-                            {
-
-                                break;
-                            }
-                        }
-                    }*/
                 }
                 else
                 {
@@ -151,7 +139,7 @@ namespace HueLights
                 if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
                     String payload = String.Format("{0}\"scene\":\"{1}\"{2}", '{', SceneId[i], '}');
-                    String json = HueBridge.SetScene(RoomID, payload);
+                    String json = HueBridge.SetScene(RoomId, payload);
                     if (json.Contains("success"))
                     {
                         CrestronConsole.PrintLine("Scene changed");
@@ -205,32 +193,32 @@ namespace HueLights
             {
                 if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
-                    String cmdval = "{\"" + lvltype + "\":" + val.ToString() + "}";
-                    String json = HueBridge.SetLvl(settype, RoomID, "action", cmdval);
+                    String cmdval = "{\"" + lvltype + "\":" + val.ToString() + "}";     //builds the cmd
+                    String json = HueBridge.SetLvl(settype, RoomId, "action", cmdval);  //Sends the cmd to bridge
                     if (json.Contains("success"))
                     {
                         JArray JData = JArray.Parse(json);
-                        string NodeVal = "/" + settype + "/" + RoomID + "/action/" + lvltype;
+                        string NodeVal = "/" + settype + "/" + RoomId + "/action/" + lvltype;
                         switch (lvltype)
                         {
                             case "bri":
                                 {
-                                    HueBridge.HueGroups[RoomID - 1].Bri = (uint)JData[0]["success"][NodeVal];
-                                    RoomBri = (ushort)HueBridge.HueGroups[RoomID - 1].Bri;
+                                    HueBridge.HueGroups[RoomId - 1].Bri = (uint)JData[0]["success"][NodeVal];
+                                    RoomBri = (ushort)HueBridge.HueGroups[RoomId - 1].Bri;
                                     TriggerRoomBriUpdate();
                                     break;
                                 }
                             case "hue":
                                 {
-                                    HueBridge.HueGroups[RoomID - 1].Hue = (uint)JData[0]["success"][NodeVal];
-                                    RoomHue = (ushort)HueBridge.HueGroups[RoomID - 1].Hue;
+                                    HueBridge.HueGroups[RoomId - 1].Hue = (uint)JData[0]["success"][NodeVal];
+                                    RoomHue = (ushort)HueBridge.HueGroups[RoomId - 1].Hue;
                                     TriggerRoomHueUpdate();
                                     break;
                                 }
                             case "sat":
                                 {
-                                    HueBridge.HueGroups[RoomID - 1].Sat = (uint)JData[0]["success"][NodeVal];
-                                    RoomSat = (ushort)HueBridge.HueGroups[RoomID - 1].Sat;
+                                    HueBridge.HueGroups[RoomId - 1].Sat = (uint)JData[0]["success"][NodeVal];
+                                    RoomSat = (ushort)HueBridge.HueGroups[RoomId - 1].Sat;
                                     TriggerRoomSatUpdate();
                                     break;
                                 }
@@ -259,7 +247,7 @@ namespace HueLights
                     decimal x = (decimal)xval / 100;
                     decimal y = (decimal)yval / 100;
                     String cmdval = "{\"xy\":[" + x.ToString() + "," + y.ToString() + "]}";
-                    String json = HueBridge.SetLvl(settype, RoomID, "action", cmdval);
+                    String json = HueBridge.SetLvl(settype, RoomId, "action", cmdval);
                 }
             }
             catch (Exception e)

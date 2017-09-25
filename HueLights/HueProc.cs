@@ -159,7 +159,7 @@ namespace HueLights
         /// <summary>
         /// Pulls all the bulbs and their current state from the bridge
         /// </summary>
-        private void ProcBulbs(String jsondata)
+        public void ProcBulbs(String jsondata)
         {
             try
             {
@@ -202,7 +202,7 @@ namespace HueLights
         /// <summary>
         /// Pulls all the groups/rooms from the bridge
         /// </summary>
-        private void ProcRooms(String jsondata)
+        public void ProcRooms(String jsondata)
         {
             try
             {
@@ -215,7 +215,7 @@ namespace HueLights
                         string[] loads;
                         string id = group.Key;
                         string name = (string)jData[group.Key]["name"];
-                        if (jData[group.Key]["lights"][0] != null)
+                        if (jData[group.Key]["lights"].HasValues)
                         {
                             load = (string)jData[group.Key]["lights"][0];
                             LoadList = (JArray)jData[group.Key]["lights"];
@@ -231,8 +231,7 @@ namespace HueLights
                         bool on = (bool)jData[group.Key]["action"]["on"];
                         uint bri = (uint)jData[group.Key]["action"]["bri"];
                         string alert = (string)jData[group.Key]["action"]["alert"];
-                        ushort roomid = Convert.ToUInt16(id);
-                        HueBridge.HueGroups.Add(new HueGroup(roomid, name, type, on, bri, alert, load, loads));
+                        HueBridge.HueGroups.Add(new HueGroup(id, name, type, on, bri, alert, load, loads));
                     }
                     for (int i = 0; i < jData.Count; i++)
                     {
@@ -253,32 +252,48 @@ namespace HueLights
         /// <summary>
         /// Pulls all the scenes from the bridge and assigns them to their appropriate room based on the assigned bulbs 
         /// </summary>
-        private void ProcScenes(String jsondata)
+        public void ProcScenes(String jsondata)
         {
             try
             {
                 JObject jData = JObject.Parse(jsondata);
                 HueBridge.HueScenes.Clear();
+                string id = "";
+                string name = "";
+                string load = "";
                 foreach (var scene in jData)
                 {
-                    string id = scene.Key;
-                    string name = (string) jData[id]["name"];
-                    string load = (string) jData[id]["lights"][0];
+                    id = scene.Key;
+                    name = (string)jData[id]["name"];
+                    if (jData[id]["lights"].HasValues)
+                    {
+                        load = (string)jData[id]["lights"][0];
+                    }
+                    else
+                    {
+                        load = "";
+                        CrestronConsole.PrintLine("load is null");
+                    }
                     for (int x = 0; x < (HueBridge.HueGroups.Count); x++)
                     {
-                        if (HueBridge.HueGroups[x].loads.Contains(load))
+                        if (HueBridge.HueGroups[x].Loads != null && load != "")
                         {
-                            for (int y = 1; y < 20; y++)
+                            if (HueBridge.HueGroups[x].Loads.Contains(load))
                             {
-                                if (HueBridge.HueGroups[x].SceneName[y] == null)
+                                CrestronConsole.PrintLine("found room: {0}, with load: {1}", HueBridge.HueGroups[x].Name, load);
+                                for (int y = 1; y < 20; y++)
                                 {
-                                    HueBridge.HueGroups[x].SceneName[y] = name;
-                                    HueBridge.HueGroups[x].SceneID[y] = id;
-                                    break;
+                                    if (HueBridge.HueGroups[x].SceneName[y] == null)
+                                    {
+                                        CrestronConsole.PrintLine("SceneName: {0}, with D: {1}", name, id);
+                                        HueBridge.HueGroups[x].SceneName[y] = name;
+                                        HueBridge.HueGroups[x].SceneID[y] = id;
+                                        break;
+                                    }
                                 }
                             }
                         }
-                    }
+                    } 
                 }
                 CrestronConsole.PrintLine("{0} Scenes discovered", jData.Count);
                 HueOnline = 1;

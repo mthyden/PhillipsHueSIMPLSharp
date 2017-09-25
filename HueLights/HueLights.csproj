@@ -65,12 +65,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HueBridge.cs" />
-    <Compile Include="HueBulb.cs" />
-    <Compile Include="HueGroup.cs" />
+    <Compile Include="HueItems.cs" />
     <Compile Include="HueLight.cs" />
     <Compile Include="HueProc.cs" />
     <Compile Include="HueRoom.cs" />
-    <Compile Include="HueScene.cs" />
+    <Compile Include="HueTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\ControlSystem.cfg">
     </None>

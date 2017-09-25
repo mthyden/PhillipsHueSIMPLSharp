@@ -1,0 +1,13 @@
+C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\obj\Debug\ResolveAssemblyReference.cache
+C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\HueTest.dll
+C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\HueTest.pdb
+C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\Crestron.SimplSharpPro.DeviceSupport.dll
+C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpHelperInterface.dll
+C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpPro.exe
+C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\obj\Debug\HueTest.dll
+C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\obj\Debug\HueTest.pdb
+C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\HueLights.dll
+C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpSQLHelperInterface.dll
+C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpNewtonsoft.dll
+C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpReflectionInterface.dll

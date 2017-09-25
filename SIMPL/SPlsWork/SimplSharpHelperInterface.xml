@@ -45833,6 +45833,11 @@
             Enum for second ethernet adapter
             </summary>
         </member>
+        <member name="F:Crestron.SimplSharp.InitialParametersClass.m_FirmwareVersionAsVersion">
+            <summary>
+             THis is the version class based on the firmware version string.
+            </summary>
+        </member>
         <member name="F:Crestron.SimplSharp.InitialParametersClass.m_iNumRemovableDrives">
             <summary>
             Number of removable drives
