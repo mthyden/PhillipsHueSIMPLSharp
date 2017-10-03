@@ -14,6 +14,43 @@ namespace HueLights
         public String JsonData { get; set; }
     }
 
+    public enum PayloadType
+    {
+        OnOff,
+        Lvl,
+        XY,
+        Scene
+    }
+
+    public class Payload
+    {
+        private string _settype, _cmdtype;
+        public string OnOff { get; set; }
+        public ushort Lvl { get; set; }
+        public string LvlType { get; set; }
+        public string Effect { get; set; }
+        public ushort Xval { get; set; }
+        public ushort Yval { get; set; }
+        public string Scene { get; set; }
+        public string SetType
+        {
+            get { return this._settype; }
+            set
+            {
+                this._settype = value;
+                if (value == "lights")
+                    _cmdtype = "state";
+                else if (value == "groups")
+                    _cmdtype = "action";
+            }
+        }
+        public string CmdType
+        {
+            get { return this._cmdtype; }
+
+        }
+    }
+
     public static class HueBridge
     {
         public static event EventHandler<InfoEventArgs> InfoReceived;  //event handler indicating data received 
@@ -152,7 +189,7 @@ namespace HueLights
                 HttpClientResponse lResponse = getLights.Dispatch(bridgeRequest);
                 String jsontext = lResponse.ContentString;
                 OnInfoReceived(infotype, jsontext);
-                CrestronConsole.PrintLine("getting bridge info: {0}", infotype);
+                //CrestronConsole.PrintLine("getting bridge info: {0}", infotype);
             }
             catch (Exception e)
             {
@@ -160,6 +197,59 @@ namespace HueLights
             }
         }
 
+        public static string SetCmd(PayloadType payloadtype, Payload payload, ushort setid)
+        {
+            string url = "";
+            url = string.Format("http://{0}/api/{1}/{2}/{3}/{4}", HueBridge.BridgeIp, HueBridge.BridgeApi, payload.SetType, setid, payload.CmdType);
+            string cmdval = "";
+            switch (payloadtype)
+            {
+                case PayloadType.OnOff:
+                {
+                    cmdval = String.Format("{0}\"on\":{1},\"effect\":\"{2}\"{3}", '{', payload.OnOff, payload.Effect, '}');
+                    break;
+                }
+                case PayloadType.Lvl:
+                {
+                    cmdval = "{\"" + payload.LvlType + "\":" + payload.Lvl.ToString() + "}";
+                    break;
+                }
+                case PayloadType.XY:
+                {
+                    decimal x = (decimal)payload.Xval / 100;
+                    decimal y = (decimal)payload.Yval / 100;
+                    cmdval = "{\"xy\":[" + x.ToString() + "," + y.ToString() + "]}";
+                    break;
+                }
+                case PayloadType.Scene:
+                {
+                    cmdval = String.Format("{0}\"scene\":\"{1}\"{2}", '{', payload.Scene, '}');
+                    //CrestronConsole.PrintLine("cmdval: {0}", cmdval);
+                    break;
+                }
+            }
+            var setLights = new HttpClient();
+            setLights.KeepAlive = false;
+            setLights.Accept = "application/json";
+            HttpClientRequest lightRequest = new HttpClientRequest();
+            lightRequest.RequestType = Crestron.SimplSharp.Net.Http.RequestType.Put;
+            lightRequest.Url.Parse(url);
+            lightRequest.ContentString = cmdval;
+            HttpClientResponse lResponse = setLights.Dispatch(lightRequest);
+            String jsontext = lResponse.ContentString;
+            return jsontext;
+
+        }
+
+        static void OnInfoReceived(String infotype, string jsondata)
+        {
+            if(infotype != null)
+                InfoReceived(null, new InfoEventArgs(){InfoType = infotype, JsonData = jsondata});
+        }
+    }
+}
+
+/*
         /// <summary>
         /// generic on/off method for individual bulbs or groups
         /// </summary>
@@ -227,11 +317,4 @@ namespace HueLights
             String jsontext = lResponse.ContentString;
             return jsontext;
         }
-
-        static void OnInfoReceived(String infotype, string jsondata)
-        {
-            if(infotype != null)
-                InfoReceived(null, new InfoEventArgs(){InfoType = infotype, JsonData = jsondata});
-        }
-    }
-}
+*/

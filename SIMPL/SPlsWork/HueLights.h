@@ -1,13 +1,37 @@
 namespace HueLights;
         // class declarations
+         class HueItem;
+         class HueBulb;
+         class HueGroup;
+         class HueScene;
          class HueLight;
          class HueRoom;
-         class HueGroup;
          class InfoEventArgs;
+         class PayloadType;
+         class Payload;
          class HueBridge;
          class HueProc;
-         class HueBulb;
-         class HueScene;
+         class HueTest;
+     class HueItem 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        STRING Id[];
+        STRING Name[];
+        LONG_INTEGER Bri;
+        LONG_INTEGER Hue;
+        LONG_INTEGER Sat;
+
+        // class properties
+    };
+
      class HueLight 
     {
         // class delegates
@@ -21,8 +45,8 @@ namespace HueLights;
 
         // class functions
         FUNCTION GetBulb ();
-        FUNCTION LightsVal ( STRING settype , STRING lvltype , INTEGER val );
-        FUNCTION LightsAction ( STRING actiontype , STRING actioncmd , STRING effect );
+        FUNCTION LightsAction ( STRING lvltype , STRING val , STRING effect );
+        FUNCTION LightsVal ( STRING lvltype , INTEGER val );
         FUNCTION TriggerBulbBriUpdate ();
         FUNCTION TriggerBulbHueUpdate ();
         FUNCTION TriggerBulbSatUpdate ();
@@ -32,13 +56,14 @@ namespace HueLights;
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 
         // class variables
-        INTEGER BulbID;
+        INTEGER BulbId;
         STRING BulbName[];
         INTEGER BulbIsOn;
         STRING BulbType[];
         INTEGER BulbBri;
         INTEGER BulbHue;
         INTEGER BulbSat;
+        INTEGER BulbOnline;
         INTEGER Reachable;
 
         // class properties
@@ -57,20 +82,20 @@ namespace HueLights;
 
         // class functions
         FUNCTION GetRoom ();
-        FUNCTION GroupAction ( STRING actiontype , STRING actioncmd , STRING effect );
+        FUNCTION GroupAction ( STRING lvltype , STRING val , STRING effect );
+        FUNCTION LightsVal ( STRING lvltype , INTEGER val );
         FUNCTION RecallScene ( INTEGER i );
+        FUNCTION XYVal ( INTEGER xval , INTEGER yval );
         FUNCTION TriggerRoomBriUpdate ();
         FUNCTION TriggerRoomHueUpdate ();
         FUNCTION TriggerRoomSatUpdate ();
         FUNCTION TriggerRoomOnOffUpdate ();
         FUNCTION TriggerRoomOnlineUpdate ();
-        FUNCTION LightsVal ( STRING settype , STRING lvltype , INTEGER val );
-        FUNCTION XYVal ( STRING settype , INTEGER xval , INTEGER yval );
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 
         // class variables
-        INTEGER RoomID;
+        INTEGER RoomId;
         INTEGER GroupIsOn;
         STRING GroupName[];
         INTEGER RoomBri;
@@ -104,6 +129,39 @@ namespace HueLights;
         STRING JsonData[];
     };
 
+    static class PayloadType // enum
+    {
+        static SIGNED_LONG_INTEGER OnOff;
+        static SIGNED_LONG_INTEGER Lvl;
+        static SIGNED_LONG_INTEGER XY;
+        static SIGNED_LONG_INTEGER Scene;
+    };
+
+     class Payload 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        STRING OnOff[];
+        INTEGER Lvl;
+        STRING LvlType[];
+        STRING Effect[];
+        INTEGER Xval;
+        INTEGER Yval;
+        STRING Scene[];
+        STRING SetType[];
+        STRING CmdType[];
+    };
+
     static class HueBridge 
     {
         // class delegates
@@ -117,9 +175,7 @@ namespace HueLights;
         static FUNCTION ResetDataStore ();
         static STRING_FUNCTION getIP ();
         static FUNCTION GetBridgeInfo ( STRING infotype );
-        static STRING_FUNCTION SetOnOff ( STRING settype , INTEGER setid , STRING value , STRING cmdtype , STRING effect );
-        static STRING_FUNCTION SetScene ( INTEGER setid , STRING payload );
-        static STRING_FUNCTION SetLvl ( STRING settype , INTEGER setid , STRING cmdtype , STRING cmdval );
+        static STRING_FUNCTION SetCmd ( PayloadType payloadtype , Payload payload , INTEGER setid );
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 
@@ -133,7 +189,6 @@ namespace HueLights;
      class HueProc 
     {
         // class delegates
-        delegate INTEGER_FUNCTION DelegateValueUpdate ( );
 
         // class events
         EventHandler InitComplete ( HueProc sender, EventArgs e );
@@ -145,6 +200,9 @@ namespace HueLights;
         FUNCTION setIP ( STRING str );
         FUNCTION getData ();
         FUNCTION OnInitComplete ();
+        FUNCTION ProcBulbs ( STRING jsondata );
+        FUNCTION ProcRooms ( STRING jsondata );
+        FUNCTION ProcScenes ( STRING jsondata );
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 
@@ -156,8 +214,25 @@ namespace HueLights;
         INTEGER BulbNum;
         INTEGER GroupNum;
         INTEGER HueOnline;
+        STRING GrpName[][];
+        STRING BlbName[][];
 
         // class properties
-        DelegateProperty DelegateValueUpdate ValueUpdate;
+    };
+
+     class HueTest 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
     };
 

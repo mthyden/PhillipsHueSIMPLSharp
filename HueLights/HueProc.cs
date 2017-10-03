@@ -16,12 +16,14 @@ namespace HueLights
         public ushort BulbNum; // number of bulbs
         public ushort GroupNum; // number of rooms
         public ushort HueOnline;
+        public String[] GrpName;
+        public String[] BlbName;
 
         //^^^^^ Signals for SIMPL+ ^^^^^^^^
 
         public event EventHandler InitComplete;
 
-        public DelegateValueUpdate ValueUpdate {get; set;}
+        //public DelegateValueUpdate ValueUpdate {get; set;}
 
         /// <summary>
         /// Default constructor
@@ -233,13 +235,7 @@ namespace HueLights
                         string alert = (string)jData[group.Key]["action"]["alert"];
                         HueBridge.HueGroups.Add(new HueGroup(id, name, type, on, bri, alert, load, loads));
                     }
-                    for (int i = 0; i < jData.Count; i++)
-                    {
-                        Array.Clear(HueBridge.HueGroups[i].SceneName, 0, 20);
-                        Array.Clear(HueBridge.HueGroups[i].SceneID, 0, 20);
-                    }
-
-                        GroupNum = (ushort)HueBridge.HueGroups.Count;
+                    GroupNum = (ushort)HueBridge.HueGroups.Count;
                     CrestronConsole.PrintLine("{0} Rooms discovered", GroupNum);
                     HueBridge.GetBridgeInfo("scenes");
                 }
@@ -272,7 +268,7 @@ namespace HueLights
                     else
                     {
                         load = "";
-                        CrestronConsole.PrintLine("load is null");
+                        //CrestronConsole.PrintLine("load is null");
                     }
                     for (int x = 0; x < (HueBridge.HueGroups.Count); x++)
                     {
@@ -280,12 +276,12 @@ namespace HueLights
                         {
                             if (HueBridge.HueGroups[x].Loads.Contains(load))
                             {
-                                CrestronConsole.PrintLine("found room: {0}, with load: {1}", HueBridge.HueGroups[x].Name, load);
+                                //CrestronConsole.PrintLine("found room: {0}, with load: {1}", HueBridge.HueGroups[x].Name, load);
                                 for (int y = 1; y < 20; y++)
                                 {
                                     if (HueBridge.HueGroups[x].SceneName[y] == null)
                                     {
-                                        CrestronConsole.PrintLine("SceneName: {0}, with D: {1}", name, id);
+                                        //CrestronConsole.PrintLine("SceneName: {0}, with D: {1}", name, id);
                                         HueBridge.HueGroups[x].SceneName[y] = name;
                                         HueBridge.HueGroups[x].SceneID[y] = id;
                                         break;
@@ -298,8 +294,19 @@ namespace HueLights
                 CrestronConsole.PrintLine("{0} Scenes discovered", jData.Count);
                 HueOnline = 1;
                 HueBridge.Populated = true;
-                OnInitComplete();
+                GrpName = new String[50];
+                BlbName = new String[50];
+                
+                foreach (var huegroup in HueBridge.HueGroups)
+                {
+                    GrpName[Convert.ToUInt16(huegroup.Id)] = huegroup.Name;
                 }
+                foreach (var huebulb in HueBridge.HueBulbs)
+                {
+                    BlbName[Convert.ToUInt16(huebulb.Id)] = huebulb.Name;
+                }
+                OnInitComplete();
+            }
             catch (Exception e)
             {
                 CrestronConsole.PrintLine("Error getting scenes: {0}",e);

@@ -100,15 +100,17 @@ namespace HueLights
         /// Sets a group to be on/off/scene select
         /// </summary>
         /// <param name="action">"true", "false", "scene"</param>
-        public void GroupAction(string actiontype, string actioncmd, string effect)
+        public void GroupAction(string lvltype, string val, string effect)
         {
             try
             {
                 if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
-                    String json = HueBridge.SetOnOff("groups", RoomId, actioncmd, "action", effect);
+                    Payload payload = new Payload(){SetType = "groups", LvlType = lvltype, OnOff = val, Effect = effect};
+                    string json = HueBridge.SetCmd(PayloadType.OnOff, payload, RoomId);
+                    //String json = HueBridge.SetOnOff("groups", RoomId, actioncmd, "action", effect);
                     JArray JReturn = JArray.Parse(json);
-                    string tokenreturn = "/groups/" + RoomId + "/action/" + actiontype;
+                    string tokenreturn = "/groups/" + RoomId + "/action/on";
                     foreach (var Jobj in JReturn)
                     {
                         var myaction = Jobj["success"];
@@ -132,73 +134,24 @@ namespace HueLights
             }
         }
 
-        public void RecallScene(ushort i)
-        {
-            try
-            {
-                if (HueBridge.Authorized == true && HueBridge.Populated == true)
-                {
-                    String payload = String.Format("{0}\"scene\":\"{1}\"{2}", '{', SceneId[i], '}');
-                    String json = HueBridge.SetScene(RoomId, payload);
-                    if (json.Contains("success"))
-                    {
-                        CrestronConsole.PrintLine("Scene changed");
-                    }
-                }
-                else
-                {
-                    CrestronConsole.PrintLine("Bridge not authorized");
-                }
-            }
-            catch (Exception e)
-            {
-                CrestronConsole.PrintLine("Exception is {0}", e);
-            }
-        }
-
-        public void TriggerRoomBriUpdate()
-        {
-            RoomBriUpdate(this, new EventArgs());
-        }
-
-        public void TriggerRoomHueUpdate()
-        {
-            RoomHueUpdate(this, new EventArgs());
-        }
-
-        public void TriggerRoomSatUpdate()
-        {
-            RoomSatUpdate(this, new EventArgs());
-        }
-
-        public void TriggerRoomOnOffUpdate()
-        {
-            RoomOnOffUpdate(this, new EventArgs());
-        }
-
-        public void TriggerRoomOnlineUpdate()
-        {
-            RoomOnlineUpdate(this, new EventArgs());
-        }
-
         /// <summary>
         /// test
         /// </summary>
         /// <param name="settype"></param>
         /// <param name="lvltype"></param>
         /// <param name="val"></param>
-        public void LightsVal(string settype, string lvltype, ushort val)
+        public void LightsVal(string lvltype, ushort val)
         {
             try
             {
                 if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
-                    String cmdval = "{\"" + lvltype + "\":" + val.ToString() + "}";     //builds the cmd
-                    String json = HueBridge.SetLvl(settype, RoomId, "action", cmdval);  //Sends the cmd to bridge
+                    Payload payload = new Payload() { SetType = "groups", Lvl = val, LvlType = lvltype };
+                    string json = HueBridge.SetCmd(PayloadType.Lvl, payload, RoomId);
                     if (json.Contains("success"))
                     {
                         JArray JData = JArray.Parse(json);
-                        string NodeVal = "/" + settype + "/" + RoomId + "/action/" + lvltype;
+                        string NodeVal = "/" + payload.SetType + "/" + RoomId + payload.CmdType + lvltype;
                         switch (lvltype)
                         {
                             case "bri":
@@ -238,22 +191,70 @@ namespace HueLights
             }
         }
 
-        public void XYVal(string settype, ushort xval, ushort yval)
+        public void RecallScene(ushort i)
         {
             try
             {
                 if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
-                    decimal x = (decimal)xval / 100;
-                    decimal y = (decimal)yval / 100;
-                    String cmdval = "{\"xy\":[" + x.ToString() + "," + y.ToString() + "]}";
-                    String json = HueBridge.SetLvl(settype, RoomId, "action", cmdval);
+                    Payload payload = new Payload(){SetType = "groups", Scene = this.SceneId[i]};
+                    string json = HueBridge.SetCmd(PayloadType.Scene, payload, RoomId);
+                    //CrestronConsole.PrintLine("json response: {0}",json);
+                    if (json.Contains("success"))
+                    {
+                        CrestronConsole.PrintLine("Scene changed");
+                    }
+                }
+                else
+                {
+                    CrestronConsole.PrintLine("Bridge not authorized");
                 }
             }
             catch (Exception e)
             {
                 CrestronConsole.PrintLine("Exception is {0}", e);
             }
+        }
+
+        public void XYVal(ushort xval, ushort yval)
+        {
+            try
+            {
+                if (HueBridge.Authorized == true && HueBridge.Populated == true)
+                {
+                    Payload payload = new Payload() { SetType = "groups", Xval = xval, Yval = yval };
+                    string json = HueBridge.SetCmd(PayloadType.XY, payload, RoomId);
+                }
+            }
+            catch (Exception e)
+            {
+                CrestronConsole.PrintLine("Exception is {0}", e);
+            }
+        }
+
+        public void TriggerRoomBriUpdate()
+        {
+            RoomBriUpdate(this, new EventArgs());
+        }
+
+        public void TriggerRoomHueUpdate()
+        {
+            RoomHueUpdate(this, new EventArgs());
+        }
+
+        public void TriggerRoomSatUpdate()
+        {
+            RoomSatUpdate(this, new EventArgs());
+        }
+
+        public void TriggerRoomOnOffUpdate()
+        {
+            RoomOnOffUpdate(this, new EventArgs());
+        }
+
+        public void TriggerRoomOnlineUpdate()
+        {
+            RoomOnlineUpdate(this, new EventArgs());
         }
     }
 }

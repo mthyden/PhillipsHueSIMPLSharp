@@ -1,0 +1,138 @@
+{
+	"1": {
+		"name": "Living room",
+		"lights": [
+			"1",
+			"2"
+		],
+		"type": "Room",
+		"state": {
+			"all_on": true,
+			"any_on": true
+		},
+		"recycle": false,
+		"class": "Living room",
+		"action": {
+			"on": true,
+			"bri": 254,
+			"hue": 40655,
+			"sat": 40,
+			"effect": "none",
+			"xy": [
+				0.3454,
+				0.3557
+			],
+			"ct": 200,
+			"alert": "none",
+			"colormode": "ct"
+		}
+	},
+	"2": {
+		"name": "Hallway",
+		"lights": [
+			"3"
+		],
+		"type": "Room",
+		"state": {
+			"all_on": true,
+			"any_on": true
+		},
+		"recycle": false,
+		"class": "Hallway",
+		"action": {
+			"on": true,
+			"bri": 254,
+			"hue": 40655,
+			"sat": 40,
+			"effect": "none",
+			"xy": [
+				0.3454,
+				0.3557
+			],
+			"ct": 200,
+			"alert": "none",
+			"colormode": "ct"
+		}
+	},
+	"3": {
+		"name": "Bedroom",
+		"lights": [
+			"4"
+		],
+		"type": "Room",
+		"state": {
+			"all_on": true,
+			"any_on": true
+		},
+		"recycle": false,
+		"class": "Bedroom",
+		"action": {
+			"on": true,
+			"bri": 254,
+			"hue": 40655,
+			"sat": 40,
+			"effect": "none",
+			"xy": [
+				0.3454,
+				0.3557
+			],
+			"ct": 200,
+			"alert": "none",
+			"colormode": "ct"
+		}
+	},
+	"4": {
+		"name": "Office",
+		"lights": [
+			"5"
+		],
+		"type": "Room",
+		"state": {
+			"all_on": true,
+			"any_on": true
+		},
+		"recycle": false,
+		"class": "Office",
+		"action": {
+			"on": true,
+			"bri": 254,
+			"hue": 61283,
+			"sat": 35,
+			"effect": "none",
+			"xy": [
+				0.3453,
+				0.351
+			],
+			"ct": 200,
+			"alert": "none",
+			"colormode": "ct"
+		}
+	},
+	"5": {
+		"name": "Kitchen",
+		"lights": [
+			"6"
+		],
+		"type": "Room",
+		"state": {
+			"all_on": true,
+			"any_on": true
+		},
+		"recycle": false,
+		"class": "Kitchen",
+		"action": {
+			"on": true,
+			"bri": 254,
+			"hue": 40655,
+			"sat": 40,
+			"effect": "none",
+			"xy": [
+				0.3454,
+				0.3557
+			],
+			"ct": 200,
+			"alert": "none",
+			"colormode": "ct"
+		}
+	}
+}

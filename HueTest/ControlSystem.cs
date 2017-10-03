@@ -15,6 +15,8 @@ namespace HueTest
         private StreamReader _roomReader;
         private FileStream _scenesStream;
         private StreamReader _scenesReader;
+        public String[] GrpName;
+        public String[] BlbName;
 
         private HueProc _hue;
 
@@ -106,6 +108,7 @@ namespace HueTest
             }
 
         }
+
         public void RoomsTest(String jsondata)
         {
             try
@@ -137,11 +140,6 @@ namespace HueTest
                     string alert = (string)jData[group.Key]["action"]["alert"];
                     HueBridge.HueGroups.Add(new HueGroup(id, name, type, on, bri, alert, load, loads));
                 }
-                for (int i = 0; i < jData.Count; i++)
-                {
-                    Array.Clear(HueBridge.HueGroups[i].SceneName, 0, 30);
-                    Array.Clear(HueBridge.HueGroups[i].SceneID, 0, 30);
-                }
 
                 var GroupNum = (ushort)HueBridge.HueGroups.Count;
                 CrestronConsole.PrintLine("{0} Rooms discovered", GroupNum);
@@ -172,7 +170,7 @@ namespace HueTest
                     else
                     {
                         load = "";
-                        CrestronConsole.PrintLine("load is null");
+                        //CrestronConsole.PrintLine("load is null");
                     }
                     for (int x = 0; x < (HueBridge.HueGroups.Count); x++)
                     {
@@ -180,12 +178,12 @@ namespace HueTest
                         {
                             if (HueBridge.HueGroups[x].Loads.Contains(load))
                             {
-                                CrestronConsole.PrintLine("found room: {0}, with load: {1}", HueBridge.HueGroups[x].Name, load);
+                                //CrestronConsole.PrintLine("found room: {0}, with load: {1}", HueBridge.HueGroups[x].Name, load);
                                 for (int y = 1; y < 20; y++)
                                 {
                                     if (HueBridge.HueGroups[x].SceneName[y] == null)
                                     {
-                                        CrestronConsole.PrintLine("SceneName: {0}, with D: {1}", name, id);
+                                        //CrestronConsole.PrintLine("SceneName: {0}, with D: {1}", name, id);
                                         HueBridge.HueGroups[x].SceneName[y] = name;
                                         HueBridge.HueGroups[x].SceneID[y] = id;
                                         break;
@@ -199,6 +197,23 @@ namespace HueTest
                 CrestronConsole.PrintLine("{0} Scenes discovered", jData.Count);
                 //HueOnline = 1;
                 HueBridge.Populated = true;
+                GrpName = new String[50];
+                BlbName = new String[50];
+
+                foreach (var huegroup in HueBridge.HueGroups)
+                {
+                    GrpName[Convert.ToUInt16(huegroup.Id)] = huegroup.Name;
+                }
+                foreach (var huebulb in HueBridge.HueBulbs)
+                {
+                    BlbName[Convert.ToUInt16(huebulb.Id)] = huebulb.Name;
+                }
+                
+                for (int i = 0 ; i < 50; i++)
+                {
+                    CrestronConsole.PrintLine("GrpName: {0}",GrpName[i]);
+                    CrestronConsole.PrintLine("BlbName: {0}", BlbName[i]);
+                }
                 //OnInitComplete();
             }
             catch (Exception e)

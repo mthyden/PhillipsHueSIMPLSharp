@@ -5993,6 +5993,12 @@
             <param name="objectToSuppress">The object that a finalizer must be called for</param>
             <exception cref="T:System.ArgumentNullException">objectToSuppress is NULL</exception>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronEnvironment.GC.GetTotalMemory">
+            <summary>
+            Method to retrieve the number of bytes currently thought to be allocated. 
+            </summary>
+            <returns>A number that is the best available approximation of the number of bytes currently allocated in managed memory.</returns>
+        </member>
         <member name="T:Crestron.SimplSharp.CrestronEnvironment.CrestronTimeZoneInfo">
             <summary>
             timezone settings
@@ -45817,11 +45823,29 @@
             Static class for all initial parameters
             </summary>
         </member>
+        <member name="M:Crestron.SimplSharp.InitialParametersClass.IsPlatformWindowsCe">
+            <summary>
+            Function to indicate if the current running platform is WindowsCE
+            </summary>
+            <returns>'true', running on Windows CE; 'false' otherwise.</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.InitialParametersClass.IsPlatformLinuxCS">
+            <summary>
+            Function to indicate if the current running platform is Linux Control System
+            </summary>
+            <returns>'true', running on Linux CS; 'false' otherwise.</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.InitialParametersClass.IsPlatformMercuryDGE">
+            <summary>
+            Function to indicate if the current running platform is Mercury/DGE
+            </summary>
+            <returns>'true', running on Mercury/DGE; 'false' otherwise.</returns>
+        </member>
         <member name="M:Crestron.SimplSharp.InitialParametersClass.IsRunningOnMono">
             <summary>
             Indicates if we are running on the mono runtime;
             </summary>
-            <returns></returns>
+            <returns>'true' - running under Mono Project runtime; 'false' otherwise.</returns>
         </member>
         <member name="F:Crestron.SimplSharp.InitialParametersClass.bDoAuditLogPrinting">
             <summary>
@@ -45868,6 +45892,17 @@
             <param name="appNumber"></param>
             <param name="friendlyName"></param>
         </member>
+        <member name="M:Crestron.SimplSharp.InitialParametersClass.GetPlatformModel">
+            <summary>
+            Method to read in the platform model.
+            </summary>
+        </member>
+        <member name="M:Crestron.SimplSharp.InitialParametersClass.ReadInPlatformModel">
+            <summary>
+            Method to determine the platform that we are running on. Only called on Unix platforms.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Crestron.SimplSharp.InitialParametersClass.ReadInInitialParameters(System.UInt32)">
             <summary>
             Function to read in all the initial parameters - Need to be called once on startup passing in the 
@@ -45911,11 +45946,6 @@
         <member name="P:Crestron.SimplSharp.InitialParametersClass.IsAuthenticationEnabled">
             <summary>
             Indicates if authentication is enabled on the controller
-            </summary>
-        </member>
-        <member name="P:Crestron.SimplSharp.InitialParametersClass.IsUnix">
-            <summary>
-            Property to indicate that we are running on Unix.
             </summary>
         </member>
         <member name="P:Crestron.SimplSharp.InitialParametersClass.SocketPollTimeout">
@@ -45988,6 +46018,47 @@
         <member name="P:Crestron.SimplSharp.InitialParametersClass.ResolveHostName">
             <summary>
             Method to set and get the ResolveHostName
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.InitialParametersClass.Platforms">
+            <summary>
+            List of all the platforms
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.InitialParametersClass.Platforms.NA">
+            <summary>
+            Platform not known
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.InitialParametersClass.Platforms.PLATFORM_WIN_CE">
+            <summary>
+            Running on a windows 3 series control system
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.InitialParametersClass.Platforms.PLATFORM_MERCURY_DGE">
+            <summary>
+            Running on a Mercury/DGE - basically pinpoint where we have a linux and an android mix
+            and the CS code is a hack. This is the BUILDROOT side.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.InitialParametersClass.Platforms.PLATFORM_LINUX_CS">
+            <summary>
+            True CS on linux
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.InitialParametersClass.Platforms.PLATFORM_LINUX_CSTP">
+            <summary>
+            True CS on linux but this is a Touch Screen control system
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.InitialParametersClass.Platforms.PLATFORM_ANDROID">
+            <summary>
+            This is an Android platform
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.InitialParametersClass.Platforms.PLATFORM_LINUX">
+            <summary>
+            This is an Linux device platform
             </summary>
         </member>
         <member name="M:Crestron.SimplSharp.InitialParametersClass.ProductName.Init">
