@@ -15,10 +15,10 @@ The Processor module communicates directly to the bridge. Trigger the Hue Init s
 
 After the IP for a bridge is established the Register function must run. To register press the physical button on the top of the bridge and then trigger the register function. A digital feedback will show successful registration. Registration will determine the username (AKA API Key) used to send all commands. When the API key is parsed it is stored in the CrestronDataStore. After reboots or program uploads, the registration sequence will attempt to read from the DataStore, if no key is in the DataStore then the manual button on the Hue Bridge will need to be pushed.
 
-Hue Room and Hue Bulb modules now have the ability to be defined in one of two ways, either via the parameter field in the module requiring the exact room and or bulb name (case sensitive) or from the serial join input which can be fed directly from an ISC symbol that hooks to the output from the main processor module. Those two output serials contain the list of discovered bulbs and discovered rooms.
+Hue Room and Hue Bulb modules now have the ability to be defined in one of two ways, either via the parameter field in the module requiring the exact room and or bulb name (case sensitive) or from the serial join input which can be fed directly from an ISC symbol that hooks to the output from the main processor module. Those two output serials contain the list of discovered bulbs and discovered rooms. Empty rooms are AOK, this has been resolved in the 2.1 room module.
 
 known issues:
-- if a room defined in the Hue mobile app doesn't contain any bulbs bridge request routine will fail. (I haven't retested but this may now be resolved)
+- none
 
 Best Practices:
 If the Init routine is being run for the first time be sure to press the button on the bridge prior to the Hue Init signal going high or simply trigger it manualy from SIMPLdebugger.
