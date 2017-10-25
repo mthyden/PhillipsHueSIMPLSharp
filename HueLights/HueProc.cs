@@ -33,7 +33,7 @@ namespace HueLights
             try
             {
                 HueOnline = 0;
-                HueBridge.InfoReceived += this.OnInfoReceived;
+                HueBridge.InfoReceived += OnInfoReceived;
             }
             catch (Exception e)
             {
@@ -60,7 +60,7 @@ namespace HueLights
                 }
                 else
                 {
-                    HueBridge.register();
+                    HueBridge.Register();
                     Authorized = (ushort)(HueBridge.Authorized ? 1 : 0);
                 }
                 APIKey = HueBridge.BridgeApi;
@@ -83,7 +83,7 @@ namespace HueLights
         {
             try
             {
-                IPAddress = HueBridge.getIP();
+                IPAddress = HueBridge.GetIp();
             }
             catch (Exception e)
             {
@@ -105,7 +105,7 @@ namespace HueLights
         {
             try
             {
-                if (HueBridge.Authorized == true)
+                if (HueBridge.Authorized)
                 {
                     HueBridge.GetBridgeInfo("lights");
                 }
@@ -197,7 +197,7 @@ namespace HueLights
                 }
             catch (Exception e)
             {
-                
+				CrestronConsole.PrintLine("Error getting bulbs: {0}", e);
             }
         }
 
@@ -213,27 +213,30 @@ namespace HueLights
                     foreach (var group in jData)
                     {
                         string load;
-                        JArray LoadList;
+	                    uint bri;
+                        JArray loadList;
                         string[] loads;
                         string id = group.Key;
                         string name = (string)jData[group.Key]["name"];
                         if (jData[group.Key]["lights"].HasValues)
                         {
                             load = (string)jData[group.Key]["lights"][0];
-                            LoadList = (JArray)jData[group.Key]["lights"];
-                            loads = LoadList.ToObject<string[]>();
+                            loadList = (JArray)jData[group.Key]["lights"];
+                            loads = loadList.ToObject<string[]>();
+							bri = (uint)jData[group.Key]["action"]["bri"];
                         }
                         else
                         {
                             load = "0";
                             loads = null;
+	                        bri = 0;
+							CrestronConsole.PrintLine("No lights in {0}",name);
                         }
- 
+	                    string roomclass = (string) jData[group.Key]["class"];
                         string type = (string)jData[group.Key]["type"];
                         bool on = (bool)jData[group.Key]["action"]["on"];
-                        uint bri = (uint)jData[group.Key]["action"]["bri"];
                         string alert = (string)jData[group.Key]["action"]["alert"];
-                        HueBridge.HueGroups.Add(new HueGroup(id, name, type, on, bri, alert, load, loads));
+                        HueBridge.HueGroups.Add(new HueGroup(id, name, type, on, bri, alert, load, loads, roomclass));
                     }
                     GroupNum = (ushort)HueBridge.HueGroups.Count;
                     CrestronConsole.PrintLine("{0} Rooms discovered", GroupNum);

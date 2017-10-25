@@ -8,7 +8,8 @@ namespace HueLights
     {
         public ushort RoomId;
         public ushort GroupIsOn;
-        public String GroupName;
+        public string GroupName;
+	    public string RoomClass;
         public ushort RoomBri;
         public ushort RoomHue;
         public ushort RoomSat;
@@ -78,6 +79,7 @@ namespace HueLights
             RoomBri = (ushort)HueBridge.HueGroups[RoomId - 1].Bri;
             RoomHue = (ushort)HueBridge.HueGroups[RoomId - 1].Hue;
             RoomSat = (ushort)HueBridge.HueGroups[RoomId - 1].Sat;
+	        RoomClass = HueBridge.HueGroups[RoomId - 1].GroupClass;
             for (int i = 1; i <= 20; i++)
             {
                 if (HueBridge.HueGroups[RoomId - 1].SceneName[i] != null)
@@ -96,11 +98,14 @@ namespace HueLights
             CrestronConsole.PrintLine("Get {0} is complete", GroupName);
         }
 
-        /// <summary>
-        /// Sets a group to be on/off/scene select
-        /// </summary>
-        /// <param name="action">"true", "false", "scene"</param>
-        public void GroupAction(string lvltype, string val, string effect)
+	    /// <summary>
+	    /// Sets a group to be on/off/scene select
+	    /// </summary>
+	    /// <param name="action">"true", "false", "scene"</param>
+	    /// <param name="lvltype"></param>
+	    /// <param name="val"></param>
+	    /// <param name="effect"></param>
+	    public void GroupAction(string lvltype, string val, string effect)
         {
             try
             {
@@ -146,31 +151,31 @@ namespace HueLights
             {
                 if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
-                    Payload payload = new Payload() { SetType = "groups", Lvl = val, LvlType = lvltype };
+                    var payload = new Payload() { SetType = "groups", Lvl = val, LvlType = lvltype };
                     string json = HueBridge.SetCmd(PayloadType.Lvl, payload, RoomId);
                     if (json.Contains("success"))
                     {
-                        JArray JData = JArray.Parse(json);
-                        string NodeVal = "/" + payload.SetType + "/" + RoomId + payload.CmdType + lvltype;
+                        var jData = JArray.Parse(json);
+                        string nodeVal = "/" + payload.SetType + "/" + RoomId + payload.CmdType + lvltype;
                         switch (lvltype)
                         {
                             case "bri":
                                 {
-                                    HueBridge.HueGroups[RoomId - 1].Bri = (uint)JData[0]["success"][NodeVal];
+                                    HueBridge.HueGroups[RoomId - 1].Bri = (uint)jData[0]["success"][nodeVal];
                                     RoomBri = (ushort)HueBridge.HueGroups[RoomId - 1].Bri;
                                     TriggerRoomBriUpdate();
                                     break;
                                 }
                             case "hue":
                                 {
-                                    HueBridge.HueGroups[RoomId - 1].Hue = (uint)JData[0]["success"][NodeVal];
+                                    HueBridge.HueGroups[RoomId - 1].Hue = (uint)jData[0]["success"][nodeVal];
                                     RoomHue = (ushort)HueBridge.HueGroups[RoomId - 1].Hue;
                                     TriggerRoomHueUpdate();
                                     break;
                                 }
                             case "sat":
                                 {
-                                    HueBridge.HueGroups[RoomId - 1].Sat = (uint)JData[0]["success"][NodeVal];
+                                    HueBridge.HueGroups[RoomId - 1].Sat = (uint)jData[0]["success"][nodeVal];
                                     RoomSat = (ushort)HueBridge.HueGroups[RoomId - 1].Sat;
                                     TriggerRoomSatUpdate();
                                     break;
@@ -197,7 +202,7 @@ namespace HueLights
             {
                 if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
-                    Payload payload = new Payload(){SetType = "groups", Scene = this.SceneId[i]};
+                    var payload = new Payload(){SetType = "groups", Scene = this.SceneId[i]};
                     string json = HueBridge.SetCmd(PayloadType.Scene, payload, RoomId);
                     //CrestronConsole.PrintLine("json response: {0}",json);
                     if (json.Contains("success"))
@@ -222,7 +227,7 @@ namespace HueLights
             {
                 if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
-                    Payload payload = new Payload() { SetType = "groups", Xval = xval, Yval = yval };
+                    var payload = new Payload() { SetType = "groups", Xval = xval, Yval = yval };
                     string json = HueBridge.SetCmd(PayloadType.XY, payload, RoomId);
                 }
             }

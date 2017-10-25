@@ -119,6 +119,7 @@ namespace HueTest
                 {
                     string load;
                     JArray loadList;
+	                uint bri;
                     string[] loads;
                     string id = group.Key;
                     string name = (string)jData[group.Key]["name"];
@@ -127,18 +128,21 @@ namespace HueTest
                         load = (string)jData[group.Key]["lights"][0];
                         loadList = (JArray)jData[group.Key]["lights"];
                         loads = loadList.ToObject<string[]>();
+						bri = (uint)jData[group.Key]["action"]["bri"];
                     }
                     else
                     {
                         load = "0";
                         loads = null;
+	                    bri = 0;
                     }
 
                     string type = (string)jData[group.Key]["type"];
+					string roomclass = (string)jData[group.Key]["class"];
                     bool on = (bool)jData[group.Key]["action"]["on"];
-                    uint bri = (uint)jData[group.Key]["action"]["bri"];
+
                     string alert = (string)jData[group.Key]["action"]["alert"];
-                    HueBridge.HueGroups.Add(new HueGroup(id, name, type, on, bri, alert, load, loads));
+                    HueBridge.HueGroups.Add(new HueGroup(id, name, type, on, bri, alert, load, loads, roomclass));
                 }
 
                 var GroupNum = (ushort)HueBridge.HueGroups.Count;

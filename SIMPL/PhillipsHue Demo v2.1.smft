@@ -1,0 +1,6 @@
+<Device Model="CP3N">
+   <Network Type="Cresnet" Id="01"/>
+   <Network Type="Ethernet" Id="02">
+      <Device Model="Core3 UI XPanel" DeviceId="81" Name="XPanel 2.0 Smart Graphics"/>
+   </Network>
+</Device>

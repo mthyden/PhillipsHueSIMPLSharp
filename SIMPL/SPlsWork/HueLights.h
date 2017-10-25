@@ -11,7 +11,8 @@ namespace HueLights;
          class Payload;
          class HueBridge;
          class HueProc;
-         class HueTest;
+         class HttpConnect;
+         class HttpsConnect;
      class HueItem 
     {
         // class delegates
@@ -98,6 +99,7 @@ namespace HueLights;
         INTEGER RoomId;
         INTEGER GroupIsOn;
         STRING GroupName[];
+        STRING RoomClass[];
         INTEGER RoomBri;
         INTEGER RoomHue;
         INTEGER RoomSat;
@@ -169,11 +171,11 @@ namespace HueLights;
         // class events
 
         // class functions
-        static FUNCTION register ();
+        static FUNCTION Register ();
         static FUNCTION SetupDataStore ();
         static STRING_FUNCTION GetDataStore ();
         static FUNCTION ResetDataStore ();
-        static STRING_FUNCTION getIP ();
+        static STRING_FUNCTION GetIp ();
         static FUNCTION GetBridgeInfo ( STRING infotype );
         static STRING_FUNCTION SetCmd ( PayloadType payloadtype , Payload payload , INTEGER setid );
         STRING_FUNCTION ToString ();
@@ -220,7 +222,7 @@ namespace HueLights;
         // class properties
     };
 
-     class HueTest 
+     class HttpConnect 
     {
         // class delegates
 
@@ -234,5 +236,24 @@ namespace HueLights;
         INTEGER __class_id__;
 
         // class properties
+        HttpConnect Instance;
+    };
+
+     class HttpsConnect 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION Request ( STRING url , STRING cmd );
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER __class_id__;
+
+        // class properties
+        HttpsConnect Instance;
     };
 
