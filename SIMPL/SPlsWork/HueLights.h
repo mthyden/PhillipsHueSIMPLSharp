@@ -4,6 +4,8 @@ namespace HueLights;
          class HueBulb;
          class HueGroup;
          class HueScene;
+         class HueSensor;
+         class HueMotion;
          class HueLight;
          class HueRoom;
          class InfoEventArgs;
@@ -26,9 +28,31 @@ namespace HueLights;
         // class variables
         STRING Id[];
         STRING Name[];
-        LONG_INTEGER Bri;
-        LONG_INTEGER Hue;
-        LONG_INTEGER Sat;
+
+        // class properties
+    };
+
+     class HueMotion 
+    {
+        // class delegates
+
+        // class events
+        EventHandler PresenceUpdate ( HueMotion sender, EventArgs e );
+
+        // class functions
+        FUNCTION MotionInit ();
+        FUNCTION GetMotion ();
+        FUNCTION TriggerPresenceUpdate ();
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        INTEGER MotionId;
+        STRING MotionName[];
+        INTEGER MotionOnline;
+        INTEGER MotionDaylight;
+        INTEGER MotionPresence;
+        INTEGER MotionTemp;
 
         // class properties
     };
@@ -42,9 +66,11 @@ namespace HueLights;
         EventHandler BulbHueUpdate ( HueLight sender, EventArgs e );
         EventHandler BulbSatUpdate ( HueLight sender, EventArgs e );
         EventHandler BulbOnlineUpdate ( HueLight sender, EventArgs e );
+        EventHandler BulbUpdate ( HueLight sender, EventArgs e );
         EventHandler BulbOnOffUpdate ( HueLight sender, EventArgs e );
 
         // class functions
+        FUNCTION BulbInit ();
         FUNCTION GetBulb ();
         FUNCTION LightsAction ( STRING lvltype , STRING val , STRING effect );
         FUNCTION LightsVal ( STRING lvltype , INTEGER val );
@@ -52,6 +78,7 @@ namespace HueLights;
         FUNCTION TriggerBulbHueUpdate ();
         FUNCTION TriggerBulbSatUpdate ();
         FUNCTION TriggerBulbOnOffUpdate ();
+        FUNCTION TriggerBulbUpdate ();
         FUNCTION TriggerBulbOnlineUpdate ();
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
@@ -79,9 +106,11 @@ namespace HueLights;
         EventHandler RoomHueUpdate ( HueRoom sender, EventArgs e );
         EventHandler RoomSatUpdate ( HueRoom sender, EventArgs e );
         EventHandler RoomOnOffUpdate ( HueRoom sender, EventArgs e );
+        EventHandler RoomUpdate ( HueRoom sender, EventArgs e );
         EventHandler RoomOnlineUpdate ( HueRoom sender, EventArgs e );
 
         // class functions
+        FUNCTION RoomInit ();
         FUNCTION GetRoom ();
         FUNCTION GroupAction ( STRING lvltype , STRING val , STRING effect );
         FUNCTION LightsVal ( STRING lvltype , INTEGER val );
@@ -91,6 +120,7 @@ namespace HueLights;
         FUNCTION TriggerRoomHueUpdate ();
         FUNCTION TriggerRoomSatUpdate ();
         FUNCTION TriggerRoomOnOffUpdate ();
+        FUNCTION TriggerRoomUpdate ();
         FUNCTION TriggerRoomOnlineUpdate ();
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
@@ -133,7 +163,8 @@ namespace HueLights;
 
     static class PayloadType // enum
     {
-        static SIGNED_LONG_INTEGER OnOff;
+        static SIGNED_LONG_INTEGER RoomOnOff;
+        static SIGNED_LONG_INTEGER BulbOnOff;
         static SIGNED_LONG_INTEGER Lvl;
         static SIGNED_LONG_INTEGER XY;
         static SIGNED_LONG_INTEGER Scene;
@@ -205,6 +236,7 @@ namespace HueLights;
         FUNCTION ProcBulbs ( STRING jsondata );
         FUNCTION ProcRooms ( STRING jsondata );
         FUNCTION ProcScenes ( STRING jsondata );
+        FUNCTION ProcSensors ( STRING jsondata );
         STRING_FUNCTION ToString ();
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 
@@ -215,6 +247,7 @@ namespace HueLights;
         STRING APIKey[];
         INTEGER BulbNum;
         INTEGER GroupNum;
+        INTEGER SensorNum;
         INTEGER HueOnline;
         STRING GrpName[][];
         STRING BlbName[][];

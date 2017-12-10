@@ -10,14 +10,14 @@ namespace HueLights
     {
         public string Id;
         public string Name;
-        public bool On;
-        public uint Bri;
-        public uint Hue;
-        public uint Sat;
     }
 
     public class HueBulb : HueItem
     {
+		public bool On;
+		public uint Bri;
+		public uint Hue;
+		public uint Sat;
 		public string Alert;
 		public string Effect;
 		public string ColorMode;
@@ -28,13 +28,11 @@ namespace HueLights
 		public string Uid;
         public string SwVer;
 
-        public HueBulb(string id, bool on, uint bri, string alert, bool reachable, string type, string name, string model, string manufacturer, string uid, string swver)
+        public HueBulb(string id, bool on, uint bri, string type, string name, string model, string manufacturer, string uid, string swver)
         {
             Id = id;
             On = on;
             Bri = bri;
-            Alert = alert;
-            Reachable = reachable;
             Type = type;
             Name = name;
             Model = model;
@@ -43,15 +41,13 @@ namespace HueLights
             SwVer = swver;
         }
 
-        public HueBulb(string id, bool on, uint bri, uint hue, uint sat, string alert, bool reachable, string type, string name, string model, string manufacturer, string uid, string swver)
+        public HueBulb(string id, bool on, uint bri, uint hue, uint sat, string type, string name, string model, string manufacturer, string uid, string swver)
         {
             Id = id;
             On = on;
             Bri = bri;
             Hue = hue;
             Sat = sat;
-            Alert = alert;
-            Reachable = reachable;
             Type = type;
             Name = name;
             Model = model;
@@ -63,6 +59,10 @@ namespace HueLights
 
     public class HueGroup : HueItem
     {
+		public bool On;
+		public uint Bri;
+		public uint Hue;
+		public uint Sat;
         public string RoomType;
         public string Alert;
 	    public string GroupClass;
@@ -72,14 +72,13 @@ namespace HueLights
         public string[] SceneName = new string[20];
         public string[] SceneID = new string[20];
 
-        public HueGroup(string id, string roomname, string roomtype, bool on, uint bri, string alert, string load, string[] loads, string groupclass)
+        public HueGroup(string id, string roomname, string roomtype, bool on, uint bri, string load, string[] loads, string groupclass)
         {
             Id = id;
             Name = roomname;
             RoomType = roomtype;
             On = on;
             Bri = bri;
-            Alert = alert;
             AssignedLoad = load;
             Loads = loads;
 	        GroupClass = groupclass;
@@ -99,4 +98,24 @@ namespace HueLights
         }
     }
 
+	public class HueSensor : HueItem
+	{
+		public string Type;
+		public string Uid;
+		public bool Daylight;
+		public string LastUpdated;
+		public bool Presence;
+		public ushort Temp;
+		public string Alert;
+		public bool Reachable;
+		public ushort Battery;
+
+		public HueSensor(string id, string uid, string name, string type)
+		{
+			Id = id;
+			Uid = uid;
+			Name = name;
+			Type = type;
+		}
+	}
 }

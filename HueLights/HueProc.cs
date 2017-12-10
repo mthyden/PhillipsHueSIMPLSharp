@@ -15,6 +15,7 @@ namespace HueLights
         public String APIKey;       //API Key used to control Hue devices (stored in CrestronDataStore
         public ushort BulbNum; // number of bulbs
         public ushort GroupNum; // number of rooms
+	    public ushort SensorNum; //number of sensors
         public ushort HueOnline;
         public String[] GrpName;
         public String[] BlbName;
@@ -52,7 +53,7 @@ namespace HueLights
                 HueBridge.SetupDataStore();
                 string tempapi;
                 tempapi = HueBridge.GetDataStore();
-                if (tempapi != null)
+                if (HueBridge.LocalKey == true)
                 {
                     HueBridge.BridgeApi = tempapi;
                     HueBridge.Authorized = true;
@@ -64,6 +65,7 @@ namespace HueLights
                     Authorized = (ushort)(HueBridge.Authorized ? 1 : 0);
                 }
                 APIKey = HueBridge.BridgeApi;
+				getData();
             }
             catch (Exception e)
             {
@@ -137,7 +139,7 @@ namespace HueLights
                     ProcRooms(e.JsonData);
                 else
                 {
-                    CrestronConsole.PrintLine("no bulb data found");
+                    CrestronConsole.PrintLine("no groups data found");
                 }
                 
             }
@@ -147,10 +149,18 @@ namespace HueLights
                     ProcScenes(e.JsonData);
                 else
                 {
-                    CrestronConsole.PrintLine("no bulb data found");
-                }
-                
+                    CrestronConsole.PrintLine("no scenes data found");
+                }    
             }
+	        if (e.InfoType == "sensors")
+	        {
+				if (e.JsonData != null)
+					ProcSensors(e.JsonData);
+				else
+				{
+					CrestronConsole.PrintLine("no sensor data found");
+				} 		        
+	        }
         }
 
         public void OnInitComplete()
@@ -161,7 +171,7 @@ namespace HueLights
         /// <summary>
         /// Pulls all the bulbs and their current state from the bridge
         /// </summary>
-        public void ProcBulbs(String jsondata)
+        public void ProcBulbs(string jsondata)
         {
             try
             {
@@ -172,8 +182,6 @@ namespace HueLights
                         string id = bulb.Key;
                         bool on = (bool)jData[id]["state"]["on"];
                         uint bri = (uint)jData[id]["state"]["bri"];
-                        string alert = (string)jData[id]["state"]["alert"];
-                        bool reachable = (bool)jData[id]["state"]["reachable"];
                         string type = (string)jData[id]["type"];
                         string name = (string)jData[id]["name"];
                         string model = (string)jData[id]["modelid"];
@@ -184,11 +192,11 @@ namespace HueLights
                         {
                             uint hue = (uint)jData[id]["state"]["hue"];
                             uint sat = (uint)jData[id]["state"]["sat"];
-                            HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, alert, reachable, type, name, model, manufacturer, uid, swver));
+                            HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, type, name, model, manufacturer, uid, swver));
                         }
                         else
                         {
-                            HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, alert, reachable, type, name, model, manufacturer, uid, swver));
+                            HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, type, name, model, manufacturer, uid, swver));
                         }
                     }
                     BulbNum = (ushort)HueBridge.HueBulbs.Count;
@@ -204,7 +212,7 @@ namespace HueLights
         /// <summary>
         /// Pulls all the groups/rooms from the bridge
         /// </summary>
-        public void ProcRooms(String jsondata)
+        public void ProcRooms(string jsondata)
         {
             try
             {
@@ -216,27 +224,32 @@ namespace HueLights
 	                    uint bri;
                         JArray loadList;
                         string[] loads;
+	                    string roomclass;
+	                    string type;
                         string id = group.Key;
-                        string name = (string)jData[group.Key]["name"];
-                        if (jData[group.Key]["lights"].HasValues)
-                        {
-                            load = (string)jData[group.Key]["lights"][0];
-                            loadList = (JArray)jData[group.Key]["lights"];
-                            loads = loadList.ToObject<string[]>();
-							bri = (uint)jData[group.Key]["action"]["bri"];
-                        }
-                        else
-                        {
-                            load = "0";
-                            loads = null;
-	                        bri = 0;
-							CrestronConsole.PrintLine("No lights in {0}",name);
-                        }
-	                    string roomclass = (string) jData[group.Key]["class"];
-                        string type = (string)jData[group.Key]["type"];
-                        bool on = (bool)jData[group.Key]["action"]["on"];
-                        string alert = (string)jData[group.Key]["action"]["alert"];
-                        HueBridge.HueGroups.Add(new HueGroup(id, name, type, on, bri, alert, load, loads, roomclass));
+	                    if ((string) jData[group.Key]["type"] == "Room")
+	                    {
+							string name = (string)jData[group.Key]["name"];
+							roomclass = (string)jData[group.Key]["class"];
+							type = (string)jData[group.Key]["type"];
+							if (jData[group.Key]["lights"].HasValues)
+							{
+								load = (string)jData[group.Key]["lights"][0];
+								loadList = (JArray)jData[group.Key]["lights"];
+								loads = loadList.ToObject<string[]>();
+								bri = (uint)jData[group.Key]["action"]["bri"];
+							}
+							else
+							{
+								load = "0";
+								loads = null;
+								bri = 0;
+								CrestronConsole.PrintLine("No lights in {0}", name);
+							}
+
+							bool on = (bool)jData[group.Key]["action"]["on"];
+							HueBridge.HueGroups.Add(new HueGroup(id, name, type, on, bri, load, loads, roomclass));
+	                    }
                     }
                     GroupNum = (ushort)HueBridge.HueGroups.Count;
                     CrestronConsole.PrintLine("{0} Rooms discovered", GroupNum);
@@ -251,12 +264,12 @@ namespace HueLights
         /// <summary>
         /// Pulls all the scenes from the bridge and assigns them to their appropriate room based on the assigned bulbs 
         /// </summary>
-        public void ProcScenes(String jsondata)
+        public void ProcScenes(string jsondata)
         {
             try
             {
                 JObject jData = JObject.Parse(jsondata);
-                HueBridge.HueScenes.Clear();
+                //HueBridge.HueScenes.Clear();
                 string id = "";
                 string name = "";
                 string load = "";
@@ -308,12 +321,68 @@ namespace HueLights
                 {
                     BlbName[Convert.ToUInt16(huebulb.Id)] = huebulb.Name;
                 }
-                OnInitComplete();
+				//HueBridge.GetBridgeInfo("sensors");
+				OnInitComplete();
+
             }
             catch (Exception e)
             {
                 CrestronConsole.PrintLine("Error getting scenes: {0}",e);
             }
         }
+
+	    public void ProcSensors(string jsondata)
+	    {
+		    try
+		    {
+				string id;
+				string type;
+				string name;
+				string daylight;
+				bool? presence;
+				uint temp;
+				ushort battery;
+				bool reachable;
+				string lastupdated;
+				string alert;
+				string uid;
+
+				HueBridge.HueSensors.Clear();
+				JObject json = JObject.Parse(jsondata);
+				foreach (var sensor in json)
+				{
+					id = sensor.Key;
+					type = (string)json[id]["type"];
+					if (type == "ZLLPresence")
+					{
+						name = (string)json[id]["name"];
+						uid = (string)json[id]["uid"];
+						//battery = (ushort)json[id]["config"]["battery"];
+						//reachable = (bool)json[id]["config"]["reachable"];
+						if (json[id]["state"].SelectToken("presence") != null)
+						{
+							//CrestronConsole.PrintLine("presence not null");
+							//presence = false;
+						}
+						else
+						{
+							//CrestronConsole.PrintLine("presence is null");
+							//presence = (bool)json[id]["state"]["presence"];
+						}
+							
+						lastupdated = (string)json[id]["state"]["lastupdated"];
+						HueBridge.HueSensors.Add(new HueSensor(id, uid, name, type));
+					}
+				}
+				SensorNum = (ushort)HueBridge.HueSensors.Count;
+				CrestronConsole.PrintLine("{0} Sensors discovered", SensorNum);
+		    }
+		    catch (Exception e)
+		    {
+
+				CrestronConsole.PrintLine("Error getting sensors: {0}", e);
+		    }
+
+	    }
     }
 }

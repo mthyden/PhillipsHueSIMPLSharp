@@ -15,11 +15,13 @@ namespace HueTest
         private StreamReader _roomReader;
         private FileStream _scenesStream;
         private StreamReader _scenesReader;
+		private FileStream _sensorStream;
+	    private StreamReader _sensorReader;
+
         public String[] GrpName;
         public String[] BlbName;
 
         private HueProc _hue;
-
 
         /// <summary>
         /// ControlSystem Constructor. Starting point for the SIMPL#Pro program.
@@ -81,10 +83,13 @@ namespace HueTest
 
         public void ConfigureHue(string s)
         {
-            TestHue();
+			//ProcBulbs();
+            //ProcGroups();
+	        //ProcScenes();
+	        ProcSensors();
         }
 
-        public void TestHue()
+        public void ProcGroups()
         {
             try
             {
@@ -94,22 +99,49 @@ namespace HueTest
                 _roomStream.Close();
                 _roomReader.Close();
                 RoomsTest(jsonrooms);
-
-                _scenesStream = new FileStream(@"\NVRAM\Scenes.txt", FileMode.Open, FileAccess.Read);
-                _scenesReader = new StreamReader(_scenesStream);
-                string jsonscenes = _scenesReader.ReadToEnd();
-                _scenesStream.Close();
-                _scenesReader.Close();
-                ScenesTest(jsonscenes); 
             }
             catch (Exception e)
             {
                 CrestronConsole.PrintLine(e.ToString());
             }
-
         }
 
-        public void RoomsTest(String jsondata)
+		public void ProcScenes()
+		{
+			try
+			{
+				_scenesStream = new FileStream(@"\NVRAM\Scenes.txt", FileMode.Open, FileAccess.Read);
+				_scenesReader = new StreamReader(_scenesStream);
+				string jsonscenes = _scenesReader.ReadToEnd();
+				_scenesStream.Close();
+				_scenesReader.Close();
+				ScenesTest(jsonscenes);
+			}
+			catch (Exception e)
+			{
+				CrestronConsole.PrintLine(e.ToString());
+			}
+		}
+
+		public void ProcSensors()
+		{
+			try
+			{
+				_sensorStream = new FileStream(@"\NVRAM\sensors.txt", FileMode.Open, FileAccess.Read);
+				_sensorReader = new StreamReader(_sensorStream);
+				string jsonsensors = _sensorReader.ReadToEnd();
+				_sensorStream.Close();
+				_sensorReader.Close();
+				RoomsTest(jsonsensors);
+			}
+			catch (Exception e)
+			{
+				CrestronConsole.PrintLine(e.ToString());
+			}
+		}
+
+
+        public void RoomsTest(string jsondata)
         {
             try
             {
@@ -142,7 +174,7 @@ namespace HueTest
                     bool on = (bool)jData[group.Key]["action"]["on"];
 
                     string alert = (string)jData[group.Key]["action"]["alert"];
-                    HueBridge.HueGroups.Add(new HueGroup(id, name, type, on, bri, alert, load, loads, roomclass));
+                    HueBridge.HueGroups.Add(new HueGroup(id, name, type, on, bri, load, loads, roomclass));
                 }
 
                 var GroupNum = (ushort)HueBridge.HueGroups.Count;
@@ -154,12 +186,11 @@ namespace HueTest
             }
         }
 
-        public void ScenesTest(String jsondata)
+        public void ScenesTest(string jsondata)
         {
             try
             {
                 JObject jData = JObject.Parse(jsondata);
-                HueBridge.HueScenes.Clear();
                 string id = "";
                 string name = "";
                 string load = "";
@@ -225,6 +256,48 @@ namespace HueTest
                 CrestronConsole.PrintLine("Error getting scenes: {0}", e);
             }
         }
+
+	    public void SensorTest(string jsondata)
+	    {
+		    string id;
+		    string type;
+		    string name;
+		    string daylight;
+		    bool presence;
+		    uint temp;
+		    ushort battery;
+		    bool reachable;
+		    string lastupdated;
+		    string alert;
+		    string uid;
+
+			HueBridge.HueSensors.Clear();
+			JObject json = JObject.Parse(jsondata);
+		    foreach (var sensor in json)
+		    {
+			    id = sensor.Key;
+			    type = (string) json[id]["type"];
+			    if (type == "ZLLPresence")
+			    {
+				    name = (string) json[id]["name"];
+				    uid = (string) json[id]["uid"];
+				    battery = (ushort) json[id]["config"]["battery"];
+				    reachable = (bool) json[id]["config"]["reachable"];
+				    presence = (bool) json[id]["state"]["presence"];
+				    lastupdated = (string) json[id]["state"]["lastupdated"];
+				    HueBridge.HueSensors.Add(new HueSensor(id, uid, name, type));
+			    }
+		    }
+			/*
+		    HueBridge.HueSensors[MotionId - 1].Daylight = (bool)json[MotionId]["state"]["on"];
+			HueBridge.HueSensors[MotionId - 1].Presence = (bool)json[MotionId]["state"]["on"];
+			HueBridge.HueSensors[MotionId - 1].Temp = (ushort)json[MotionId]["state"]["on"];
+			HueBridge.HueSensors[MotionId - 1].Reachable = (bool)json[MotionId]["state"]["on"];
+			MotionDaylight = (ushort)(HueBridge.HueSensors[MotionId - 1].Daylight ? 1 : 0);
+			MotionPresence = (ushort)(HueBridge.HueSensors[MotionId - 1].Presence ? 1 : 0);
+			MotionTemp = (ushort)(HueBridge.HueSensors[MotionId - 1].Temp);
+			Reachable = (ushort)(HueBridge.HueSensors[MotionId - 1].Reachable ? 1 : 0);*/
+	    }
 
         /// <summary>
         /// Event Handler for Ethernet events: Link Up and Link Down. 

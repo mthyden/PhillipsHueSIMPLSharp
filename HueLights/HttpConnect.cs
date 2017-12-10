@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Crestron.SimplSharp;
 using Crestron.SimplSharp.Net.Http;
 using Crestron.SimplSharp.Net.Https;
 
@@ -39,8 +41,14 @@ namespace HueLights
 		{
 			_request.Url.Parse(url);
 			_request.RequestType = reqtype;
-			if(cmd != null)
-			_request.ContentString = cmd;
+			if (cmd == null)
+			{
+				_request.ContentString = "";
+			}
+			else
+			{
+				_request.ContentString = cmd;
+			}
 			_response = _client.Dispatch(_request);
 			String jsontext = _response.ContentString;
 			return jsontext;

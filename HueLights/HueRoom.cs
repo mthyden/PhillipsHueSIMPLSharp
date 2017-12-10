@@ -22,6 +22,12 @@ namespace HueLights
 
         //^^^^^ Signals for SIMPL+ ^^^^^^^^
 
+	    private bool _foundroom;
+	    private string _url;
+	    private JObject _json;
+	    private string _jsontext;
+	    private bool _supportsColor;
+
         public event EventHandler RoomBriUpdate;
 
         public event EventHandler RoomHueUpdate;
@@ -30,72 +36,109 @@ namespace HueLights
 
         public event EventHandler RoomOnOffUpdate;
 
-        public event EventHandler RoomOnlineUpdate;
+        public event EventHandler RoomUpdate;
+
+	    public event EventHandler RoomOnlineUpdate;
 
         public HueRoom()
         {
 
         }
 
-        public void GetRoom()
+	    public void RoomInit()
+	    {
+			RoomOnline = 0;
+		    if (HueBridge.Populated == true)
+		    {
+			    _foundroom = false;
+			    foreach (var huegroup in HueBridge.HueGroups)
+			    {
+				    if (huegroup.Name == GroupName)
+				    {
+					    RoomId = Convert.ToUInt16(huegroup.Id);
+					    _foundroom = true;
+					    GetRoom();
+					    break;
+				    }	
+				}
+			    RoomPopulate();
+				if (_foundroom == false)
+				{
+					CrestronConsole.PrintLine("Room not found: {0}", GroupName);
+				}
+		    }
+	    }
+
+	    public void GetRoom()
         {
             try
             {
-                if (HueBridge.Populated == true)
-                {
-                    RoomOnline = 0;
-                    foreach (var huegroup in HueBridge.HueGroups)
-                    {
-                        if (huegroup.Name == GroupName)
-                        {
-                            RoomId = Convert.ToUInt16(huegroup.Id);
-                            RoomOnline = 1;
-                            TriggerRoomOnlineUpdate();
-                            RoomPopulate();
-                            break;
-                        }
-                    }
-                    if (RoomOnline == 0)
-                    {
-                        CrestronConsole.PrintLine("Room not found");   
-                    }
-                }
-                else
-                {
-                    RoomOnline = 0;
-                    CrestronConsole.PrintLine("Error getting {0} data", GroupName);
-                    TriggerRoomOnlineUpdate();
-                }
+				if (_foundroom == true)
+				{
+					_url = string.Format("http://{0}/api/{1}/{2}/{3}", HueBridge.BridgeIp, HueBridge.BridgeApi, "groups", RoomId);
+					_jsontext = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
+					_json = JObject.Parse(_jsontext);
+					HueBridge.HueGroups[RoomId - 1].On = (bool)_json["action"]["on"];
+					HueBridge.HueGroups[RoomId - 1].Bri = (ushort)_json["action"]["bri"];
+					RoomBri = (ushort)(HueBridge.HueGroups[RoomId - 1].Bri);
+					if (_json["action"].SelectToken("sat") != null)
+					{
+						_supportsColor = true;
+					}					
+					if (_supportsColor)
+					{
+						HueBridge.HueGroups[RoomId - 1].Hue = (ushort)_json["action"]["hue"];
+						HueBridge.HueGroups[RoomId - 1].Sat = (ushort)_json["action"]["sat"];
+						RoomHue = (ushort)(HueBridge.HueGroups[RoomId - 1].Hue);
+						RoomSat = (ushort)(HueBridge.HueGroups[RoomId - 1].Sat);
+					}
+					GroupIsOn = (ushort)(HueBridge.HueGroups[RoomId - 1].On ? 1 : 0);
+
+				}
+				else
+				{
+					CrestronConsole.PrintLine("Error getting Room data: {0}", GroupName);
+				}
+				TriggerRoomUpdate();
             }
             catch (Exception e)
             {
-                CrestronConsole.PrintLine("Exception is {0}", e);
+				CrestronConsole.PrintLine("Error getting Room data: {0}", e);
             }
         }
 
         private void RoomPopulate()
         {
-            GroupIsOn = (ushort)(HueBridge.HueGroups[RoomId - 1].On ? 1 : 0);
-            RoomBri = (ushort)HueBridge.HueGroups[RoomId - 1].Bri;
-            RoomHue = (ushort)HueBridge.HueGroups[RoomId - 1].Hue;
-            RoomSat = (ushort)HueBridge.HueGroups[RoomId - 1].Sat;
-	        RoomClass = HueBridge.HueGroups[RoomId - 1].GroupClass;
-            for (int i = 1; i <= 20; i++)
-            {
-                if (HueBridge.HueGroups[RoomId - 1].SceneName[i] != null)
-                {
-                    SceneName[i] = HueBridge.HueGroups[RoomId - 1].SceneName[i];
-                    SceneId[i] = HueBridge.HueGroups[RoomId - 1].SceneID[i];
-                }
-                else
-                {
-                    int x;
-                    x = i - 1;
-                    SceneNum = (ushort)x;
-                    break;
-                }
-            }
-            CrestronConsole.PrintLine("Get {0} is complete", GroupName);
+	        if (_foundroom == true)
+	        {
+		        GroupIsOn = (ushort) (HueBridge.HueGroups[RoomId - 1].On ? 1 : 0);
+		        RoomBri = (ushort) HueBridge.HueGroups[RoomId - 1].Bri;
+		        RoomHue = (ushort) HueBridge.HueGroups[RoomId - 1].Hue;
+		        RoomSat = (ushort) HueBridge.HueGroups[RoomId - 1].Sat;
+		        RoomClass = HueBridge.HueGroups[RoomId - 1].GroupClass;
+		        for (int i = 1; i <= 20; i++)
+		        {
+			        if (HueBridge.HueGroups[RoomId - 1].SceneName[i] != null)
+			        {
+				        SceneName[i] = HueBridge.HueGroups[RoomId - 1].SceneName[i];
+				        SceneId[i] = HueBridge.HueGroups[RoomId - 1].SceneID[i];
+			        }
+			        else
+			        {
+				        int x;
+				        x = i - 1;
+				        SceneNum = (ushort) x;
+				        break;
+			        }
+		        }
+		        RoomOnline = 1;
+		        TriggerRoomOnlineUpdate();
+		        CrestronConsole.PrintLine("Get {0} is complete", GroupName);
+	        }
+			else
+			{
+				CrestronConsole.PrintLine("Room not online: {0}", GroupName);
+			}
         }
 
 	    /// <summary>
@@ -112,8 +155,7 @@ namespace HueLights
                 if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
                     Payload payload = new Payload(){SetType = "groups", LvlType = lvltype, OnOff = val, Effect = effect};
-                    string json = HueBridge.SetCmd(PayloadType.OnOff, payload, RoomId);
-                    //String json = HueBridge.SetOnOff("groups", RoomId, actioncmd, "action", effect);
+                    string json = HueBridge.SetCmd(PayloadType.RoomOnOff, payload, RoomId);
                     JArray JReturn = JArray.Parse(json);
                     string tokenreturn = "/groups/" + RoomId + "/action/on";
                     foreach (var Jobj in JReturn)
@@ -152,11 +194,12 @@ namespace HueLights
                 if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
                     var payload = new Payload() { SetType = "groups", Lvl = val, LvlType = lvltype };
-                    string json = HueBridge.SetCmd(PayloadType.Lvl, payload, RoomId);
+                    var json = HueBridge.SetCmd(PayloadType.Lvl, payload, RoomId);
+					
                     if (json.Contains("success"))
                     {
                         var jData = JArray.Parse(json);
-                        string nodeVal = "/" + payload.SetType + "/" + RoomId + payload.CmdType + lvltype;
+                        var nodeVal = "/" + payload.SetType + "/" + RoomId + "/" + payload.CmdType + "/" + lvltype;
                         switch (lvltype)
                         {
                             case "bri":
@@ -257,9 +300,14 @@ namespace HueLights
             RoomOnOffUpdate(this, new EventArgs());
         }
 
-        public void TriggerRoomOnlineUpdate()
+        public void TriggerRoomUpdate()
         {
-            RoomOnlineUpdate(this, new EventArgs());
+            RoomUpdate(this, new EventArgs());
         }
+
+	    public void TriggerRoomOnlineUpdate()
+	    {
+		    RoomOnlineUpdate(this, new EventArgs());
+	    }
     }
 }

@@ -67,6 +67,7 @@
     <Compile Include="HueBridge.cs" />
     <Compile Include="HueItems.cs" />
     <Compile Include="HueLight.cs" />
+    <Compile Include="HueMotion.cs" />
     <Compile Include="HueProc.cs" />
     <Compile Include="HueRoom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

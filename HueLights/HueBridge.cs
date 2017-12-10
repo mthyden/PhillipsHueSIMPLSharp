@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Crestron.SimplSharp;
-using Crestron.SimplSharp.Net.Https;
-using Crestron.SimplSharp.Net.Http;
 using Newtonsoft.Json.Linq;
 using Crestron.SimplSharp.CrestronDataStore;
 
@@ -16,7 +15,8 @@ namespace HueLights
 
     public enum PayloadType
     {
-        OnOff,
+        RoomOnOff,
+		BulbOnOff,
         Lvl,
         XY,
         Scene
@@ -55,6 +55,7 @@ namespace HueLights
     {
         public static event EventHandler<InfoEventArgs> InfoReceived;  //event handler indicating data received 
 
+	    public static bool LocalKey;
         public static bool Authorized;
         public static bool Populated;
         public static string BridgeIp;
@@ -65,7 +66,7 @@ namespace HueLights
 
         public static List<HueBulb> HueBulbs = new List<HueBulb>();
         public static List<HueGroup> HueGroups = new List<HueGroup>();
-        public static List<HueScene> HueScenes = new List<HueScene>();
+		public static List<HueSensor> HueSensors = new List<HueSensor>(); 
         
         /// <summary>
         /// registers with bridge, authorizes a user based on API key from the pairing
@@ -77,7 +78,7 @@ namespace HueLights
             {
 				_url = string.Format("http://{0}/api", BridgeIp);
 	            _cmd = "{\"devicetype\":\"my_hue_app#crestron\"}";
-				_response = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Post);
+				_response = HttpConnect.Instance.Request(_url, _cmd, Crestron.SimplSharp.Net.Http.RequestType.Post);
 				if (_response.Contains("link button not pressed"))
                 {
                     Authorized = false;
@@ -86,9 +87,9 @@ namespace HueLights
 				else if (_response.Contains("username"))
                 {
                     Authorized = true;
-					JArray data = JArray.Parse(_response);
+					var data = JArray.Parse(_response);
                     BridgeApi = (String)data[0]["success"]["username"];
-                    CrestronConsole.PrintLine("API key is {0}",BridgeApi);
+                    //CrestronConsole.PrintLine("API key is {0}",BridgeApi);
                     if (CrestronDataStoreStatic.SetLocalStringValue("apikey", BridgeApi) != CrestronDataStore.CDS_ERROR.CDS_SUCCESS)
                         CrestronConsole.PrintLine("error storing apikey");
                     CrestronConsole.PrintLine("Bridge registration complete");
@@ -123,8 +124,17 @@ namespace HueLights
         public static string GetDataStore()
         {
             string temp;
-            if (CrestronDataStoreStatic.GetLocalStringValue("apikey", out temp) != CrestronDataStore.CDS_ERROR.CDS_SUCCESS)
-                CrestronConsole.PrintLine("error getting apikey");
+	        if (CrestronDataStoreStatic.GetLocalStringValue("apikey", out temp) == CrestronDataStore.CDS_ERROR.CDS_SUCCESS && temp.Length > 30)
+	        {
+				//CrestronConsole.PrintLine("local key: {0}",temp);
+		        LocalKey = true;
+	        }
+	        else
+	        {
+				CrestronConsole.PrintLine("No local API key stored");
+				LocalKey = false;
+	        }
+
             return temp;
         }
 
@@ -168,8 +178,8 @@ namespace HueLights
         {
             try
             {
-				_url = string.Format("http://{0}/api/{1}/{2}", HueBridge.BridgeIp, HueBridge.BridgeApi, infotype);
-				String jsontext = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
+				_url = string.Format("http://{0}/api/{1}/{2}", BridgeIp, BridgeApi, infotype);
+				string jsontext = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
 				OnInfoReceived(infotype, jsontext);
             }
             catch (Exception e)
@@ -180,14 +190,19 @@ namespace HueLights
 
         public static string SetCmd(PayloadType payloadtype, Payload payload, ushort setid)
         {
-            _url = string.Format("http://{0}/api/{1}/{2}/{3}/{4}", HueBridge.BridgeIp, HueBridge.BridgeApi, payload.SetType, setid, payload.CmdType);
+            _url = string.Format("http://{0}/api/{1}/{2}/{3}/{4}", BridgeIp, BridgeApi, payload.SetType, setid, payload.CmdType);
             switch (payloadtype)
             {
-                case PayloadType.OnOff:
+                case PayloadType.RoomOnOff:
                 {
 					_cmd = String.Format("{0}\"on\":{1},\"effect\":\"{2}\"{3}", '{', payload.OnOff, payload.Effect, '}');
                     break;
                 }
+				case PayloadType.BulbOnOff:
+				{
+					_cmd = String.Format("{0}\"on\":{1}{2}", '{', payload.OnOff,'}');
+					break;
+				}
                 case PayloadType.Lvl:
                 {
 					_cmd = "{\"" + payload.LvlType + "\":" + payload.Lvl.ToString() + "}";
@@ -203,14 +218,13 @@ namespace HueLights
                 case PayloadType.Scene:
                 {
 					_cmd = String.Format("{0}\"scene\":\"{1}\"{2}", '{', payload.Scene, '}');
-                    //CrestronConsole.PrintLine("cmdval: {0}", cmdval);
                     break;
                 }
             }
 			return HttpConnect.Instance.Request(_url, _cmd, Crestron.SimplSharp.Net.Http.RequestType.Put);
         }
 
-        static void OnInfoReceived(String infotype, string jsondata)
+        static void OnInfoReceived(string infotype, string jsondata)
         {
             if(infotype != null)
                 InfoReceived(null, new InfoEventArgs(){InfoType = infotype, JsonData = jsondata});
