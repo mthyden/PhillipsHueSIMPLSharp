@@ -9,122 +9,91 @@ using Newtonsoft.Json.Linq;
 
 namespace HueTest
 {
-	public class ControlSystem : CrestronControlSystem
-	{
-		private FileStream _roomStream;
-		private StreamReader _roomReader;
-		private FileStream _scenesStream;
-		private StreamReader _scenesReader;
+    public class ControlSystem : CrestronControlSystem
+    {
+        private FileStream _roomStream;
+        private StreamReader _roomReader;
+        private FileStream _scenesStream;
+        private StreamReader _scenesReader;
 		private FileStream _sensorStream;
-		private StreamReader _sensorReader;
-		private FileStream _bulbStream;
-		private StreamReader _bulbReader;
+	    private StreamReader _sensorReader;
 
-		public String[] GrpName;
-		public String[] BlbName;
+        public String[] GrpName;
+        public String[] BlbName;
 
-		private HueProc _hue;
+        private HueProc _hue;
 
-		/// <summary>
-		/// ControlSystem Constructor. Starting point for the SIMPL#Pro program.
-		/// Use the constructor to:
-		/// * Initialize the maximum number of threads (max = 400)
-		/// * Register devices
-		/// * Register event handlers
-		/// * Add Console Commands
-		/// 
-		/// Please be aware that the constructor needs to exit quickly; if it doesn't
-		/// exit in time, the SIMPL#Pro program will exit.
-		/// 
-		/// You cannot send / receive data in the constructor
-		/// </summary>
-		public ControlSystem()
-			: base()
-		{
-			try
-			{
-				Thread.MaxNumberOfUserThreads = 20;
-
-				//Subscribe to the controller events (System, Program, and Ethernet)
-				CrestronEnvironment.SystemEventHandler += new SystemEventHandler(ControlSystem_ControllerSystemEventHandler);
-				CrestronEnvironment.ProgramStatusEventHandler +=
-					new ProgramStatusEventHandler(ControlSystem_ControllerProgramEventHandler);
-				CrestronEnvironment.EthernetEventHandler += new EthernetEventHandler(ControlSystem_ControllerEthernetEventHandler);
-				CrestronConsole.AddNewConsoleCommand(ReadBulbs, "bulbs", "Tests the Hue request",
-					ConsoleAccessLevelEnum.AccessAdministrator);
-				CrestronConsole.AddNewConsoleCommand(ReadGroups, "groups", "Tests the Hue request",
-					ConsoleAccessLevelEnum.AccessAdministrator);
-				CrestronConsole.AddNewConsoleCommand(ReadScenes, "scenes", "Tests the Hue request",
-					ConsoleAccessLevelEnum.AccessAdministrator);
-				CrestronConsole.AddNewConsoleCommand(ReadSensors, "sensors", "Tests the Hue request",
-					ConsoleAccessLevelEnum.AccessAdministrator);
-			}
-			catch (Exception e)
-			{
-				ErrorLog.Error("Error in the constructor: {0}", e.Message);
-			}
-		}
-
-		/// <summary>
-		/// InitializeSystem - this method gets called after the constructor 
-		/// has finished. 
-		/// 
-		/// Use InitializeSystem to:
-		/// * Start threads
-		/// * Configure ports, such as serial and verisports
-		/// * Start and initialize socket connections
-		/// Send initial device configurations
-		/// 
-		/// Please be aware that InitializeSystem needs to exit quickly also; 
-		/// if it doesn't exit in time, the SIMPL#Pro program will exit.
-		/// </summary>
-		public override void InitializeSystem()
-		{
-			try
-			{
-
-			}
-			catch (Exception e)
-			{
-				ErrorLog.Error("Error in InitializeSystem: {0}", e.Message);
-			}
-		}
-
-		public void ReadBulbs(string s)
-		{
-			ProcBulbs();
-		}
-
-		public void ReadGroups(string s)
-		{
-			ProcGroups();
-		}
-
-		public void ReadScenes(string s)
-		{
-			ProcScenes();
-		}
-
-		public void ReadSensors(string s)
-		{
-			ProcSensors();
-		}
-
-		public void ProcBulbs()
-		{
-			_bulbStream = new FileStream(@"\NVRAM\lights.txt", FileMode.Open, FileAccess.ReadWrite);
-			_bulbReader = new StreamReader(_bulbStream);
-			string jsonbulbs = _bulbReader.ReadToEnd();
-			_bulbStream.Close();
-			_bulbReader.Close();
-			BulbsTest(jsonbulbs);			
-		}
-
-		public void ProcGroups()
+        /// <summary>
+        /// ControlSystem Constructor. Starting point for the SIMPL#Pro program.
+        /// Use the constructor to:
+        /// * Initialize the maximum number of threads (max = 400)
+        /// * Register devices
+        /// * Register event handlers
+        /// * Add Console Commands
+        /// 
+        /// Please be aware that the constructor needs to exit quickly; if it doesn't
+        /// exit in time, the SIMPL#Pro program will exit.
+        /// 
+        /// You cannot send / receive data in the constructor
+        /// </summary>
+        public ControlSystem()
+            : base()
         {
             try
             {
-                _roomStream = new FileStream(@"\NVRAM\groups.txt", FileMode.Open, FileAccess.Read);
+                Thread.MaxNumberOfUserThreads = 20;
+
+                //Subscribe to the controller events (System, Program, and Ethernet)
+                CrestronEnvironment.SystemEventHandler += new SystemEventHandler(ControlSystem_ControllerSystemEventHandler);
+                CrestronEnvironment.ProgramStatusEventHandler += new ProgramStatusEventHandler(ControlSystem_ControllerProgramEventHandler);
+                CrestronEnvironment.EthernetEventHandler += new EthernetEventHandler(ControlSystem_ControllerEthernetEventHandler);
+                CrestronConsole.AddNewConsoleCommand(ConfigureHue, "testhue", "Tests the Hue request",
+                    ConsoleAccessLevelEnum.AccessAdministrator);
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Error("Error in the constructor: {0}", e.Message);
+            }
+        }
+
+        /// <summary>
+        /// InitializeSystem - this method gets called after the constructor 
+        /// has finished. 
+        /// 
+        /// Use InitializeSystem to:
+        /// * Start threads
+        /// * Configure ports, such as serial and verisports
+        /// * Start and initialize socket connections
+        /// Send initial device configurations
+        /// 
+        /// Please be aware that InitializeSystem needs to exit quickly also; 
+        /// if it doesn't exit in time, the SIMPL#Pro program will exit.
+        /// </summary>
+        public override void InitializeSystem()
+        {
+            try
+            {
+
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Error("Error in InitializeSystem: {0}", e.Message);
+            }
+        }
+
+        public void ConfigureHue(string s)
+        {
+			//ProcBulbs();
+            //ProcGroups();
+	        //ProcScenes();
+	        ProcSensors();
+        }
+
+        public void ProcGroups()
+        {
+            try
+            {
+                _roomStream = new FileStream(@"\NVRAM\Groups.txt", FileMode.Open, FileAccess.Read);
                 _roomReader = new StreamReader(_roomStream);
                 string jsonrooms = _roomReader.ReadToEnd();
                 _roomStream.Close();
@@ -171,57 +140,6 @@ namespace HueTest
 			}
 		}
 
-		public void BulbsTest(string jsondata)
-		{
-			try
-			{
-				JObject jData = JObject.Parse(jsondata);
-				HueBridge.HueBulbs.Clear();
-				foreach (var bulb in jData)
-				{
-					string id = bulb.Key;
-					uint hue = 0;
-					uint sat = 0;
-					uint ct = 0;
-					string colormode;
-					bool on = (bool)jData[id]["state"]["on"];
-					uint bri = (uint)jData[id]["state"]["bri"];
-					string type = (string)jData[id]["type"];
-					string name = (string)jData[id]["name"];
-					string model = (string)jData[id]["modelid"];
-					string manufacturer = (string)jData[id]["manufacturername"];
-					string uid = (string)jData[id]["uniqueid"];
-					string swver = (string)jData[id]["swversion"];
-					if (jData[id]["state"].SelectToken("colormode") != null)
-					{
-						colormode = (string) jData[id]["state"]["colormode"];
-						if (jData[id]["state"].SelectToken("hue") != null)
-						{
-							hue = (uint)jData[id]["state"]["hue"];
-						}
-						if (jData[id]["state"].SelectToken("sat") != null)
-						{
-							sat = (uint)jData[id]["state"]["sat"];
-						}
-						if (jData[id]["state"].SelectToken("ct") != null)
-						{
-							ct = (uint)jData[id]["state"]["ct"];
-						}						
-						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, ct, type, name, model, manufacturer, uid, swver, colormode));
-					}
-					else
-					{
-						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, type, name, model, manufacturer, uid, swver));
-					}
-				}
-				var BulbNum = (ushort)HueBridge.HueBulbs.Count;
-				CrestronConsole.PrintLine("{0} Bulbs discovered", BulbNum);
-			}
-			catch (Exception e)
-			{
-				CrestronConsole.PrintLine("Error getting bulbs: {0}", e);
-			}
-		}
 
         public void RoomsTest(string jsondata)
         {
