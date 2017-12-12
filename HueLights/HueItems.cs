@@ -18,6 +18,7 @@ namespace HueLights
 		public uint Bri;
 		public uint Hue;
 		public uint Sat;
+	    public uint Ct;
 		public string Alert;
 		public string Effect;
 		public string ColorMode;
@@ -41,16 +42,18 @@ namespace HueLights
             SwVer = swver;
         }
 
-        public HueBulb(string id, bool on, uint bri, uint hue, uint sat, string type, string name, string model, string manufacturer, string uid, string swver)
+        public HueBulb(string id, bool on, uint bri, uint hue, uint sat, uint ct, string type, string name, string model, string manufacturer, string uid, string swver, string colormode)
         {
             Id = id;
             On = on;
             Bri = bri;
             Hue = hue;
             Sat = sat;
+	        Ct = ct;
             Type = type;
             Name = name;
             Model = model;
+	        ColorMode = colormode;
             Manufacturer = manufacturer;
             Uid = uid;
             SwVer = swver;
@@ -65,6 +68,7 @@ namespace HueLights
 		public uint Sat;
         public string RoomType;
         public string Alert;
+	    public string ColorMode;
 	    public string GroupClass;
         public string AssignedLoad;
         public uint ScenesNum;

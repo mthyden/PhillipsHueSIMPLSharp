@@ -175,30 +175,45 @@ namespace HueLights
         {
             try
             {
-                    JObject jData = JObject.Parse(jsondata);
-                    HueBridge.HueBulbs.Clear();
-                    foreach( var bulb in jData)
-                    {
-                        string id = bulb.Key;
-                        bool on = (bool)jData[id]["state"]["on"];
-                        uint bri = (uint)jData[id]["state"]["bri"];
-                        string type = (string)jData[id]["type"];
-                        string name = (string)jData[id]["name"];
-                        string model = (string)jData[id]["modelid"];
-                        string manufacturer = (string)jData[id]["manufacturername"];
-                        string uid = (string)jData[id]["uniqueid"];
-                        string swver = (string)jData[id]["swversion"];
-                        if (type.Contains("color") || type.Contains("Color"))
-                        {
-                            uint hue = (uint)jData[id]["state"]["hue"];
-                            uint sat = (uint)jData[id]["state"]["sat"];
-                            HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, type, name, model, manufacturer, uid, swver));
-                        }
-                        else
-                        {
-                            HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, type, name, model, manufacturer, uid, swver));
-                        }
-                    }
+				JObject jData = JObject.Parse(jsondata);
+				HueBridge.HueBulbs.Clear();
+				foreach (var bulb in jData)
+				{
+					string id = bulb.Key;
+					uint hue = 0;
+					uint sat = 0;
+					uint ct = 0;
+					string colormode;
+					bool on = (bool)jData[id]["state"]["on"];
+					uint bri = (uint)jData[id]["state"]["bri"];
+					string type = (string)jData[id]["type"];
+					string name = (string)jData[id]["name"];
+					string model = (string)jData[id]["modelid"];
+					string manufacturer = (string)jData[id]["manufacturername"];
+					string uid = (string)jData[id]["uniqueid"];
+					string swver = (string)jData[id]["swversion"];
+					if (jData[id]["state"].SelectToken("colormode") != null)
+					{
+						colormode = (string)jData[id]["state"]["colormode"];
+						if (jData[id]["state"].SelectToken("hue") != null)
+						{
+							hue = (uint)jData[id]["state"]["hue"];
+						}
+						if (jData[id]["state"].SelectToken("sat") != null)
+						{
+							sat = (uint)jData[id]["state"]["sat"];
+						}
+						if (jData[id]["state"].SelectToken("ct") != null)
+						{
+							ct = (uint)jData[id]["state"]["ct"];
+						}
+						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, ct, type, name, model, manufacturer, uid, swver, colormode));
+					}
+					else
+					{
+						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, type, name, model, manufacturer, uid, swver));
+					}
+				}1
                     BulbNum = (ushort)HueBridge.HueBulbs.Count;
                     CrestronConsole.PrintLine("{0} Bulbs discovered", BulbNum);
                     HueBridge.GetBridgeInfo("groups");
