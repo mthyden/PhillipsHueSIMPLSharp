@@ -5896,6 +5896,11 @@
             Gets the runtime environment of the SIMPL# module.
             </summary>
         </member>
+        <member name="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform">
+            <summary>
+            Gets the platform SIMPL#/SIMPL# Pro is running on.
+            </summary>
+        </member>
         <member name="P:Crestron.SimplSharp.CrestronEnvironment.NewLine">
             <summary>
             Gets the newline string defined for this environment.
@@ -7213,6 +7218,21 @@
         <member name="F:Crestron.SimplSharp.eRuntimeEnvironment.SimplSharpPro">
             <summary>
             This SIMPL# module is running as a part of a SIMPL# Pro application.
+            </summary>
+        </member>
+        <member name="T:Crestron.SimplSharp.eDevicePlatform">
+            <summary>
+            Enumeration to define the various platforms a program can be running on. 
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eDevicePlatform.Appliance">
+            <summary>
+            Running on a dedicated control systems like a CP3 or RMC3.
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.eDevicePlatform.Server">
+            <summary>
+            Running on a Crestron Server platform.
             </summary>
         </member>
         <member name="T:Crestron.SimplSharp.Interlocked">
@@ -38289,6 +38309,11 @@
             Socket status
             </summary>
         </member>
+        <member name="P:Crestron.SimplSharp.CrestronSockets.SecureTCPClient.getSSLStream">
+            <summary>
+            Returns Secure Stream used for Ssl Connection.
+            </summary>
+        </member>
         <member name="E:Crestron.SimplSharp.CrestronSockets.SecureTCPClient.m_iSocketStatusChange">
             <summary>
             Socket status change event that is fired when the status changes
@@ -43408,17 +43433,37 @@
             FileTransferClient class is a File Transfer Class.  
             </summary>
         </member>
-        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.HttpsResponse(System.IntPtr,System.Int32,System.Int32,System.IntPtr)">
-            <summary>
-            Callback function to process the FGet/FPut's data info
-            </summary>
-            <param name="buffer">The pointer receive/transmit stream</param>
-            <param name="size">Total number of bytes to transfer (</param>
-            <param name="nmemb">Current number of bytes transferred. </param>
-            <param name="response">Pointer user data stream</param>
-            <returns>Number of bytes transferred. </returns>
-        </member>
         <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.ResponseStream(System.IntPtr,System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            CallBack Stream for incomming data (response)
+            </summary>
+            <param name="buffer">the data stream</param>
+            <param name="size">size of item</param>
+            <param name="nmemb">the number of items to deliver</param>
+            <param name="response">The response stream as user data</param>
+            <returns>The number of items delivered</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.ResponseCallbackFunc(System.IntPtr,System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            CallBack Stream for incomming data (response)
+            </summary>
+            <param name="buffer">the data stream</param>
+            <param name="size">size of item</param>
+            <param name="nmemb">the number of items to deliver</param>
+            <param name="response">The response stream as user data</param>
+            <returns>The number of items delivered</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.RequestStream(System.IntPtr,System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            Callback Function to output the Stream Content
+            </summary>
+            <param name="buffer">The buffer to write items to.</param>
+            <param name="size">number of bytes in each item</param>
+            <param name="nmemb">Number of items you can send</param>
+            <param name="userObject">Null</param>
+            <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.GetStream(System.IntPtr,System.Int32,System.Int32,System.IntPtr)">
             <summary>
             CallBack Stream for incomming data (response)
             </summary>
@@ -43428,7 +43473,7 @@
             <param name="data">NUll</param>
             <returns>The number of items delivered</returns>
         </member>
-        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.PutStream(System.IntPtr,System.Int32,System.Int32,System.IntPtr)">
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.PostStream(System.IntPtr,System.Int32,System.Int32,System.IntPtr)">
             <summary>
             Callback Function to output the Stream Content
             </summary>
@@ -43477,15 +43522,15 @@
             <param name="stream">Source to read</param>
             <returns> Returns the number of bytes sent. </returns>
         </member>
-        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.HttpsPut(System.IntPtr,System.Int32,System.Int32,System.IntPtr)">
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.RequestCallbackFunc(System.IntPtr,System.Int32,System.Int32,System.IntPtr)">
             <summary>
-            Callback function to process the FGet/FPut's progress info
+            CallBack Stream for outgoing data (request)
             </summary>
-            <param name="buffer">Pointer to a data structure provided in SetProgressCallBack</param>
-            <param name="size">object size in bytes</param>
-            <param name="nmemb">Current number of bytes transferred. -1 means heartbeat</param>
-            <param name="response">stream buffer</param>
-            <returns>Number of bytes transferred. </returns>
+            <param name="buffer">the data stream</param>
+            <param name="size">size of item</param>
+            <param name="nmemb">the number of items to deliver</param>
+            <param name="request">The request stream as user data</param>
+            <returns>The number of items delivered</returns>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.#cctor">
             <summary>
@@ -43750,13 +43795,14 @@
             <summary>
             Set option for connection timeout.
             </summary>
-            <param name="timeout">The timeout</param>
+            <param name="timeout">The timeout. The value must be positive in the range of 0 to 65353 (ushort)</param>
             <returns>Zero if successful.
             -1 if underlying object has not been properly initialized.
             1 if internal error occurred. Use GetLastClientError() to retrieve the error code.
             87 if invalid parameter was passed.
             </returns>
             <exception cref="T:System.ObjectDisposedException">The FTC Client has already been closed or disposed.</exception>
+            <exception cref="T:System.ArgumentException">Invalid argument.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.SetIncludeHeaders(System.Boolean)">
             <summary>
@@ -43904,12 +43950,14 @@
             <summary>
             URL Max Redirects
             </summary>
-            <param name="max">Redirect max redirects</param>
+            <param name="max">Redirect max redirects. The value must be positive in the range of 0 to 65353 (ushort)</param>
             <returns>Zero if successful.
             -1 if underlying object has not been properly initialized.
             1 if internal error occurred. Use GetLastClientError() to retrieve the error code.
             87 if invalid parameter was passed.
             </returns>
+            <exception cref="T:System.ObjectDisposedException">The FTC Client has already been closed or disposed.</exception>
+            <exception cref="T:System.ArgumentException">Invalid argument.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.GetEffectiveUrl(System.String@)">
             <summary>
@@ -43990,7 +44038,7 @@
             87 if invalid parameter was passed.
             </returns>
         </member>
-        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.SendMailMessage(Crestron.SimplSharp.CrestronFileTransferClient.ResponseCallBack,System.Object)">
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.SendMailMessage(System.IntPtr,System.Object)">
             <summary>
             Sends email.  Blocks until the email is sent.
             </summary>
@@ -44027,7 +44075,7 @@
             87 if invalid parameter was passed.
             </returns>
         </member>
-        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.DispatchRequest(Crestron.SimplSharp.CrestronFileTransferClient.ResponseCallBack,Crestron.SimplSharp.CrestronFileTransferClient.FTCCmdRequest,System.String,System.Object,System.Object)">
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.DispatchRequest(System.IntPtr,Crestron.SimplSharp.CrestronFileTransferClient.FTCCmdRequest,System.String,System.Object,System.Object)">
             <summary>
             Sends a get/put message to the url
             </summary>
@@ -44057,7 +44105,7 @@
             <returns>The string containing the error</returns>
             <exception cref="T:System.ObjectDisposedException">The FTC Client has already been closed or disposed.</exception>
         </member>
-        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.SetResponseCallBack(Crestron.SimplSharp.CrestronFileTransferClient.ResponseCallBack)">
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.SetResponseCallBack(System.IntPtr)">
             <summary>
             Set the response function to use
             </summary>
@@ -44243,7 +44291,7 @@
             non-zero means termination of the upload/download process by callback.
             </returns>
         </member>
-        <member name="T:Crestron.SimplSharp.CrestronFileTransferClient.ResponseCallBack">
+        <member name="T:Crestron.SimplSharp.CrestronFileTransferClient.StreamCallBack">
             <summary>
             CallBack prototype for response feedback - Internal
             </summary>
@@ -44450,6 +44498,30 @@
             <exception cref="T:System.ArgumentNullException"> buffer is null.</exception>
             <exception cref="T:Crestron.SimplSharp.CrestronIO.IOException"></exception> 
             <exception cref="T:System.ArgumentException">The sum of offset and count is greater than the buffer length.</exception>
+        </member>
+        <member name="P:Crestron.SimplSharp.AsyncStream.CanTimeout">
+            <summary>
+             Gets a value that determines whether the current stream can time out.
+            </summary>
+            <returns> A value that determines whether the current stream can time out.</returns>
+        </member>
+        <member name="P:Crestron.SimplSharp.AsyncStream.ReadTimeout">
+            <summary>
+            Gets or sets a value, in milliseconds, that determines how long the stream
+            will attempt to read before timing out.
+            </summary>
+            <returns>A value, in milliseconds, that determines how long the stream will attempt
+            to read before timing out.</returns>
+            <exception cref="T:System.InvalidOperationException">The CrestronIO.Stream.ReadTimeout method always throws an System.InvalidOperationException.</exception>
+        </member>
+        <member name="P:Crestron.SimplSharp.AsyncStream.WriteTimeout">
+            <summary>
+             Gets or sets a value, in milliseconds, that determines how long the stream 
+             will attempt to write before timing out.
+            </summary>
+            <returns>A value, in milliseconds, that determines how long the stream will attempt
+            to write before timing out.</returns>
+            <exception cref="T:System.InvalidOperationException">The CrestronIO.Stream.WriteTimeout method always throws an System.InvalidOperationException.</exception>
         </member>
         <member name="P:Crestron.SimplSharp.AsyncStream.Eos">
             <summary>
@@ -45823,6 +45895,12 @@
             Static class for all initial parameters
             </summary>
         </member>
+        <member name="M:Crestron.SimplSharp.InitialParametersClass.IsPlatformPc">
+            <summary>
+            Function to indicate if the current running platform is Linux PC
+            </summary>
+            <returns>'true', running on a PC; 'false' otherwise.</returns>
+        </member>
         <member name="M:Crestron.SimplSharp.InitialParametersClass.IsPlatformWindowsCe">
             <summary>
             Function to indicate if the current running platform is WindowsCE
@@ -46059,6 +46137,11 @@
         <member name="F:Crestron.SimplSharp.InitialParametersClass.Platforms.PLATFORM_LINUX">
             <summary>
             This is an Linux device platform
+            </summary>
+        </member>
+        <member name="F:Crestron.SimplSharp.InitialParametersClass.Platforms.PLATFORM_LINUX_CS_ON_PC">
+            <summary>
+            This is a Linux OS running on a PC/Server
             </summary>
         </member>
         <member name="M:Crestron.SimplSharp.InitialParametersClass.ProductName.Init">
@@ -49814,6 +49897,13 @@
             Destructs the HTTPS client and frees unmanaged resourses
             </summary>
         </member>
+        <member name="M:Crestron.SimplSharp.Net.Https.HttpsClient.TryProcessBusy">
+            <summary>
+            Checks if process is busy and locks it if it is not
+            </summary>
+            <returns>true if the process is already busy (failed to lock it). 
+            false on success setting <see cref="P:Crestron.SimplSharp.Net.Https.HttpsClient.ProcessBusy"/> to true</returns>
+        </member>
         <member name="M:Crestron.SimplSharp.Net.Https.HttpsClient.SetClientCertificate(Crestron.SimplSharp.Cryptography.X509Certificates.X509Certificate)">
             <summary>
             Sets Client Security Certificate associated with this object.
@@ -52123,6 +52213,17 @@
             <remarks>Can only execute commands that specify up to (and including) programmer access level.</remarks>
             <exception cref="T:System.NotSupportedException">Feature is unavailable.</exception>
         </member>
+        <member name="M:Crestron.SimplSharp.ICrestronConsole.SendControlSystemCommand(System.String,System.String@,System.UInt32)">
+            <summary>
+            Function to allow the user to send a console command and receive a response from the control system.
+            </summary>
+            <param name="commandToSend">The console command to send; end line not needed.</param>
+            <param name="pResponse">Reference to a string where the controller's response will be stored.</param>
+            <param name="timeOutInMsec">Timeout in millisec.</param>
+            <returns>True/False if the command was sent correctly.</returns>
+            <remarks>Can only execute commands that specify up to (and including) programmer access level.</remarks>
+            <exception cref="T:System.NotSupportedException">Feature is unavailable.</exception>
+        </member>
         <member name="P:Crestron.SimplSharp.ICrestronConsole.ConsoleRegistered">
             <summary>
             Flag to determine if the console has been registered. Once registered adding new console commands is not allowed.
@@ -52235,6 +52336,16 @@
             <returns>True/False if the command was sent correctly.</returns>
             <exception cref="T:System.NotSupportedException">This feature is only available in SIMPL# Pro.</exception>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronConsole.SendControlSystemCommand(System.String,System.String@,System.UInt32)">
+            <summary>
+            Function to allow the user to send a console command and receive a response from the control system with timeout override (Only available on Mercury).
+            </summary>
+            <param name="commandToSend">The console command to send; end line not needed.</param>
+            <param name="pResponse">Reference to a string where the controller's response will be stored.</param>
+            <param name="timeOutInMsec">The time out in msec.</param>
+            <returns>True/False if the command was sent correctly.</returns>
+            <exception cref="T:System.NotSupportedException">This feature is only available in Mercury.</exception>
+        </member>
         <member name="P:Crestron.SimplSharp.CrestronConsole.ConsoleRegistered">
             <summary>
             Flag to determine if the console has been registered. Once registered adding new console commands is not allowed.
@@ -52331,6 +52442,17 @@
             <returns>True/False if the command was sent correctly.</returns>
             <exception cref="T:System.NotSupportedException">Feature is unavailable.</exception>
             <remarks>Can only execute commands that specify up to (and including) programmer access level.</remarks>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronConsoleSupportClass.SendControlSystemCommand(System.String,System.String@,System.UInt32)">
+            <summary>
+            Function to allow the user to send a console command and receive a response from the control system with timeout override (Only available on Mercury).
+            </summary>
+            <param name="commandToSend">The console command to send; end line not needed.</param>
+            <param name="pResponse">Reference to a string where the controller's response will be stored.</param>
+            <param name="timeOutInMsec">Timeout in Millisec.</param>
+            <returns>True/False if the command was sent correctly.</returns>
+            <exception cref="T:System.NotSupportedException">Feature is unavailable.</exception>
+            <remarks>Can only execute commands that specify up to (and including) programmer access level. Only supported for Mercury</remarks>
         </member>
         <member name="P:Crestron.SimplSharp.CrestronConsoleSupportClass.ConsoleRegistered">
             <summary>

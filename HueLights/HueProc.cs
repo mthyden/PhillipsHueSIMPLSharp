@@ -175,30 +175,45 @@ namespace HueLights
         {
             try
             {
-                    JObject jData = JObject.Parse(jsondata);
-                    HueBridge.HueBulbs.Clear();
-                    foreach( var bulb in jData)
-                    {
-                        string id = bulb.Key;
-                        bool on = (bool)jData[id]["state"]["on"];
-                        uint bri = (uint)jData[id]["state"]["bri"];
-                        string type = (string)jData[id]["type"];
-                        string name = (string)jData[id]["name"];
-                        string model = (string)jData[id]["modelid"];
-                        string manufacturer = (string)jData[id]["manufacturername"];
-                        string uid = (string)jData[id]["uniqueid"];
-                        string swver = (string)jData[id]["swversion"];
-                        if (type.Contains("color") || type.Contains("Color"))
-                        {
-                            uint hue = (uint)jData[id]["state"]["hue"];
-                            uint sat = (uint)jData[id]["state"]["sat"];
-                            HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, type, name, model, manufacturer, uid, swver));
-                        }
-                        else
-                        {
-                            HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, type, name, model, manufacturer, uid, swver));
-                        }
-                    }
+				JObject json = JObject.Parse(jsondata);
+				HueBridge.HueBulbs.Clear();
+				foreach (var bulb in json)
+				{
+					string id = bulb.Key;
+					uint hue = 0;
+					uint sat = 0;
+					uint ct = 0;
+					string colormode;
+					bool on = (bool)json[id]["state"]["on"];
+					uint bri = (uint)json[id]["state"]["bri"];
+					string type = (string)json[id]["type"];
+					string name = (string)json[id]["name"];
+					string model = (string)json[id]["modelid"];
+					string manufacturer = (string)json[id]["manufacturername"];
+					string uid = (string)json[id]["uniqueid"];
+					string swver = (string)json[id]["swversion"];
+					if (json[id]["state"].SelectToken("colormode") != null)
+					{
+						colormode = (string)json[id]["state"]["colormode"];
+						if (json[id]["state"].SelectToken("hue") != null)
+						{
+							hue = (uint)json[id]["state"]["hue"];
+						}
+						if (json[id]["state"].SelectToken("sat") != null)
+						{
+							sat = (uint)json[id]["state"]["sat"];
+						}
+						if (json[id]["state"].SelectToken("ct") != null)
+						{
+							ct = (uint)json[id]["state"]["ct"];
+						}
+						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, ct, type, name, model, manufacturer, uid, swver, colormode));
+					}
+					else
+					{
+						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, type, name, model, manufacturer, uid, swver));
+					}
+				}
                     BulbNum = (ushort)HueBridge.HueBulbs.Count;
                     CrestronConsole.PrintLine("{0} Bulbs discovered", BulbNum);
                     HueBridge.GetBridgeInfo("groups");
@@ -216,9 +231,9 @@ namespace HueLights
         {
             try
             {
-                    JObject jData = JObject.Parse(jsondata);
+				JObject json = JObject.Parse(jsondata);
                     HueBridge.HueGroups.Clear();
-                    foreach (var group in jData)
+					foreach (var group in json)
                     {
                         string load;
 	                    uint bri;
@@ -227,17 +242,17 @@ namespace HueLights
 	                    string roomclass;
 	                    string type;
                         string id = group.Key;
-	                    if ((string) jData[group.Key]["type"] == "Room")
+						if ((string)json[group.Key]["type"] == "Room")
 	                    {
-							string name = (string)jData[group.Key]["name"];
-							roomclass = (string)jData[group.Key]["class"];
-							type = (string)jData[group.Key]["type"];
-							if (jData[group.Key]["lights"].HasValues)
+							string name = (string)json[group.Key]["name"];
+							roomclass = (string)json[group.Key]["class"];
+							type = (string)json[group.Key]["type"];
+							if (json[group.Key]["lights"].HasValues)
 							{
-								load = (string)jData[group.Key]["lights"][0];
-								loadList = (JArray)jData[group.Key]["lights"];
+								load = (string)json[group.Key]["lights"][0];
+								loadList = (JArray)json[group.Key]["lights"];
 								loads = loadList.ToObject<string[]>();
-								bri = (uint)jData[group.Key]["action"]["bri"];
+								bri = (uint)json[group.Key]["action"]["bri"];
 							}
 							else
 							{
@@ -247,7 +262,7 @@ namespace HueLights
 								CrestronConsole.PrintLine("No lights in {0}", name);
 							}
 
-							bool on = (bool)jData[group.Key]["action"]["on"];
+							bool on = (bool)json[group.Key]["action"]["on"];
 							HueBridge.HueGroups.Add(new HueGroup(id, name, type, on, bri, load, loads, roomclass));
 	                    }
                     }
@@ -268,18 +283,18 @@ namespace HueLights
         {
             try
             {
-                JObject jData = JObject.Parse(jsondata);
+				JObject json = JObject.Parse(jsondata);
                 //HueBridge.HueScenes.Clear();
                 string id = "";
                 string name = "";
                 string load = "";
-                foreach (var scene in jData)
+				foreach (var scene in json)
                 {
                     id = scene.Key;
-                    name = (string)jData[id]["name"];
-                    if (jData[id]["lights"].HasValues)
+					name = (string)json[id]["name"];
+					if (json[id]["lights"].HasValues)
                     {
-                        load = (string)jData[id]["lights"][0];
+						load = (string)json[id]["lights"][0];
                     }
                     else
                     {
@@ -307,7 +322,7 @@ namespace HueLights
                         }
                     } 
                 }
-                CrestronConsole.PrintLine("{0} Scenes discovered", jData.Count);
+				CrestronConsole.PrintLine("{0} Scenes discovered", json.Count);
                 HueOnline = 1;
                 HueBridge.Populated = true;
                 GrpName = new String[50];

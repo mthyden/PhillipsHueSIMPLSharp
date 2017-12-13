@@ -13,6 +13,7 @@ namespace HueLights
         public ushort BulbBri;
         public ushort BulbHue;
         public ushort BulbSat;
+	    public ushort BulbCt;
         public ushort BulbOnline;
         public ushort Reachable;
 
@@ -53,11 +54,25 @@ namespace HueLights
 					{
 						BulbId = Convert.ToUInt16(huebulb.Id);
 						_foundBulb = true;
-						GetBulb();
 					}
 				}
-				BulbPopulate();
-				if (_foundBulb == false)
+				if (_foundBulb == true)
+				{
+					BulbName = (String)HueBridge.HueBulbs[BulbId - 1].Name;
+					BulbIsOn = (ushort)(HueBridge.HueBulbs[BulbId - 1].On ? 1 : 0);
+					BulbType = (String)HueBridge.HueBulbs[BulbId - 1].Type;
+					BulbBri = (ushort)HueBridge.HueBulbs[BulbId - 1].Bri;
+					Reachable = (ushort)(HueBridge.HueBulbs[BulbId - 1].Reachable ? 1 : 0);
+					if (HueBridge.HueBulbs[BulbId].Type.Contains("Color"))
+					{
+						BulbHue = (ushort)(HueBridge.HueBulbs[BulbId - 1].Hue);
+						BulbSat = (ushort)(HueBridge.HueBulbs[BulbId - 1].Sat);
+					}
+					BulbOnline = 1;
+					CrestronConsole.PrintLine("Get {0} is complete", BulbName);
+					TriggerBulbOnlineUpdate();
+				}
+				else
 				{
 					CrestronConsole.PrintLine("Bulb not found: {0}", BulbName);
 				}
@@ -74,21 +89,32 @@ namespace HueLights
 					CrestronConsole.PrintLine("url: {0}", _url);
 			        _jsontext = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
 			        _json = JObject.Parse(_jsontext);
-			        HueBridge.HueGroups[BulbId - 1].On = (bool) _json["state"]["on"];
-			        HueBridge.HueGroups[BulbId - 1].Bri = (ushort) _json["state"]["bri"];
-			        BulbBri = (ushort) (HueBridge.HueGroups[BulbId - 1].Bri);
-			        if (HueBridge.HueBulbs[BulbId].Type.Contains("Color"))
-			        {
-				        _supportsColor = true;
-			        }
+			        HueBridge.HueBulbs[BulbId - 1].On = (bool) _json["state"]["on"];
+			        HueBridge.HueBulbs[BulbId - 1].Bri = (ushort) _json["state"]["bri"];
+			        BulbBri = (ushort) (HueBridge.HueBulbs[BulbId - 1].Bri);
+					if (_json["state"].SelectToken("colorMode") != null)
+					{
+						_supportsColor = true;
+					}
 			        if (_supportsColor)
 			        {
-				        HueBridge.HueGroups[BulbId - 1].Hue = (ushort) _json["state"]["hue"];
-				        HueBridge.HueGroups[BulbId - 1].Sat = (ushort) _json["state"]["sat"];
-				        BulbHue = (ushort) (HueBridge.HueGroups[BulbId - 1].Hue);
-				        BulbSat = (ushort) (HueBridge.HueGroups[BulbId - 1].Sat);
+						if (_json["state"].SelectToken("hue") != null)
+						{
+							HueBridge.HueBulbs[BulbId - 1].Hue = (uint)_json["state"]["hue"];
+						}
+						if (_json["state"].SelectToken("sat") != null)
+						{
+							HueBridge.HueBulbs[BulbId - 1].Sat = (uint)_json["state"]["sat"];
+						}
+						if (_json["state"].SelectToken("ct") != null)
+						{
+							HueBridge.HueBulbs[BulbId - 1].Ct = (uint)_json["state"]["ct"];
+						}
+				        BulbHue = (ushort)(HueBridge.HueBulbs[BulbId - 1].Hue);
+				        BulbSat = (ushort)(HueBridge.HueBulbs[BulbId - 1].Sat);
+						BulbCt = (ushort)(HueBridge.HueBulbs[BulbId - 1].Ct);
 			        }
-			        BulbIsOn = (ushort) (HueBridge.HueGroups[BulbId - 1].On ? 1 : 0);
+			        BulbIsOn = (ushort) (HueBridge.HueBulbs[BulbId - 1].On ? 1 : 0);
 		        }
 		        else
 		        {
@@ -100,29 +126,6 @@ namespace HueLights
 	        {
 		        CrestronConsole.PrintLine("Exception is {0}", e);
 	        }
-        }
-
-        private void BulbPopulate()
-        {
-	        if (_foundBulb == true)
-	        {
-		        BulbName = (String) HueBridge.HueBulbs[BulbId - 1].Name;
-		        BulbIsOn = (ushort) (HueBridge.HueBulbs[BulbId - 1].On ? 1 : 0);
-		        BulbType = (String) HueBridge.HueBulbs[BulbId - 1].Type;
-		        BulbBri = (ushort) HueBridge.HueBulbs[BulbId - 1].Bri;
-		        Reachable = (ushort) (HueBridge.HueBulbs[BulbId - 1].Reachable ? 1 : 0);
-		        if (HueBridge.HueBulbs[BulbId].Type.Contains("Color"))
-		        {
-			        BulbHue = (ushort) (HueBridge.HueBulbs[BulbId - 1].Hue);
-			        BulbSat = (ushort) (HueBridge.HueBulbs[BulbId - 1].Sat);
-		        }
-		        BulbOnline = 1;
-	        }
-			else
-			{
-				CrestronConsole.PrintLine("Bulb not online: {0}", BulbName);
-			}
-	        TriggerBulbOnlineUpdate();
         }
 
         public void LightsAction(string lvltype, string val, string effect)

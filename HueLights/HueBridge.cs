@@ -179,8 +179,8 @@ namespace HueLights
             try
             {
 				_url = string.Format("http://{0}/api/{1}/{2}", BridgeIp, BridgeApi, infotype);
-				string jsontext = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
-				OnInfoReceived(infotype, jsontext);
+				string json = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
+				OnInfoReceived(infotype, json);
             }
             catch (Exception e)
             {

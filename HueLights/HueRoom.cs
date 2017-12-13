@@ -13,6 +13,7 @@ namespace HueLights
         public ushort RoomBri;
         public ushort RoomHue;
         public ushort RoomSat;
+	    public ushort RoomCt;
         public ushort RoomXVal;
         public ushort RoomYVal;
         public ushort SceneNum;
@@ -57,15 +58,35 @@ namespace HueLights
 				    {
 					    RoomId = Convert.ToUInt16(huegroup.Id);
 					    _foundroom = true;
-					    GetRoom();
 					    break;
 				    }	
 				}
-			    RoomPopulate();
-				if (_foundroom == false)
-				{
+			    if (_foundroom)
+			    {
+					RoomClass = HueBridge.HueGroups[RoomId - 1].GroupClass;
+					for (int i = 1; i <= 20; i++)
+					{
+						if (HueBridge.HueGroups[RoomId - 1].SceneName[i] != null)
+						{
+							SceneName[i] = HueBridge.HueGroups[RoomId - 1].SceneName[i];
+							SceneId[i] = HueBridge.HueGroups[RoomId - 1].SceneID[i];
+						}
+						else
+						{
+							int x;
+							x = i - 1;
+							SceneNum = (ushort)x;
+							break;
+						}
+					}
+					RoomOnline = 1;
+					CrestronConsole.PrintLine("Get {0} is complete", GroupName);
+					TriggerRoomOnlineUpdate(); 
+			    }
+			    else
+			    {
 					CrestronConsole.PrintLine("Room not found: {0}", GroupName);
-				}
+			    }
 		    }
 	    }
 
@@ -81,16 +102,28 @@ namespace HueLights
 					HueBridge.HueGroups[RoomId - 1].On = (bool)_json["action"]["on"];
 					HueBridge.HueGroups[RoomId - 1].Bri = (ushort)_json["action"]["bri"];
 					RoomBri = (ushort)(HueBridge.HueGroups[RoomId - 1].Bri);
-					if (_json["action"].SelectToken("sat") != null)
+					if (_json["action"].SelectToken("colorMode") != null)
 					{
 						_supportsColor = true;
 					}					
 					if (_supportsColor)
 					{
-						HueBridge.HueGroups[RoomId - 1].Hue = (ushort)_json["action"]["hue"];
-						HueBridge.HueGroups[RoomId - 1].Sat = (ushort)_json["action"]["sat"];
+						if (_json["action"].SelectToken("hue") != null)
+						{
+							HueBridge.HueGroups[RoomId - 1].Hue = (uint)_json["action"]["hue"];
+						}
+						if (_json["action"].SelectToken("sat") != null)
+						{
+							HueBridge.HueGroups[RoomId - 1].Sat = (uint)_json["action"]["sat"];
+						}
+						if (_json["action"].SelectToken("ct") != null)
+						{
+							HueBridge.HueGroups[RoomId - 1].Ct = (uint)_json["action"]["ct"];
+						}
 						RoomHue = (ushort)(HueBridge.HueGroups[RoomId - 1].Hue);
 						RoomSat = (ushort)(HueBridge.HueGroups[RoomId - 1].Sat);
+						RoomCt = (ushort)(HueBridge.HueGroups[RoomId - 1].Ct);
+
 					}
 					GroupIsOn = (ushort)(HueBridge.HueGroups[RoomId - 1].On ? 1 : 0);
 
@@ -105,40 +138,6 @@ namespace HueLights
             {
 				CrestronConsole.PrintLine("Error getting Room data: {0}", e);
             }
-        }
-
-        private void RoomPopulate()
-        {
-	        if (_foundroom == true)
-	        {
-		        GroupIsOn = (ushort) (HueBridge.HueGroups[RoomId - 1].On ? 1 : 0);
-		        RoomBri = (ushort) HueBridge.HueGroups[RoomId - 1].Bri;
-		        RoomHue = (ushort) HueBridge.HueGroups[RoomId - 1].Hue;
-		        RoomSat = (ushort) HueBridge.HueGroups[RoomId - 1].Sat;
-		        RoomClass = HueBridge.HueGroups[RoomId - 1].GroupClass;
-		        for (int i = 1; i <= 20; i++)
-		        {
-			        if (HueBridge.HueGroups[RoomId - 1].SceneName[i] != null)
-			        {
-				        SceneName[i] = HueBridge.HueGroups[RoomId - 1].SceneName[i];
-				        SceneId[i] = HueBridge.HueGroups[RoomId - 1].SceneID[i];
-			        }
-			        else
-			        {
-				        int x;
-				        x = i - 1;
-				        SceneNum = (ushort) x;
-				        break;
-			        }
-		        }
-		        RoomOnline = 1;
-		        TriggerRoomOnlineUpdate();
-		        CrestronConsole.PrintLine("Get {0} is complete", GroupName);
-	        }
-			else
-			{
-				CrestronConsole.PrintLine("Room not online: {0}", GroupName);
-			}
         }
 
 	    /// <summary>

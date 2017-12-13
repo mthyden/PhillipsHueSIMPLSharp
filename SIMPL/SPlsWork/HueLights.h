@@ -91,6 +91,7 @@ namespace HueLights;
         INTEGER BulbBri;
         INTEGER BulbHue;
         INTEGER BulbSat;
+        INTEGER BulbCt;
         INTEGER BulbOnline;
         INTEGER Reachable;
 
@@ -133,6 +134,7 @@ namespace HueLights;
         INTEGER RoomBri;
         INTEGER RoomHue;
         INTEGER RoomSat;
+        INTEGER RoomCt;
         INTEGER RoomXVal;
         INTEGER RoomYVal;
         INTEGER SceneNum;
