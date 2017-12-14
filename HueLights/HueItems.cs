@@ -29,7 +29,7 @@ namespace HueLights
 		public string Uid;
         public string SwVer;
 
-        public HueBulb(string id, bool on, uint bri, string type, string name, string model, string manufacturer, string uid, string swver)
+        public HueBulb(string id, bool on, uint bri, string type, string name, string model, string manufacturer, string uid, string swver, bool reachable)
         {
             Id = id;
             On = on;
@@ -40,9 +40,10 @@ namespace HueLights
             Manufacturer = manufacturer;
             Uid = uid;
             SwVer = swver;
+	        Reachable = reachable;
         }
 
-        public HueBulb(string id, bool on, uint bri, uint hue, uint sat, uint ct, string type, string name, string model, string manufacturer, string uid, string swver, string colormode)
+        public HueBulb(string id, bool on, uint bri, uint hue, uint sat, uint ct, string type, string name, string model, string manufacturer, string uid, string swver, string colormode, bool reachable)
         {
             Id = id;
             On = on;
@@ -57,6 +58,7 @@ namespace HueLights
             Manufacturer = manufacturer;
             Uid = uid;
             SwVer = swver;
+	        Reachable = reachable;
         }
     }
 

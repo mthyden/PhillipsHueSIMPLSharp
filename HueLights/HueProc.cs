@@ -192,6 +192,7 @@ namespace HueLights
 					string manufacturer = (string)json[id]["manufacturername"];
 					string uid = (string)json[id]["uniqueid"];
 					string swver = (string)json[id]["swversion"];
+					bool reachable = (bool) json[id]["state"]["reachable"];
 					if (json[id]["state"].SelectToken("colormode") != null)
 					{
 						colormode = (string)json[id]["state"]["colormode"];
@@ -207,11 +208,11 @@ namespace HueLights
 						{
 							ct = (uint)json[id]["state"]["ct"];
 						}
-						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, ct, type, name, model, manufacturer, uid, swver, colormode));
+						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, ct, type, name, model, manufacturer, uid, swver, colormode, reachable));
 					}
 					else
 					{
-						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, type, name, model, manufacturer, uid, swver));
+						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, type, name, model, manufacturer, uid, swver, reachable));
 					}
 				}
                     BulbNum = (ushort)HueBridge.HueBulbs.Count;

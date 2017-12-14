@@ -86,9 +86,10 @@ namespace HueLights
 		        if (_foundBulb == true)
 		        {
 			        _url = string.Format("http://{0}/api/{1}/{2}/{3}", HueBridge.BridgeIp, HueBridge.BridgeApi, "lights", BulbId);
-					CrestronConsole.PrintLine("url: {0}", _url);
+					//CrestronConsole.PrintLine("url: {0}", _url);
 			        _jsontext = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
 			        _json = JObject.Parse(_jsontext);
+					HueBridge.HueBulbs[BulbId - 1].Reachable = (bool)_json["state"]["reachable"];
 			        HueBridge.HueBulbs[BulbId - 1].On = (bool) _json["state"]["on"];
 			        HueBridge.HueBulbs[BulbId - 1].Bri = (ushort) _json["state"]["bri"];
 			        BulbBri = (ushort) (HueBridge.HueBulbs[BulbId - 1].Bri);
@@ -136,7 +137,6 @@ namespace HueLights
                 {
                     Payload payload = new Payload() { SetType = "lights", LvlType = lvltype, OnOff = val, Effect = effect };
                     string json = HueBridge.SetCmd(PayloadType.BulbOnOff, payload, BulbId);
-					//CrestronConsole.PrintLine("json: {0}",json);
 					JArray JReturn = JArray.Parse(json);
                     string tokenreturn = "/lights/" + BulbId + "/state/on";
                     foreach (var Jobj in JReturn)
