@@ -138,6 +138,9 @@ namespace HueLights
             return temp;
         }
 
+		/// <summary>
+		/// resets the datastore
+		/// </summary>
         public static void ResetDataStore()
         {
            if(CrestronDataStoreStatic.SetLocalStringValue("apikey", null) != CrestronDataStore.CDS_ERROR.CDS_SUCCESS)
@@ -187,7 +190,13 @@ namespace HueLights
                 CrestronConsole.PrintLine("Exception: {0}",e);
             }
         }
-
+		/// <summary>
+		/// determines command type, formats string and sends to HTTPConnect instance
+		/// </summary>
+		/// <param name="payloadtype"></param>
+		/// <param name="payload"></param>
+		/// <param name="setid"></param>
+		/// <returns></returns>
         public static string SetCmd(PayloadType payloadtype, Payload payload, ushort setid)
         {
             _url = string.Format("http://{0}/api/{1}/{2}/{3}/{4}", BridgeIp, BridgeApi, payload.SetType, setid, payload.CmdType);
@@ -224,10 +233,15 @@ namespace HueLights
 			return HttpConnect.Instance.Request(_url, _cmd, Crestron.SimplSharp.Net.Http.RequestType.Put);
         }
 
+		/// <summary>
+		/// raises the event for received data
+		/// </summary>
+		/// <param name="infotype"></param>
+		/// <param name="jsondata"></param>
         static void OnInfoReceived(string infotype, string jsondata)
         {
             if(infotype != null)
-                InfoReceived(null, new InfoEventArgs(){InfoType = infotype, JsonData = jsondata});
+                InfoReceived(null, new InfoEventArgs(){InfoType = infotype, JsonData = jsondata}); //event delegate
         }
     }
 }

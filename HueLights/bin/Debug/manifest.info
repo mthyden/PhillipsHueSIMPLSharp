@@ -1,5 +1,6 @@
-﻿MainAssembly=HueLights.dll:fa21ddcdd7450827e605928f5364c7b2
+﻿MainAssembly=HueLights.dll:9b9195983d25918b84311716ca2b4c7d
 MainAssemblyMinFirmwareVersion=1.007.0017
+MainAssemblyResource=SimplSharpData.dat:820b61c48c8a2cace82957eed4cc377c
 MainAssemblyResource=SimplSharpData.dat:820b61c48c8a2cace82957eed4cc377c
 ü
 DependencySource=SimplSharpCustomAttributesInterface.dll:9c4b4d4c519b655af90016edca2d66b9

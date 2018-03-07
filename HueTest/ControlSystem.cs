@@ -6,6 +6,7 @@ using Crestron.SimplSharpPro;                       	// For Basic SIMPL#Pro clas
 using Crestron.SimplSharpPro.CrestronThread;        	// For Threading
 using HueLights;
 using Newtonsoft.Json.Linq;
+using Crestron.SimplSharp.CrestronDataStore;
 
 namespace HueTest
 {
@@ -50,6 +51,8 @@ namespace HueTest
 				CrestronEnvironment.ProgramStatusEventHandler +=
 					new ProgramStatusEventHandler(ControlSystem_ControllerProgramEventHandler);
 				CrestronEnvironment.EthernetEventHandler += new EthernetEventHandler(ControlSystem_ControllerEthernetEventHandler);
+
+				#region json cmds
 				CrestronConsole.AddNewConsoleCommand(ReadBulbs, "bulbs", "Tests the Hue request",
 					ConsoleAccessLevelEnum.AccessAdministrator);
 				CrestronConsole.AddNewConsoleCommand(ReadGroups, "groups", "Tests the Hue request",
@@ -58,6 +61,19 @@ namespace HueTest
 					ConsoleAccessLevelEnum.AccessAdministrator);
 				CrestronConsole.AddNewConsoleCommand(ReadSensors, "sensors", "Tests the Hue request",
 					ConsoleAccessLevelEnum.AccessAdministrator);
+				#endregion
+
+				#region datastore cmds
+				CrestronConsole.AddNewConsoleCommand(DsInit, "dsinit", "creates datastore",
+					ConsoleAccessLevelEnum.AccessAdministrator);
+				CrestronConsole.AddNewConsoleCommand(DsStore, "dsstore", "stores datastore",
+	ConsoleAccessLevelEnum.AccessAdministrator);
+				CrestronConsole.AddNewConsoleCommand(DsRead, "dsread", "reads datastore",
+	ConsoleAccessLevelEnum.AccessAdministrator);
+				CrestronConsole.AddNewConsoleCommand(DsDel, "dsdel", "deletes datastore",
+	ConsoleAccessLevelEnum.AccessAdministrator);
+				#endregion
+
 			}
 			catch (Exception e)
 			{
@@ -89,6 +105,52 @@ namespace HueTest
 				ErrorLog.Error("Error in InitializeSystem: {0}", e.Message);
 			}
 		}
+
+		#region datastore
+
+		void DsInit(string s)
+		{
+			try
+			{
+				CrestronDataStoreStatic.InitCrestronDataStore();
+				CrestronDataStoreStatic.GlobalAccess = CrestronDataStore.CSDAFLAGS.OWNERREADWRITE;
+			}
+			catch (Exception e)
+			{
+				CrestronConsole.PrintLine("Exception is {0}", e);
+			}			
+		}
+
+		void DsStore(string s)
+		{
+			if (CrestronDataStoreStatic.SetLocalStringValue("apikey", s) != CrestronDataStore.CDS_ERROR.CDS_SUCCESS)
+				CrestronConsole.PrintLine("error storing apikey");
+			CrestronConsole.PrintLine("Bridge registration complete");
+		}
+
+		void DsRead(string s)
+		{
+			string temp;
+			if (CrestronDataStoreStatic.GetLocalStringValue("apikey", out temp) == CrestronDataStore.CDS_ERROR.CDS_SUCCESS &&
+			    temp.Length > 30)
+			{
+				CrestronConsole.PrintLine("local key: {0}", temp);
+			}
+			else
+			{
+				CrestronConsole.PrintLine("No local API key stored");
+			}
+		}
+
+		void DsDel(string s)
+		{
+			if(CrestronDataStoreStatic.SetLocalStringValue("apikey", null) != CrestronDataStore.CDS_ERROR.CDS_SUCCESS)
+				CrestronConsole.PrintLine("Error removing API key");
+		}
+
+		#endregion 
+
+		#region json data
 
 		public void ReadBulbs(string s)
 		{
@@ -207,11 +269,11 @@ namespace HueTest
 						{
 							ct = (uint)jData[id]["state"]["ct"];
 						}						
-						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, ct, type, name, model, manufacturer, uid, swver, colormode));
+						//HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, ct, type, name, model, manufacturer, uid, swver, colormode));
 					}
 					else
 					{
-						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, type, name, model, manufacturer, uid, swver));
+						//HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, type, name, model, manufacturer, uid, swver));
 					}
 				}
 				var BulbNum = (ushort)HueBridge.HueBulbs.Count;
@@ -379,9 +441,11 @@ namespace HueTest
 			MotionPresence = (ushort)(HueBridge.HueSensors[MotionId - 1].Presence ? 1 : 0);
 			MotionTemp = (ushort)(HueBridge.HueSensors[MotionId - 1].Temp);
 			Reachable = (ushort)(HueBridge.HueSensors[MotionId - 1].Reachable ? 1 : 0);*/
-	    }
+		}
 
-        /// <summary>
+		#endregion 
+
+		/// <summary>
         /// Event Handler for Ethernet events: Link Up and Link Down. 
         /// Use these events to close / re-open sockets, etc. 
         /// </summary>
@@ -462,4 +526,9 @@ namespace HueTest
 
         }
     }
+
+	public class TestEvents
+	{
+		
+	}
 }

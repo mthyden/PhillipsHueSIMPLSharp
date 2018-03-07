@@ -7,8 +7,6 @@ namespace HueLights
 {
     public class HueProc
     {
-        public delegate ushort DelegateValueUpdate();
-
         public String IPSet;
         public String IPAddress;    //IP Address for a Hue Bridge
         public ushort Authorized;   //Reports if the API key has been acquired
@@ -23,8 +21,6 @@ namespace HueLights
         //^^^^^ Signals for SIMPL+ ^^^^^^^^
 
         public event EventHandler InitComplete;
-
-        //public DelegateValueUpdate ValueUpdate {get; set;}
 
         /// <summary>
         /// Default constructor
@@ -73,6 +69,9 @@ namespace HueLights
             }
         }
 
+		/// <summary>
+		/// reset the api key from the datastore
+		/// </summary>
         public void ResetAPI()
         {
             HueBridge.ResetDataStore();
@@ -103,6 +102,9 @@ namespace HueLights
             HueBridge.BridgeIp = str;
         }
 
+		/// <summary>
+		/// Gets bridge data starting with lights
+		/// </summary>
         public void getData()
         {
             try
@@ -122,6 +124,11 @@ namespace HueLights
             }
         }
 
+		/// <summary>
+		/// EventHandler for data being received from Bridge
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="e"></param>
         public void OnInfoReceived(object source, InfoEventArgs e)
         {
             if (e.InfoType == "lights")
@@ -163,9 +170,12 @@ namespace HueLights
 	        }
         }
 
+		/// <summary>
+		/// Event Initialization complete delegate
+		/// </summary>
         public void OnInitComplete()
         {
-            InitComplete(this, new EventArgs());
+            InitComplete(this, new EventArgs()); //delegate method
         }
 
         /// <summary>
@@ -328,7 +338,17 @@ namespace HueLights
                 HueBridge.Populated = true;
                 GrpName = new String[50];
                 BlbName = new String[50];
-                
+
+	            for (int i = 1; i <= HueBridge.HueGroups.Count; i++)
+	            {
+		            GrpName[i] = HueBridge.HueGroups[i - 1].Name;
+	            }
+
+	            for (int i = 1; i <= HueBridge.HueBulbs.Count; i++)
+	            {
+		            BlbName[i] = HueBridge.HueBulbs[i - 1].Name;
+	            }
+				/*
                 foreach (var huegroup in HueBridge.HueGroups)
                 {
                     GrpName[Convert.ToUInt16(huegroup.Id)] = huegroup.Name;
@@ -336,7 +356,7 @@ namespace HueLights
                 foreach (var huebulb in HueBridge.HueBulbs)
                 {
                     BlbName[Convert.ToUInt16(huebulb.Id)] = huebulb.Name;
-                }
+                }*/
 				//HueBridge.GetBridgeInfo("sensors");
 				OnInitComplete();
 
@@ -347,6 +367,10 @@ namespace HueLights
             }
         }
 
+		/// <summary>
+		/// Pulls all the sensors from the bridge, currently extracts only the presence sensor
+		/// </summary>
+		/// <param name="jsondata"></param>
 	    public void ProcSensors(string jsondata)
 	    {
 		    try

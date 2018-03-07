@@ -5678,6 +5678,7 @@
             <param name="Minutes">The minutes portion of the time to set the system time to. Valid range is from 0 to 59.</param>
             <param name="Seconds">The seconds portion of the time to set the system time to. Valid range is from 0 to 59.</param>
             <exception cref="T:System.ArgumentOutOfRangeException">One of the parameters is outside the valid range.</exception>
+            <exception cref="T:System.NotSupportedException">Setting the time is not supported in this environment.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronEnvironment.GetLocalTime">
             <summary>
@@ -5694,6 +5695,7 @@
             <param name="Day">The dat of the month to which to date is set. The range varies from month to month, but always starts at 1 and does not go above 31.</param>
             <param name="Year">The year to which the date is set. The year is four digits, i.e. 2006.</param>
             <exception cref="T:System.ArgumentOutOfRangeException">One of the parameters is outside the valid range.</exception>
+            <exception cref="T:System.NotSupportedException">Setting the date is not supported in this environment.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronEnvironment.SetTimeAndDate(System.UInt16,System.UInt16,System.UInt16,System.UInt16,System.UInt16,System.UInt16)">
             <summary>
@@ -5706,6 +5708,7 @@
             <param name="Day">The dat of the month to which to date is set. The range varies from month to month, but always starts at 1 and does not go above 31.</param>
             <param name="Year">The year to which the date is set. The year is four digits, i.e. 2006.</param>
             <exception cref="T:System.ArgumentOutOfRangeException">One of the parameters is outside the valid range.</exception>/// 
+            <exception cref="T:System.NotSupportedException">Setting the time and date are not supported in this environment.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronEnvironment.ChangeSystemTime(NativeInterop.SYSTEMTIME@)">
             <summary>
@@ -5820,6 +5823,7 @@
             Function to get the current timezone list 
             </summary>
             <returns> Returns list of timezones </returns>
+            <exception cref="T:System.NotSupportedException">The time zone list is not supported in this environment.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronEnvironment.GetTimeZone">
             <summary>
@@ -5833,6 +5837,7 @@
             </summary>
             <param name="timezoneId"> Id of the requested timezone from the timezone list </param>
             <returns> returns timezone settings based on the specified timezoneId  </returns>
+            <exception cref="T:System.NotSupportedException">Time zone IDs are not supported in this environment.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronEnvironment.GetTimeZoneDetail">
             <summary>
@@ -5851,6 +5856,7 @@
             </summary>
             <param name="timezoneId"> Id for the required timezone within the timezone list  </param>
             <returns> returns true if successful </returns>
+            <exception cref="T:System.NotSupportedException">Setting the time zone is not supported in this environment.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronEnvironment.SetTimeZoneLinux(System.Int32)">
             <summary>
@@ -16772,6 +16778,13 @@
             Gets the host name of the device.
             </summary>
             <returns> A string that contains the DNS host name of the unit</returns>
+        </member>
+        <member name="M:Crestron.EnvironmentVariables.ReadVariable(System.String)">
+            <summary>
+            Method to read in an environment variables. 
+            </summary>
+            <param name="variable">Name of the variable.</param>
+            <returns>The value of the environment variable specified by variable, or null if the environment variable is not found.</returns>
         </member>
         <member name="T:Crestron.SimplSharp.Ssh.Sftp.SftpSynchronizeDirectoriesAsyncResult">
             <summary>
@@ -45937,7 +45950,7 @@
         </member>
         <member name="F:Crestron.SimplSharp.InitialParametersClass.m_FirmwareVersionAsVersion">
             <summary>
-             THis is the version class based on the firmware version string.
+             This is the version class based on the firmware version string.
             </summary>
         </member>
         <member name="F:Crestron.SimplSharp.InitialParametersClass.m_iNumRemovableDrives">
@@ -46054,6 +46067,16 @@
         <member name="P:Crestron.SimplSharp.InitialParametersClass.ProgramIDTag">
             <summary>
             Get the Program ID Tag for this application.
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.InitialParametersClass.ProgramInstance">
+            <summary>
+            Unique program instance ID given to this application.
+            </summary>
+        </member>
+        <member name="P:Crestron.SimplSharp.InitialParametersClass.ProgramInstanceName">
+            <summary>
+            The name of this running program instance.
             </summary>
         </member>
         <member name="P:Crestron.SimplSharp.InitialParametersClass.FirmwareVersion">
