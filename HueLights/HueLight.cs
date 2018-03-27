@@ -24,6 +24,7 @@ namespace HueLights
 	    private JObject _json;
 	    private string _jsontext;
 	    private bool _supportsColor;
+	    private int _bulbListId;
 
         public event EventHandler BulbBriUpdate;
 
@@ -45,28 +46,32 @@ namespace HueLights
 	    public void BulbInit()
 	    {
 		    BulbOnline = 0;
+			_bulbListId = 0;
 			if (HueBridge.Populated == true)
 			{
 				BulbOnline = 0;
-				foreach (var huebulb in HueBridge.HueBulbs)
+				for (int i = 0; i < HueBridge.HueBulbs.Count; i++)
 				{
-					if (huebulb.Name == BulbName)
+					if (HueBridge.HueBulbs[i].Name == BulbName)
 					{
-						BulbId = Convert.ToUInt16(huebulb.Id);
+						BulbId = Convert.ToUInt16(HueBridge.HueBulbs[i].Id);
+						//CrestronConsole.PrintLine("BulbID: {0}", HueBridge.HueBulbs[i].Id);
 						_foundBulb = true;
+						_bulbListId = i;
+						break;
 					}
 				}
 				if (_foundBulb == true)
 				{
-					BulbName = (String)HueBridge.HueBulbs[BulbId - 1].Name;
-					BulbIsOn = (ushort)(HueBridge.HueBulbs[BulbId - 1].On ? 1 : 0);
-					BulbType = (String)HueBridge.HueBulbs[BulbId - 1].Type;
-					BulbBri = (ushort)HueBridge.HueBulbs[BulbId - 1].Bri;
-					Reachable = (ushort)(HueBridge.HueBulbs[BulbId - 1].Reachable ? 1 : 0);
-					if (HueBridge.HueBulbs[BulbId].Type.Contains("Color"))
+					BulbName = (String)HueBridge.HueBulbs[_bulbListId].Name;
+					BulbIsOn = (ushort)(HueBridge.HueBulbs[_bulbListId].On ? 1 : 0);
+					BulbType = (String)HueBridge.HueBulbs[_bulbListId].Type;
+					BulbBri = (ushort)HueBridge.HueBulbs[_bulbListId].Bri;
+					Reachable = (ushort)(HueBridge.HueBulbs[_bulbListId].Reachable ? 1 : 0);
+					if (HueBridge.HueBulbs[_bulbListId].Type.Contains("Color"))
 					{
-						BulbHue = (ushort)(HueBridge.HueBulbs[BulbId - 1].Hue);
-						BulbSat = (ushort)(HueBridge.HueBulbs[BulbId - 1].Sat);
+						BulbHue = (ushort)(HueBridge.HueBulbs[_bulbListId].Hue);
+						BulbSat = (ushort)(HueBridge.HueBulbs[_bulbListId].Sat);
 					}
 					BulbOnline = 1;
 					CrestronConsole.PrintLine("Get {0} is complete", BulbName);
@@ -81,6 +86,7 @@ namespace HueLights
 
         public void GetBulb()
         {
+			//CrestronConsole.PrintLine("listID: {0}", _bulbListId);
 	        try
 	        {
 		        if (_foundBulb == true)
@@ -89,10 +95,10 @@ namespace HueLights
 					//CrestronConsole.PrintLine("url: {0}", _url);
 			        _jsontext = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
 			        _json = JObject.Parse(_jsontext);
-					HueBridge.HueBulbs[BulbId - 1].Reachable = (bool)_json["state"]["reachable"];
-			        HueBridge.HueBulbs[BulbId - 1].On = (bool) _json["state"]["on"];
-			        HueBridge.HueBulbs[BulbId - 1].Bri = (ushort) _json["state"]["bri"];
-			        BulbBri = (ushort) (HueBridge.HueBulbs[BulbId - 1].Bri);
+					HueBridge.HueBulbs[_bulbListId].Reachable = (bool)_json["state"]["reachable"];
+					HueBridge.HueBulbs[_bulbListId].On = (bool)_json["state"]["on"];
+					HueBridge.HueBulbs[_bulbListId].Bri = (ushort)_json["state"]["bri"];
+					BulbBri = (ushort)(HueBridge.HueBulbs[_bulbListId].Bri);
 					if (_json["state"].SelectToken("colorMode") != null)
 					{
 						_supportsColor = true;
@@ -101,21 +107,21 @@ namespace HueLights
 			        {
 						if (_json["state"].SelectToken("hue") != null)
 						{
-							HueBridge.HueBulbs[BulbId - 1].Hue = (uint)_json["state"]["hue"];
+							HueBridge.HueBulbs[_bulbListId].Hue = (uint)_json["state"]["hue"];
 						}
 						if (_json["state"].SelectToken("sat") != null)
 						{
-							HueBridge.HueBulbs[BulbId - 1].Sat = (uint)_json["state"]["sat"];
+							HueBridge.HueBulbs[_bulbListId].Sat = (uint)_json["state"]["sat"];
 						}
 						if (_json["state"].SelectToken("ct") != null)
 						{
-							HueBridge.HueBulbs[BulbId - 1].Ct = (uint)_json["state"]["ct"];
+							HueBridge.HueBulbs[_bulbListId].Ct = (uint)_json["state"]["ct"];
 						}
-				        BulbHue = (ushort)(HueBridge.HueBulbs[BulbId - 1].Hue);
-				        BulbSat = (ushort)(HueBridge.HueBulbs[BulbId - 1].Sat);
-						BulbCt = (ushort)(HueBridge.HueBulbs[BulbId - 1].Ct);
+						BulbHue = (ushort)(HueBridge.HueBulbs[_bulbListId].Hue);
+						BulbSat = (ushort)(HueBridge.HueBulbs[_bulbListId].Sat);
+						BulbCt = (ushort)(HueBridge.HueBulbs[_bulbListId].Ct);
 			        }
-			        BulbIsOn = (ushort) (HueBridge.HueBulbs[BulbId - 1].On ? 1 : 0);
+					BulbIsOn = (ushort)(HueBridge.HueBulbs[_bulbListId].On ? 1 : 0);
 		        }
 		        else
 		        {

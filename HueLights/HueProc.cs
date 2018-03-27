@@ -61,6 +61,9 @@ namespace HueLights
                     Authorized = (ushort)(HueBridge.Authorized ? 1 : 0);
                 }
                 APIKey = HueBridge.BridgeApi;
+				HueBridge.HueBulbs.Clear();
+				HueBridge.HueGroups.Clear();
+				HueBridge.HueSensors.Clear();
 				getData();
             }
             catch (Exception e)
@@ -225,6 +228,11 @@ namespace HueLights
 						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, type, name, model, manufacturer, uid, swver, reachable));
 					}
 				}
+				/*
+	            foreach (var bulb in HueBridge.HueBulbs)
+	            {
+					CrestronConsole.PrintLine("Bulb Name: {0}, Bulb ID: {1}", bulb.Name, bulb.Id);
+	            }*/
                     BulbNum = (ushort)HueBridge.HueBulbs.Count;
                     CrestronConsole.PrintLine("{0} Bulbs discovered", BulbNum);
                     HueBridge.GetBridgeInfo("groups");
@@ -348,15 +356,6 @@ namespace HueLights
 	            {
 		            BlbName[i] = HueBridge.HueBulbs[i - 1].Name;
 	            }
-				/*
-                foreach (var huegroup in HueBridge.HueGroups)
-                {
-                    GrpName[Convert.ToUInt16(huegroup.Id)] = huegroup.Name;
-                }
-                foreach (var huebulb in HueBridge.HueBulbs)
-                {
-                    BlbName[Convert.ToUInt16(huebulb.Id)] = huebulb.Name;
-                }*/
 				//HueBridge.GetBridgeInfo("sensors");
 				OnInitComplete();
 
