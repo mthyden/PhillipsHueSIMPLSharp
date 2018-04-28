@@ -102,7 +102,7 @@ namespace HueLights
 					HueBridge.HueGroups[RoomId - 1].On = (bool)_json["action"]["on"];
 					HueBridge.HueGroups[RoomId - 1].Bri = (ushort)_json["action"]["bri"];
 					RoomBri = (ushort)(HueBridge.HueGroups[RoomId - 1].Bri);
-					if (_json["action"].SelectToken("colorMode") != null)
+					if (_json["action"].SelectToken("colormode") != null)
 					{
 						_supportsColor = true;
 					}					

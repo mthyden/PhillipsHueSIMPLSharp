@@ -61,20 +61,20 @@ namespace UserModule_HUEBULB_R2_2
         {
             SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
             
-            __context__.SourceCodeLine = 39;
+            __context__.SourceCodeLine = 40;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( Functions.Length( LIGHTNAMELISTITEM ) > 0 ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 41;
+                __context__.SourceCodeLine = 42;
                 MYLIGHT . BulbName  =  ( LIGHTNAMELISTITEM  )  .ToString() ; 
                 } 
             
             else 
                 { 
-                __context__.SourceCodeLine = 45;
+                __context__.SourceCodeLine = 46;
                 MYLIGHT . BulbName  =  ( LIGHTNAME  )  .ToString() ; 
                 } 
             
-            __context__.SourceCodeLine = 47;
+            __context__.SourceCodeLine = 48;
             MYLIGHT . BulbInit ( ) ; 
             
             
@@ -93,7 +93,7 @@ object LIGHTON_OnPush_2 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 53;
+        __context__.SourceCodeLine = 54;
         MYLIGHT . LightsAction ( "on", "true", "none") ; 
         
         
@@ -112,7 +112,7 @@ object LIGHTOFF_OnPush_3 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 58;
+        __context__.SourceCodeLine = 59;
         MYLIGHT . LightsAction ( "on", "false", "none") ; 
         
         
@@ -131,9 +131,9 @@ object BRIIN_OnChange_4 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 64;
-        MYLIGHT . LightsVal ( "bri", (ushort)( BRIIN  .UshortValue )) ; 
         __context__.SourceCodeLine = 65;
+        MYLIGHT . LightsVal ( "bri", (ushort)( BRIIN  .UshortValue )) ; 
+        __context__.SourceCodeLine = 66;
         BRIOUT  .Value = (ushort) ( MYLIGHT.BulbBri ) ; 
         
         
@@ -152,9 +152,9 @@ object HUEIN_OnChange_5 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 70;
-        MYLIGHT . LightsVal ( "hue", (ushort)( HUEIN  .UshortValue )) ; 
         __context__.SourceCodeLine = 71;
+        MYLIGHT . LightsVal ( "hue", (ushort)( HUEIN  .UshortValue )) ; 
+        __context__.SourceCodeLine = 72;
         HUEOUT  .Value = (ushort) ( MYLIGHT.BulbHue ) ; 
         
         
@@ -173,9 +173,9 @@ object SATIN_OnChange_6 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 76;
-        MYLIGHT . LightsVal ( "sat", (ushort)( SATIN  .UshortValue )) ; 
         __context__.SourceCodeLine = 77;
+        MYLIGHT . LightsVal ( "sat", (ushort)( SATIN  .UshortValue )) ; 
+        __context__.SourceCodeLine = 78;
         SATOUT  .Value = (ushort) ( MYLIGHT.BulbSat ) ; 
         
         
@@ -193,10 +193,10 @@ public void MYONOFFHANDLER ( object __sender__ /*HueLights.HueLight SENDER */, E
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 82;
+        __context__.SourceCodeLine = 83;
         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SENDER == MYLIGHT))  ) ) 
             { 
-            __context__.SourceCodeLine = 84;
+            __context__.SourceCodeLine = 85;
             LOADISON  .Value = (ushort) ( MYLIGHT.BulbIsOn ) ; 
             } 
         
@@ -213,10 +213,10 @@ public void MYBRIHANDLER ( object __sender__ /*HueLights.HueLight SENDER */, Eve
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 90;
+        __context__.SourceCodeLine = 91;
         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SENDER == MYLIGHT))  ) ) 
             { 
-            __context__.SourceCodeLine = 92;
+            __context__.SourceCodeLine = 93;
             BRIOUT  .Value = (ushort) ( MYLIGHT.BulbBri ) ; 
             } 
         
@@ -233,10 +233,10 @@ public void MYHUEHANDLER ( object __sender__ /*HueLights.HueLight SENDER */, Eve
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 98;
+        __context__.SourceCodeLine = 99;
         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SENDER == MYLIGHT))  ) ) 
             { 
-            __context__.SourceCodeLine = 100;
+            __context__.SourceCodeLine = 101;
             HUEOUT  .Value = (ushort) ( MYLIGHT.BulbHue ) ; 
             } 
         
@@ -253,10 +253,10 @@ public void MYSATHANDLER ( object __sender__ /*HueLights.HueLight SENDER */, Eve
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 106;
+        __context__.SourceCodeLine = 107;
         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SENDER == MYLIGHT))  ) ) 
             { 
-            __context__.SourceCodeLine = 108;
+            __context__.SourceCodeLine = 109;
             SATOUT  .Value = (ushort) ( MYLIGHT.BulbSat ) ; 
             } 
         
@@ -273,22 +273,22 @@ public void MYLIGHTHANDLER ( object __sender__ /*HueLights.HueLight SENDER */, E
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 114;
+        __context__.SourceCodeLine = 115;
         if ( Functions.TestForTrue  ( ( MYLIGHT.Reachable)  ) ) 
             { 
-            __context__.SourceCodeLine = 116;
-            LOADONLINE  .Value = (ushort) ( MYLIGHT.BulbOnline ) ; 
             __context__.SourceCodeLine = 117;
-            LOADISON  .Value = (ushort) ( MYLIGHT.BulbIsOn ) ; 
+            LOADONLINE  .Value = (ushort) ( MYLIGHT.BulbOnline ) ; 
             __context__.SourceCodeLine = 118;
-            LIGHTTYPE  .UpdateValue ( MYLIGHT . BulbType  ) ; 
+            LOADISON  .Value = (ushort) ( MYLIGHT.BulbIsOn ) ; 
             __context__.SourceCodeLine = 119;
-            BRIOUT  .Value = (ushort) ( MYLIGHT.BulbBri ) ; 
+            LIGHTTYPE  .UpdateValue ( MYLIGHT . BulbType  ) ; 
             __context__.SourceCodeLine = 120;
-            LOADREACHABLE  .Value = (ushort) ( MYLIGHT.Reachable ) ; 
+            BRIOUT  .Value = (ushort) ( MYLIGHT.BulbBri ) ; 
             __context__.SourceCodeLine = 121;
-            HUEOUT  .Value = (ushort) ( MYLIGHT.BulbHue ) ; 
+            LOADREACHABLE  .Value = (ushort) ( MYLIGHT.Reachable ) ; 
             __context__.SourceCodeLine = 122;
+            HUEOUT  .Value = (ushort) ( MYLIGHT.BulbHue ) ; 
+            __context__.SourceCodeLine = 123;
             SATOUT  .Value = (ushort) ( MYLIGHT.BulbSat ) ; 
             } 
         
@@ -305,16 +305,16 @@ public void MYONLINEHANDLER ( object __sender__ /*HueLights.HueLight SENDER */, 
     {
         SplusExecutionContext __context__ = SplusSimplSharpDelegateThreadStartCode();
         
-        __context__.SourceCodeLine = 128;
+        __context__.SourceCodeLine = 129;
         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SENDER == MYLIGHT))  ) ) 
             { 
-            __context__.SourceCodeLine = 130;
-            LOADONLINE  .Value = (ushort) ( MYLIGHT.BulbOnline ) ; 
             __context__.SourceCodeLine = 131;
-            LIGHTTYPE  .UpdateValue ( MYLIGHT . BulbType  ) ; 
+            LOADONLINE  .Value = (ushort) ( MYLIGHT.BulbOnline ) ; 
             __context__.SourceCodeLine = 132;
-            LOADREACHABLE  .Value = (ushort) ( MYLIGHT.Reachable ) ; 
+            LIGHTTYPE  .UpdateValue ( MYLIGHT . BulbType  ) ; 
             __context__.SourceCodeLine = 133;
+            LOADREACHABLE  .Value = (ushort) ( MYLIGHT.Reachable ) ; 
+            __context__.SourceCodeLine = 134;
             MYLIGHT . GetBulb ( ) ; 
             } 
         
@@ -330,29 +330,29 @@ public override object FunctionMain (  object __obj__ )
     {
         SplusExecutionContext __context__ = SplusFunctionMainStartCode();
         
-        __context__.SourceCodeLine = 139;
-        WaitForInitializationComplete ( ) ; 
         __context__.SourceCodeLine = 140;
+        WaitForInitializationComplete ( ) ; 
+        __context__.SourceCodeLine = 141;
         // RegisterEvent( MYLIGHT , BULBONOFFUPDATE , MYONOFFHANDLER ) 
         try { g_criticalSection.Enter(); MYLIGHT .BulbOnOffUpdate  += MYONOFFHANDLER; } finally { g_criticalSection.Leave(); }
         ; 
-        __context__.SourceCodeLine = 141;
+        __context__.SourceCodeLine = 142;
         // RegisterEvent( MYLIGHT , BULBBRIUPDATE , MYBRIHANDLER ) 
         try { g_criticalSection.Enter(); MYLIGHT .BulbBriUpdate  += MYBRIHANDLER; } finally { g_criticalSection.Leave(); }
         ; 
-        __context__.SourceCodeLine = 142;
+        __context__.SourceCodeLine = 143;
         // RegisterEvent( MYLIGHT , BULBHUEUPDATE , MYHUEHANDLER ) 
         try { g_criticalSection.Enter(); MYLIGHT .BulbHueUpdate  += MYHUEHANDLER; } finally { g_criticalSection.Leave(); }
         ; 
-        __context__.SourceCodeLine = 143;
+        __context__.SourceCodeLine = 144;
         // RegisterEvent( MYLIGHT , BULBSATUPDATE , MYSATHANDLER ) 
         try { g_criticalSection.Enter(); MYLIGHT .BulbSatUpdate  += MYSATHANDLER; } finally { g_criticalSection.Leave(); }
         ; 
-        __context__.SourceCodeLine = 144;
+        __context__.SourceCodeLine = 145;
         // RegisterEvent( MYLIGHT , BULBONLINEUPDATE , MYONLINEHANDLER ) 
         try { g_criticalSection.Enter(); MYLIGHT .BulbOnlineUpdate  += MYONLINEHANDLER; } finally { g_criticalSection.Leave(); }
         ; 
-        __context__.SourceCodeLine = 145;
+        __context__.SourceCodeLine = 146;
         // RegisterEvent( MYLIGHT , BULBUPDATE , MYLIGHTHANDLER ) 
         try { g_criticalSection.Enter(); MYLIGHT .BulbUpdate  += MYLIGHTHANDLER; } finally { g_criticalSection.Leave(); }
         ; 

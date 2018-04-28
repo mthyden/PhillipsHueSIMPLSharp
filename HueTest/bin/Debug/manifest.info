@@ -1,4 +1,4 @@
-﻿MainAssembly=HueTest.dll:942eb51a3ef33a32b82e687cb3e4d72a
+﻿MainAssembly=HueTest.dll:aa138c9ad72acabcf4edac523edf8195
 MainAssemblyMinFirmwareVersion=1.009.0029
 MainAssemblyResource=SimplSharpData.dat:820b61c48c8a2cace82957eed4cc377c
 MainAssemblyResource=SimplSharpData.dat:820b61c48c8a2cace82957eed4cc377c
@@ -7,9 +7,9 @@ DependencySource=Crestron.SimplSharpPro.DeviceSupport.dll:caae4b4259aaf619059f0a
 DependencyPath=HueTest.cpz:Crestron.SimplSharpPro.DeviceSupport.dll
 DependencyMainAssembly=Crestron.SimplSharpPro.DeviceSupport.dll:caae4b4259aaf619059f0ae34473bfd2
 ü
-DependencySource=HueLights.dll:a00eacb2d3c8a42af4d8b2879ffcb63f
+DependencySource=HueLights.dll:55ecbc25c9fb9392092b3079cd18addf
 DependencyPath=HueTest.cpz:HueLights.dll
-DependencyMainAssembly=HueLights.dll:a00eacb2d3c8a42af4d8b2879ffcb63f
+DependencyMainAssembly=HueLights.dll:55ecbc25c9fb9392092b3079cd18addf
 ü
 DependencySource=SimplSharpCustomAttributesInterface.dll:9c4b4d4c519b655af90016edca2d66b9
 DependencyPath=HueTest.cpz:SimplSharpCustomAttributesInterface.dll
