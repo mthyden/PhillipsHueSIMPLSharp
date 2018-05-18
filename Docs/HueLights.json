@@ -1,30 +1,674 @@
 {
-  "1": {
-    "state": {
-      "on": false,
-      "bri": 104,
-      "alert": "none",
-      "reachable": true
+    "1": {
+        "state": {
+            "on": false,
+            "bri": 0,
+            "alert": "none",
+            "mode": "homeautomation",
+            "reachable": false
+        },
+        "swupdate": {
+            "state": "noupdates",
+            "lastinstall": "2017-12-27T23:58:07"
+        },
+        "type": "Dimmable light",
+        "name": "Guest side table",
+        "modelid": "LWB006",
+        "manufacturername": "Philips",
+        "productname": "Hue white lamp",
+        "capabilities": {
+            "certified": true,
+            "control": {
+                "mindimlevel": 5000,
+                "maxlumen": 800
+            },
+            "streaming": {
+                "renderer": false,
+                "proxy": false
+            }
+        },
+        "config": {
+            "archetype": "classicbulb",
+            "function": "functional",
+            "direction": "omnidirectional"
+        },
+        "uniqueid": "00:17:88:01:10:5c:aa:01-0b",
+        "swversion": "5.105.0.21169"
     },
-    "type": "Dimmable light",
-    "name": "Hue white lamp 1",
-    "modelid": "LWB006",
-    "manufacturername": "Philips",
-    "uniqueid": "00:17:88:01:10:5c:aa:01-0b",
-    "swversion": "5.38.1.15095"
-  },
-  "2": {
-    "state": {
-      "on": false,
-      "bri": 100,
-      "alert": "none",
-      "reachable": true
+    "2": {
+        "state": {
+            "on": false,
+            "bri": 0,
+            "alert": "none",
+            "mode": "homeautomation",
+            "reachable": false
+        },
+        "swupdate": {
+            "state": "noupdates",
+            "lastinstall": "2017-12-27T23:57:00"
+        },
+        "type": "Dimmable light",
+        "name": "Guest side table 2",
+        "modelid": "LWB006",
+        "manufacturername": "Philips",
+        "productname": "Hue white lamp",
+        "capabilities": {
+            "certified": true,
+            "control": {
+                "mindimlevel": 5000,
+                "maxlumen": 800
+            },
+            "streaming": {
+                "renderer": false,
+                "proxy": false
+            }
+        },
+        "config": {
+            "archetype": "classicbulb",
+            "function": "functional",
+            "direction": "omnidirectional"
+        },
+        "uniqueid": "00:17:88:01:10:5c:af:91-0b",
+        "swversion": "5.105.0.21169"
     },
-    "type": "Dimmable light",
-    "name": "Hue white lamp 2",
-    "modelid": "LWB006",
-    "manufacturername": "Philips",
-    "uniqueid": "00:17:88:01:10:5c:af:91-0b",
-    "swversion": "5.38.1.15095"
-  }
+    "3": {
+        "state": {
+            "on": false,
+            "bri": 0,
+            "hue": 0,
+            "sat": 0,
+            "effect": "none",
+            "xy": [
+                0,
+                0
+            ],
+            "ct": 0,
+            "alert": "none",
+            "colormode": "hs",
+            "mode": "homeautomation",
+            "reachable": false
+        },
+        "swupdate": {
+            "state": "noupdates",
+            "lastinstall": "2017-12-27T23:56:56"
+        },
+        "type": "Extended color light",
+        "name": "Hue-C Left lamp",
+        "modelid": "LCT007",
+        "manufacturername": "Philips",
+        "productname": "Hue color lamp",
+        "capabilities": {
+            "certified": true,
+            "control": {
+                "mindimlevel": 2000,
+                "maxlumen": 800,
+                "colorgamuttype": "B",
+                "colorgamut": [
+                    [
+                        0.675,
+                        0.322
+                    ],
+                    [
+                        0.409,
+                        0.518
+                    ],
+                    [
+                        0.167,
+                        0.04
+                    ]
+                ],
+                "ct": {
+                    "min": 153,
+                    "max": 500
+                }
+            },
+            "streaming": {
+                "renderer": true,
+                "proxy": true
+            }
+        },
+        "config": {
+            "archetype": "sultanbulb",
+            "function": "mixed",
+            "direction": "omnidirectional"
+        },
+        "uniqueid": "00:17:88:01:02:05:d4:66-0b",
+        "swversion": "5.105.0.21536"
+    },
+    "4": {
+        "state": {
+            "on": false,
+            "bri": 1,
+            "hue": 14988,
+            "sat": 141,
+            "effect": "none",
+            "xy": [
+                0.4575,
+                0.4101
+            ],
+            "ct": 366,
+            "alert": "none",
+            "colormode": "ct",
+            "mode": "homeautomation",
+            "reachable": true
+        },
+        "swupdate": {
+            "state": "noupdates",
+            "lastinstall": "2017-12-27T23:57:48"
+        },
+        "type": "Extended color light",
+        "name": "Hue-C right lamp",
+        "modelid": "LCT007",
+        "manufacturername": "Philips",
+        "productname": "Hue color lamp",
+        "capabilities": {
+            "certified": true,
+            "control": {
+                "mindimlevel": 2000,
+                "maxlumen": 800,
+                "colorgamuttype": "B",
+                "colorgamut": [
+                    [
+                        0.675,
+                        0.322
+                    ],
+                    [
+                        0.409,
+                        0.518
+                    ],
+                    [
+                        0.167,
+                        0.04
+                    ]
+                ],
+                "ct": {
+                    "min": 153,
+                    "max": 500
+                }
+            },
+            "streaming": {
+                "renderer": true,
+                "proxy": true
+            }
+        },
+        "config": {
+            "archetype": "sultanbulb",
+            "function": "mixed",
+            "direction": "omnidirectional"
+        },
+        "uniqueid": "00:17:88:01:10:4b:97:88-0b",
+        "swversion": "5.105.0.21536"
+    },
+    "5": {
+        "state": {
+            "on": false,
+            "bri": 254,
+            "hue": 44090,
+            "sat": 21,
+            "effect": "none",
+            "xy": [
+                0.3618,
+                0.3571
+            ],
+            "ct": 222,
+            "alert": "none",
+            "colormode": "xy",
+            "mode": "homeautomation",
+            "reachable": true
+        },
+        "swupdate": {
+            "state": "noupdates",
+            "lastinstall": "2017-12-27T23:57:42"
+        },
+        "type": "Extended color light",
+        "name": "Fountain left",
+        "modelid": "LCT014",
+        "manufacturername": "Philips",
+        "productname": "Hue color lamp",
+        "capabilities": {
+            "certified": true,
+            "control": {
+                "mindimlevel": 1000,
+                "maxlumen": 800,
+                "colorgamuttype": "C",
+                "colorgamut": [
+                    [
+                        0.6915,
+                        0.3083
+                    ],
+                    [
+                        0.17,
+                        0.7
+                    ],
+                    [
+                        0.1532,
+                        0.0475
+                    ]
+                ],
+                "ct": {
+                    "min": 153,
+                    "max": 500
+                }
+            },
+            "streaming": {
+                "renderer": true,
+                "proxy": true
+            }
+        },
+        "config": {
+            "archetype": "sultanbulb",
+            "function": "mixed",
+            "direction": "omnidirectional"
+        },
+        "uniqueid": "00:17:88:01:02:72:8a:7c-0b",
+        "swversion": "1.29.0_r21169",
+        "swconfigid": "3027B5DE",
+        "productid": "Philips-LCT014-1-A19ECLv4"
+    },
+    "6": {
+        "state": {
+            "on": false,
+            "bri": 254,
+            "hue": 44090,
+            "sat": 21,
+            "effect": "none",
+            "xy": [
+                0.3618,
+                0.3571
+            ],
+            "ct": 222,
+            "alert": "none",
+            "colormode": "xy",
+            "mode": "homeautomation",
+            "reachable": true
+        },
+        "swupdate": {
+            "state": "noupdates",
+            "lastinstall": "2017-12-27T23:57:39"
+        },
+        "type": "Extended color light",
+        "name": "Fountain right",
+        "modelid": "LCT014",
+        "manufacturername": "Philips",
+        "productname": "Hue color lamp",
+        "capabilities": {
+            "certified": true,
+            "control": {
+                "mindimlevel": 1000,
+                "maxlumen": 800,
+                "colorgamuttype": "C",
+                "colorgamut": [
+                    [
+                        0.6915,
+                        0.3083
+                    ],
+                    [
+                        0.17,
+                        0.7
+                    ],
+                    [
+                        0.1532,
+                        0.0475
+                    ]
+                ],
+                "ct": {
+                    "min": 153,
+                    "max": 500
+                }
+            },
+            "streaming": {
+                "renderer": true,
+                "proxy": true
+            }
+        },
+        "config": {
+            "archetype": "sultanbulb",
+            "function": "mixed",
+            "direction": "omnidirectional"
+        },
+        "uniqueid": "00:17:88:01:02:70:8d:72-0b",
+        "swversion": "1.29.0_r21169",
+        "swconfigid": "3027B5DE",
+        "productid": "Philips-LCT014-1-A19ECLv4"
+    },
+    "7": {
+        "state": {
+            "on": false,
+            "bri": 254,
+            "hue": 8418,
+            "sat": 140,
+            "effect": "none",
+            "xy": [
+                0.4573,
+                0.41
+            ],
+            "ct": 366,
+            "alert": "none",
+            "colormode": "ct",
+            "mode": "homeautomation",
+            "reachable": true
+        },
+        "swupdate": {
+            "state": "noupdates",
+            "lastinstall": "2017-12-27T23:57:33"
+        },
+        "type": "Extended color light",
+        "name": "Hue color downlight 1",
+        "modelid": "LCT011",
+        "manufacturername": "Philips",
+        "productname": "Hue color downlight",
+        "capabilities": {
+            "certified": true,
+            "control": {
+                "mindimlevel": 2000,
+                "maxlumen": 650,
+                "colorgamuttype": "C",
+                "colorgamut": [
+                    [
+                        0.6915,
+                        0.3083
+                    ],
+                    [
+                        0.17,
+                        0.7
+                    ],
+                    [
+                        0.1532,
+                        0.0475
+                    ]
+                ],
+                "ct": {
+                    "min": 153,
+                    "max": 500
+                }
+            },
+            "streaming": {
+                "renderer": true,
+                "proxy": true
+            }
+        },
+        "config": {
+            "archetype": "floodbulb",
+            "function": "mixed",
+            "direction": "downwards"
+        },
+        "uniqueid": "00:17:88:01:02:52:78:42-0b",
+        "swversion": "1.29.0_r21169",
+        "swconfigid": "808DBD55",
+        "productid": "Philips-LCT011-1-BR30ECLv1"
+    },
+    "8": {
+        "state": {
+            "on": false,
+            "bri": 254,
+            "alert": "none",
+            "mode": "homeautomation",
+            "reachable": true
+        },
+        "swupdate": {
+            "state": "noupdates",
+            "lastinstall": null
+        },
+        "type": "Dimmable light",
+        "name": "Closet",
+        "modelid": "LWB014",
+        "manufacturername": "Philips",
+        "productname": "Hue white lamp",
+        "capabilities": {
+            "certified": true,
+            "control": {
+                "mindimlevel": 5000,
+                "maxlumen": 840
+            },
+            "streaming": {
+                "renderer": false,
+                "proxy": false
+            }
+        },
+        "config": {
+            "archetype": "classicbulb",
+            "function": "functional",
+            "direction": "omnidirectional"
+        },
+        "uniqueid": "00:17:88:01:02:96:54:94-0b",
+        "swversion": "1.29.0_r21169",
+        "swconfigid": "75D50777",
+        "productid": "Philips-LWB014-1-A19DLv3"
+    },
+    "9": {
+        "state": {
+            "on": false,
+            "bri": 0,
+            "alert": "none",
+            "mode": "homeautomation",
+            "reachable": false
+        },
+        "swupdate": {
+            "state": "noupdates",
+            "lastinstall": "2017-12-28T00:47:06"
+        },
+        "type": "Dimmable light",
+        "name": "Desk lamp",
+        "modelid": "LWB014",
+        "manufacturername": "Philips",
+        "productname": "Hue white lamp",
+        "capabilities": {
+            "certified": true,
+            "control": {
+                "mindimlevel": 5000,
+                "maxlumen": 840
+            },
+            "streaming": {
+                "renderer": false,
+                "proxy": false
+            }
+        },
+        "config": {
+            "archetype": "classicbulb",
+            "function": "functional",
+            "direction": "omnidirectional"
+        },
+        "uniqueid": "00:17:88:01:02:f4:8e:dc-0b",
+        "swversion": "1.29.0_r21169",
+        "swconfigid": "75D50777",
+        "productid": "Philips-LWB014-1-A19DLv3"
+    },
+    "11": {
+        "state": {
+            "on": false,
+            "bri": 44,
+            "hue": 7676,
+            "sat": 199,
+            "effect": "none",
+            "xy": [
+                0.5016,
+                0.4151
+            ],
+            "ct": 443,
+            "alert": "none",
+            "colormode": "xy",
+            "mode": "homeautomation",
+            "reachable": true
+        },
+        "swupdate": {
+            "state": "noupdates",
+            "lastinstall": "2017-12-27T23:57:36"
+        },
+        "type": "Extended color light",
+        "name": "Living floor lamp",
+        "modelid": "LCT014",
+        "manufacturername": "Philips",
+        "productname": "Hue color lamp",
+        "capabilities": {
+            "certified": true,
+            "control": {
+                "mindimlevel": 1000,
+                "maxlumen": 800,
+                "colorgamuttype": "C",
+                "colorgamut": [
+                    [
+                        0.6915,
+                        0.3083
+                    ],
+                    [
+                        0.17,
+                        0.7
+                    ],
+                    [
+                        0.1532,
+                        0.0475
+                    ]
+                ],
+                "ct": {
+                    "min": 153,
+                    "max": 500
+                }
+            },
+            "streaming": {
+                "renderer": true,
+                "proxy": true
+            }
+        },
+        "config": {
+            "archetype": "sultanbulb",
+            "function": "mixed",
+            "direction": "omnidirectional"
+        },
+        "uniqueid": "00:17:88:01:02:dc:ac:ce-0b",
+        "swversion": "1.29.0_r21169",
+        "swconfigid": "3027B5DE",
+        "productid": "Philips-LCT014-1-A19ECLv4"
+    },
+    "12": {
+        "state": {
+            "on": false,
+            "bri": 126,
+            "hue": 7676,
+            "sat": 199,
+            "effect": "none",
+            "xy": [
+                0.5016,
+                0.4151
+            ],
+            "ct": 443,
+            "alert": "none",
+            "colormode": "xy",
+            "mode": "homeautomation",
+            "reachable": true
+        },
+        "swupdate": {
+            "state": "noupdates",
+            "lastinstall": "2017-12-27T23:57:26"
+        },
+        "type": "Extended color light",
+        "name": "Living table lamp",
+        "modelid": "LCT014",
+        "manufacturername": "Philips",
+        "productname": "Hue color lamp",
+        "capabilities": {
+            "certified": true,
+            "control": {
+                "mindimlevel": 1000,
+                "maxlumen": 800,
+                "colorgamuttype": "C",
+                "colorgamut": [
+                    [
+                        0.6915,
+                        0.3083
+                    ],
+                    [
+                        0.17,
+                        0.7
+                    ],
+                    [
+                        0.1532,
+                        0.0475
+                    ]
+                ],
+                "ct": {
+                    "min": 153,
+                    "max": 500
+                }
+            },
+            "streaming": {
+                "renderer": true,
+                "proxy": true
+            }
+        },
+        "config": {
+            "archetype": "sultanbulb",
+            "function": "mixed",
+            "direction": "omnidirectional"
+        },
+        "uniqueid": "00:17:88:01:02:25:cf:d3-0b",
+        "swversion": "1.29.0_r21169",
+        "swconfigid": "3027B5DE",
+        "productid": "Philips-LCT014-1-A19ECLv4"
+    },
+    "13": {
+        "state": {
+            "on": false,
+            "bri": 254,
+            "hue": 44090,
+            "sat": 21,
+            "effect": "none",
+            "xy": [
+                0.3618,
+                0.3571
+            ],
+            "ct": 222,
+            "alert": "none",
+            "colormode": "xy",
+            "mode": "homeautomation",
+            "reachable": true
+        },
+        "swupdate": {
+            "state": "noupdates",
+            "lastinstall": "2018-05-03T21:06:09"
+        },
+        "type": "Extended color light",
+        "name": "Cactus",
+        "modelid": "LCT016",
+        "manufacturername": "Philips",
+        "productname": "Hue color lamp",
+        "capabilities": {
+            "certified": true,
+            "control": {
+                "mindimlevel": 1000,
+                "maxlumen": 800,
+                "colorgamuttype": "C",
+                "colorgamut": [
+                    [
+                        0.6915,
+                        0.3083
+                    ],
+                    [
+                        0.17,
+                        0.7
+                    ],
+                    [
+                        0.1532,
+                        0.0475
+                    ]
+                ],
+                "ct": {
+                    "min": 153,
+                    "max": 500
+                }
+            },
+            "streaming": {
+                "renderer": true,
+                "proxy": true
+            }
+        },
+        "config": {
+            "archetype": "sultanbulb",
+            "function": "mixed",
+            "direction": "omnidirectional"
+        },
+        "uniqueid": "00:17:88:01:04:8b:16:92-0b",
+        "swversion": "1.29.0_r21169",
+        "swconfigid": "FB3DCCB4",
+        "productid": "Philips-LCT016-1-A19ECLv5"
+    }
 }

@@ -16,6 +16,7 @@ namespace HueLights
 	    public ushort BulbCt;
         public ushort BulbOnline;
         public ushort Reachable;
+	    public ushort BulbColor;
 
         //^^^^^ Signals for SIMPL+ ^^^^^^^^
 
@@ -99,7 +100,7 @@ namespace HueLights
 					HueBridge.HueBulbs[_bulbListId].On = (bool)_json["state"]["on"];
 					HueBridge.HueBulbs[_bulbListId].Bri = (ushort)_json["state"]["bri"];
 					BulbBri = (ushort)(HueBridge.HueBulbs[_bulbListId].Bri);
-					if (_json["state"].SelectToken("colorMode") != null)
+					if (_json["state"].SelectToken("colormode") != null)
 					{
 						_supportsColor = true;
 					}
@@ -122,6 +123,7 @@ namespace HueLights
 						BulbCt = (ushort)(HueBridge.HueBulbs[_bulbListId].Ct);
 			        }
 					BulbIsOn = (ushort)(HueBridge.HueBulbs[_bulbListId].On ? 1 : 0);
+			        BulbColor = (ushort)(_supportsColor ? 1 : 0);
 		        }
 		        else
 		        {
@@ -151,8 +153,8 @@ namespace HueLights
                         string whodidwhat = myaction.ToString();
                         if (whodidwhat.Contains(tokenreturn))
                         {
-                            HueBridge.HueBulbs[BulbId - 1].On = (bool)myaction[tokenreturn];
-                            BulbIsOn = (ushort)(HueBridge.HueBulbs[BulbId - 1].On ? 1 : 0);
+							HueBridge.HueBulbs[_bulbListId].On = (bool)myaction[tokenreturn];
+							BulbIsOn = (ushort)(HueBridge.HueBulbs[_bulbListId].On ? 1 : 0);
                             TriggerBulbOnOffUpdate();
                         }
                     }
@@ -176,28 +178,31 @@ namespace HueLights
                 {
                     var payload = new Payload() { SetType = "lights", Lvl = val, LvlType = lvltype };
                     var json = HueBridge.SetCmd(PayloadType.Lvl, payload, BulbId);
+					//CrestronConsole.PrintLine("json: {0}",json);
                     if (json.Contains("success"))
                     {
                         var jData = JArray.Parse(json);
                         var nodeVal = "/" + payload.SetType + "/" + BulbId + "/"+ payload.CmdType + "/" + lvltype;
-                        HueBridge.HueBulbs[BulbId - 1].Bri = (uint)jData[0]["success"][nodeVal];
                         switch (lvltype)
                         {
                             case "bri":
                                 {
-                                    BulbBri = (ushort)HueBridge.HueBulbs[BulbId - 1].Bri;
+									HueBridge.HueBulbs[_bulbListId].Bri = (uint)jData[0]["success"][nodeVal];
+									BulbBri = (ushort)HueBridge.HueBulbs[_bulbListId].Bri;
                                     TriggerBulbBriUpdate();
                                     break;
                                 }
                             case "hue":
                                 {
-                                    BulbHue = (ushort)HueBridge.HueBulbs[BulbId - 1].Hue;
+									HueBridge.HueBulbs[_bulbListId].Hue = (uint)jData[0]["success"][nodeVal];
+									BulbHue = (ushort)HueBridge.HueBulbs[_bulbListId].Hue;
                                     TriggerBulbHueUpdate();
                                     break;
                                 }
                             case "sat":
-                                {
-                                    BulbSat = (ushort)HueBridge.HueBulbs[BulbId - 1].Sat;
+								{
+									HueBridge.HueBulbs[_bulbListId].Sat = (uint)jData[0]["success"][nodeVal];
+									BulbSat = (ushort)HueBridge.HueBulbs[_bulbListId].Sat;
                                     TriggerBulbSatUpdate();
                                     break;
                                 }

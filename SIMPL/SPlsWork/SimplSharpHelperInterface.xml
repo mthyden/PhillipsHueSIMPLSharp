@@ -5920,22 +5920,26 @@
         <member name="P:Crestron.SimplSharp.CrestronEnvironment.Latitude">
             <summary>
             Property to set the latitude which is used by the native scheduling engine for the astronomical events.
+            The Set feature is not supported on <see cref="F:Crestron.SimplSharp.eDevicePlatform.Server"/>. It will throw a <see cref="T:System.NotSupportedException"/>.
             This property requires a reboot for it to take into effect. This property is read on startup and could be
             out of sync if it was changed and the unit was not rebooted.
             This defaults to 41.000000 North
             </summary>
             <exception cref="T:System.ArgumentOutOfRangeException">Valid values are -90.0 to 90.0</exception>
             <exception cref="T:System.SystemException"> Unable to set Latitude.</exception>
+            <exception cref="T:System.NotSupportedException"> Operation is not supported</exception>
         </member>
         <member name="P:Crestron.SimplSharp.CrestronEnvironment.Longitude">
             <summary>
             Property to set the longitude which is used by the native scheduling engine for the astronomical events.
+            The Set feature is not supported on <see cref="F:Crestron.SimplSharp.eDevicePlatform.Server"/>. It will throw a <see cref="T:System.NotSupportedException"/>.
             This property requires a reboot for it to take into effect. This property is read on startup and could be
             out of sync if it was changed and the unit was not rebooted.
             This defaults to -73.933333 West
             </summary>
             <exception cref="T:System.ArgumentOutOfRangeException">Valid values are -180.0 to 180.0</exception>
             <exception cref="T:System.SystemException"> Unable to set Longitude.</exception>
+            <exception cref="T:System.NotSupportedException"> Operation is not supported</exception>
         </member>
         <member name="P:Crestron.SimplSharp.CrestronEnvironment.TimeZoneRec">
             <summary>
@@ -7327,6 +7331,7 @@
         <member name="T:Crestron.SimplSharp.SNTP">
             <summary>
             Class to provide SNTP functionality.
+            This feature is not supported on <see cref="F:Crestron.SimplSharp.eDevicePlatform.Server"/>.
             </summary>
         </member>
         <member name="M:Crestron.SimplSharp.SNTP.DoMethod(Microsoft.Win32.RegistryKey,System.Boolean)">
@@ -7382,6 +7387,7 @@
             </summary>
             <exception cref="T:System.NotSupportedException"> Operation is not supported</exception>
             <exception cref="T:System.InvalidOperationException"> Invalid operation exception. Please refer to the message for the actual exception.</exception>
+            <exception cref="T:System.NotSupportedException">SNTP is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.SNTP.Disable">
             <summary>
@@ -7391,6 +7397,7 @@
             </summary>
             <exception cref="T:System.NotSupportedException"> Operation is not supported</exception>
             <exception cref="T:System.InvalidOperationException">Invalid operation exception. Please refer to the message for the actual exception.</exception>
+            <exception cref="T:System.NotSupportedException">SNTP is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.SNTP.SNTPSyncOnCE">
             <summary>
@@ -7408,6 +7415,7 @@
             </summary>
             <exception cref="T:System.NotSupportedException"> Operation is not supported</exception>
             <exception cref="T:System.InvalidOperationException">Invalid operation exception. Please refer to the message for the actual exception.</exception>
+            <exception cref="T:System.NotSupportedException">SNTP is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="P:Crestron.SimplSharp.SNTP.Enabled">
             <summary>
@@ -7415,6 +7423,7 @@
             </summary>
             <exception cref="T:System.NotSupportedException"> Operation is not supported</exception>
             <exception cref="T:System.InvalidOperationException">Invalid operation exception. Please refer to the message for the actual exception.</exception>
+            <exception cref="T:System.NotSupportedException">SNTP is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="P:Crestron.SimplSharp.SNTP.Server">
             <summary>
@@ -7423,6 +7432,7 @@
             <exception cref="T:System.NotSupportedException"> Operation is not supported</exception>
             <exception cref="T:System.ArgumentNullException"> Specified Argument is NULL or Empty.</exception>
             <exception cref="T:System.InvalidOperationException">Invalid operation exception. Please refer to the message for the actual exception.</exception>
+            <exception cref="T:System.NotSupportedException">SNTP is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CyclicRedundancy.Calculate16BitCrcUsingTable(System.Byte*,System.Byte*,System.Byte@,System.Byte@)">
             <summary>
@@ -44580,7 +44590,8 @@
         </member>
         <member name="T:Crestron.SimplSharp.CrestronCresnetHelper">
             <summary>
-            Common Cresnet Helper 
+            Common Cresnet Helper.
+            This feature is not supported on <see cref="F:Crestron.SimplSharp.eDevicePlatform.Server"/>.
             </summary>
         </member>
         <member name="F:Crestron.SimplSharp.CrestronCresnetHelper.m_CresnetADOperationCriticalSection">
@@ -44598,6 +44609,7 @@
             empty if there are no devices in the system. if the function returns a <see cref="F:Crestron.SimplSharp.CrestronCresnetHelper.eCresnetDiscoveryReturnValues.Failure"/>, then one of the reasons
             could be that there are duplicate Id's on your network. In that case please execute the <see cref="M:Crestron.SimplSharp.CrestronCresnetHelper.DiscoverAllDevices"/> function. </remarks>
             <returns>eCresnetDiscoveryReturnValues - enum indicating return value</returns>
+            <exception cref="T:System.NotSupportedException">Cresnet is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.ParseString(System.String@,System.Byte@,System.String@,System.UInt32@,System.String@)">
             <summary>
@@ -44627,6 +44639,7 @@
             </summary>
             <remarks> On a successful response , the DiscoveredElementsList gets populated.</remarks>
             <returns>eCresnetDiscoveryReturnValues - enum indicating return value</returns>
+            <exception cref="T:System.NotSupportedException">Cresnet is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.DiscoverAllDevices(System.Boolean)">
             <summary>
@@ -44646,6 +44659,7 @@
             <param name="newIdInHexToSetSpecifiedDeviceTo"> New Id to set the specified device to</param>
             <returns> eCresnetDiscoveryReturnValues  Enum indicating failure or success</returns>
             <remarks>Invoke the <see cref="M:Crestron.SimplSharp.CrestronCresnetHelper.Query"/> function to populate the discovered element list.</remarks>
+            <exception cref="T:System.NotSupportedException">Cresnet is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.SetCresnetIdByTouchSettableID(System.UInt32,System.Byte)">
             <summary>
@@ -44654,6 +44668,7 @@
             <param name="touchSettableIdForSpecificDevice"> Touch Settable Id for the specific device</param>
             <param name="newIdInHexToSetSpecifiedDeviceTo"> New Id to set the specified device to</param>
             <returns> eCresnetDiscoveryReturnValues  Enum indicating failure or success</returns>
+            <exception cref="T:System.NotSupportedException">Cresnet is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.ReportCresnetIdByTouchSettableID(Crestron.SimplSharp.CrestronCresnetHelper.DiscoveredDeviceElement,System.Byte@)">
             <summary>
@@ -44663,6 +44678,7 @@
             <param name="cresnetId"> Cresnet Id for the specified device </param>
             <returns>eCresnetDiscoveryReturnValues  Enum indicating failure or success</returns>
             <remarks>Invoke the <see cref="M:Crestron.SimplSharp.CrestronCresnetHelper.Query"/> function to populate the discovered element list.</remarks>
+            <exception cref="T:System.NotSupportedException">Cresnet is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.ReportCresnetIdByTouchSettableID(System.UInt32,System.Byte@)">
             <summary>
@@ -44671,6 +44687,7 @@
             <param name="touchSettableIdForSpecificDevice"> Touch Settable Id for the specific device</param>
             <param name="cresnetId"> Cresnet Id for the specified device </param>
             <returns>eCresnetDiscoveryReturnValues  Enum indicating failure or success</returns>
+            <exception cref="T:System.NotSupportedException">Cresnet is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.ReportTouchSettableIDByCresnetId(Crestron.SimplSharp.CrestronCresnetHelper.DiscoveredDeviceElement,System.UInt32@)">
             <summary>
@@ -44680,6 +44697,7 @@
             <param name="touchSettableID"> Returns the Returns the Touch Settable Id for the specified device</param>
             <returns>eCresnetDiscoveryReturnValues  Enum indicating failure or success</returns>
             <remarks>Invoke the <see cref="M:Crestron.SimplSharp.CrestronCresnetHelper.Query"/> function to populate the discovered element list.</remarks>
+            <exception cref="T:System.NotSupportedException">Cresnet is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.ReportTouchSettableIDByCresnetId(System.Byte,System.UInt32@)">
             <summary>
@@ -44688,6 +44706,7 @@
             <param name="cresnetId"> cresnet Id for the specific device</param>
             <param name="touchSettableID"> Returns the Touch Settable Id for the specified device</param>
             <returns>eCresnetDiscoveryReturnValues  Enum indicating failure or success</returns>
+            <exception cref="T:System.NotSupportedException">Cresnet is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="F:Crestron.SimplSharp.CrestronCresnetHelper.m_pUserSpecifiedCallback">
             <summary>
@@ -44745,6 +44764,7 @@
             <remarks> Please ensure that only a single instance of the <see cref="M:Crestron.SimplSharp.CrestronCresnetHelper.LightDeviceBySpecifiedTouchSettableId(System.UInt32,Crestron.SimplSharp.CrestronCresnetHelper.LightAndPollDeviceFunctionDelegate)"/> or LightAllDevices is being called
             at any given time. If not the outcome is nondeterministic.
             This requires firmware version 1.011.0014 and higher.</remarks>
+            <exception cref="T:System.NotSupportedException">Cresnet is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.LightDeviceBySpecifiedTouchSettableId(System.UInt32,Crestron.SimplSharp.CrestronCresnetHelper.LightAndPollDeviceFunctionDelegate)">
             <summary>
@@ -44756,6 +44776,7 @@
             <remarks> Please ensure that only a single instance of the <see cref="M:Crestron.SimplSharp.CrestronCresnetHelper.LightAllDevices(Crestron.SimplSharp.CrestronCresnetHelper.LightAndPollDeviceFunctionDelegate)"/> or LightDeviceBySpecifiedTouchSettableId is being called
             at any given time. If not the outcome is nondeterministic.
             This requires firmware version 1.011.0014 and higher.</remarks>
+            <exception cref="T:System.NotSupportedException">Cresnet is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.StopLightAndPoll">
             <summary>
@@ -44763,6 +44784,7 @@
             </summary>
             <returns>eCresnetDiscoveryReturnValues  Enum indicating failure or success</returns>
             <remarks> This requires firmware version 1.011.0014 and higher.</remarks>
+            <exception cref="T:System.NotSupportedException">Cresnet is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronCresnetHelper.Close">
             <summary>
@@ -46069,14 +46091,14 @@
             Get the Program ID Tag for this application.
             </summary>
         </member>
-        <member name="P:Crestron.SimplSharp.InitialParametersClass.ProgramInstance">
+        <member name="P:Crestron.SimplSharp.InitialParametersClass.RoomId">
             <summary>
-            Unique program instance ID given to this application.
+            Unique Room ID given to this application.
             </summary>
         </member>
-        <member name="P:Crestron.SimplSharp.InitialParametersClass.ProgramInstanceName">
+        <member name="P:Crestron.SimplSharp.InitialParametersClass.RoomName">
             <summary>
-            The name of this running program instance.
+            The name of this running program.
             </summary>
         </member>
         <member name="P:Crestron.SimplSharp.InitialParametersClass.FirmwareVersion">

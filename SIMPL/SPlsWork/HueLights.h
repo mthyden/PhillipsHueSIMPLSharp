@@ -94,6 +94,7 @@ namespace HueLights;
         INTEGER BulbCt;
         INTEGER BulbOnline;
         INTEGER Reachable;
+        INTEGER BulbColor;
 
         // class properties
     };
