@@ -49,6 +49,16 @@ namespace HueLights
 	    public void RoomInit()
 	    {
 			RoomOnline = 0;
+		    RoomId = 0;
+		    GroupIsOn = 0;
+		    RoomClass = "";
+		    RoomBri = 0;
+		    RoomHue = 0;
+		    RoomSat = 0;
+		    RoomCt = 0;
+		    RoomXVal = 0;
+		    RoomYVal = 0;
+		    SceneNum = 0;
 		    if (HueBridge.Populated == true)
 		    {
 			    _foundroom = false;
@@ -99,9 +109,17 @@ namespace HueLights
 					_url = string.Format("http://{0}/api/{1}/{2}/{3}", HueBridge.BridgeIp, HueBridge.BridgeApi, "groups", RoomId);
 					_jsontext = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
 					_json = JObject.Parse(_jsontext);
-					HueBridge.HueGroups[RoomId - 1].On = (bool)_json["action"]["on"];
-					HueBridge.HueGroups[RoomId - 1].Bri = (ushort)_json["action"]["bri"];
-					RoomBri = (ushort)(HueBridge.HueGroups[RoomId - 1].Bri);
+
+					if (_json["action"].SelectToken("on") != null)
+					{
+						HueBridge.HueGroups[RoomId - 1].On = (bool)_json["action"]["on"];
+						GroupIsOn = (ushort)(HueBridge.HueGroups[RoomId - 1].On ? 1 : 0);
+					}
+					if (_json["action"].SelectToken("bri") != null)
+					{
+						HueBridge.HueGroups[RoomId - 1].Bri = (ushort)_json["action"]["bri"];
+						RoomBri = (ushort)(HueBridge.HueGroups[RoomId - 1].Bri);
+					}		
 					if (_json["action"].SelectToken("colormode") != null)
 					{
 						_supportsColor = true;
@@ -111,22 +129,19 @@ namespace HueLights
 						if (_json["action"].SelectToken("hue") != null)
 						{
 							HueBridge.HueGroups[RoomId - 1].Hue = (uint)_json["action"]["hue"];
+							RoomHue = (ushort)(HueBridge.HueGroups[RoomId - 1].Hue);
 						}
 						if (_json["action"].SelectToken("sat") != null)
 						{
 							HueBridge.HueGroups[RoomId - 1].Sat = (uint)_json["action"]["sat"];
+							RoomSat = (ushort)(HueBridge.HueGroups[RoomId - 1].Sat);
 						}
 						if (_json["action"].SelectToken("ct") != null)
 						{
 							HueBridge.HueGroups[RoomId - 1].Ct = (uint)_json["action"]["ct"];
+							RoomCt = (ushort)(HueBridge.HueGroups[RoomId - 1].Ct);
 						}
-						RoomHue = (ushort)(HueBridge.HueGroups[RoomId - 1].Hue);
-						RoomSat = (ushort)(HueBridge.HueGroups[RoomId - 1].Sat);
-						RoomCt = (ushort)(HueBridge.HueGroups[RoomId - 1].Ct);
-
 					}
-					GroupIsOn = (ushort)(HueBridge.HueGroups[RoomId - 1].On ? 1 : 0);
-
 				}
 				else
 				{

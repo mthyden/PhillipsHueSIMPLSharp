@@ -48,6 +48,13 @@ namespace HueLights
 	    {
 		    BulbOnline = 0;
 			_bulbListId = 0;
+		    BulbIsOn = 0;
+		    BulbType = "";
+		    BulbBri = 0;
+		    BulbHue = 0;
+		    BulbCt = 0;
+		    Reachable = 0;
+		    BulbColor = 0;
 			if (HueBridge.Populated == true)
 			{
 				BulbOnline = 0;
@@ -87,7 +94,6 @@ namespace HueLights
 
         public void GetBulb()
         {
-			//CrestronConsole.PrintLine("listID: {0}", _bulbListId);
 	        try
 	        {
 		        if (_foundBulb == true)
@@ -96,34 +102,46 @@ namespace HueLights
 					//CrestronConsole.PrintLine("url: {0}", _url);
 			        _jsontext = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
 			        _json = JObject.Parse(_jsontext);
-					HueBridge.HueBulbs[_bulbListId].Reachable = (bool)_json["state"]["reachable"];
-					HueBridge.HueBulbs[_bulbListId].On = (bool)_json["state"]["on"];
-					HueBridge.HueBulbs[_bulbListId].Bri = (ushort)_json["state"]["bri"];
-					BulbBri = (ushort)(HueBridge.HueBulbs[_bulbListId].Bri);
+
+			        if (_json["state"].SelectToken("reachable") != null)
+			        {
+						HueBridge.HueBulbs[_bulbListId].Reachable = (bool)_json["state"]["reachable"];
+						Reachable = (ushort)(HueBridge.HueBulbs[_bulbListId].Reachable ? 1 : 0);
+			        }			
+			        if (_json["state"].SelectToken("on") != null)
+			        {
+						HueBridge.HueBulbs[_bulbListId].On = (bool)_json["state"]["on"];
+						BulbIsOn = (ushort)(HueBridge.HueBulbs[_bulbListId].On ? 1 : 0);
+			        }	
+			        if (_json["state"].SelectToken("bri") != null)
+			        {
+						HueBridge.HueBulbs[_bulbListId].Bri = (ushort)_json["state"]["bri"];
+						BulbBri = (ushort)(HueBridge.HueBulbs[_bulbListId].Bri);
+			        }
 					if (_json["state"].SelectToken("colormode") != null)
 					{
+						HueBridge.HueBulbs[_bulbListId].ColorMode = (string)_json["state"]["colormode"];
 						_supportsColor = true;
 					}
 			        if (_supportsColor)
 			        {
-						if (_json["state"].SelectToken("hue") != null)
-						{
+				        if (_json["state"].SelectToken("hue") != null)
+				        {
 							HueBridge.HueBulbs[_bulbListId].Hue = (uint)_json["state"]["hue"];
-						}
-						if (_json["state"].SelectToken("sat") != null)
-						{
+							BulbHue = (ushort)(HueBridge.HueBulbs[_bulbListId].Hue); 
+				        }
+				        if (_json["state"].SelectToken("sat") != null)
+				        {
 							HueBridge.HueBulbs[_bulbListId].Sat = (uint)_json["state"]["sat"];
-						}
-						if (_json["state"].SelectToken("ct") != null)
-						{
+							BulbSat = (ushort)(HueBridge.HueBulbs[_bulbListId].Sat);
+				        }
+				        if (_json["state"].SelectToken("ct") != null)
+				        {
 							HueBridge.HueBulbs[_bulbListId].Ct = (uint)_json["state"]["ct"];
-						}
-						BulbHue = (ushort)(HueBridge.HueBulbs[_bulbListId].Hue);
-						BulbSat = (ushort)(HueBridge.HueBulbs[_bulbListId].Sat);
-						BulbCt = (ushort)(HueBridge.HueBulbs[_bulbListId].Ct);
+							BulbCt = (ushort)(HueBridge.HueBulbs[_bulbListId].Ct);
+				        }	
 			        }
-					BulbIsOn = (ushort)(HueBridge.HueBulbs[_bulbListId].On ? 1 : 0);
-			        BulbColor = (ushort)(_supportsColor ? 1 : 0);
+					BulbColor = (ushort)(_supportsColor ? 1 : 0);
 		        }
 		        else
 		        {

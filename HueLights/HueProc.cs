@@ -190,37 +190,62 @@ namespace HueLights
             {
 				JObject json = JObject.Parse(jsondata);
 				HueBridge.HueBulbs.Clear();
+				uint hue;
+				uint sat;
+				uint ct;
+				uint bri;
+				string colormode;
+	            string type;
+	            string name;
+	            string manufacturer;
+	            string uid;
+	            string swver;
+	            bool reachable;
+	            string model;
+	            bool on;
 				foreach (var bulb in json)
 				{
 					string id = bulb.Key;
-					uint hue = 0;
-					uint sat = 0;
-					uint ct = 0;
-					string colormode;
-					bool on = (bool)json[id]["state"]["on"];
-					uint bri = (uint)json[id]["state"]["bri"];
-					string type = (string)json[id]["type"];
-					string name = (string)json[id]["name"];
-					string model = (string)json[id]["modelid"];
-					string manufacturer = (string)json[id]["manufacturername"];
-					string uid = (string)json[id]["uniqueid"];
-					string swver = (string)json[id]["swversion"];
-					bool reachable = (bool) json[id]["state"]["reachable"];
+					hue = 0;
+					sat = 0;
+					ct = 0;
+					bri = 0;
+					colormode = "";
+					type = "";
+					name = "";
+					manufacturer = "";
+					uid = "";
+					swver = "";
+					reachable = false;
+					model = "";
+					on = false;
+					if (json[id]["state"].SelectToken("on") != null)
+					on = (bool)json[id]["state"]["on"];
+					if (json[id]["state"].SelectToken("bri") != null)
+						bri = (uint)json[id]["state"]["bri"];
+					if (json[id]["state"].SelectToken("reachable") != null)
+						reachable = (bool)json[id]["state"]["reachable"];
+					if (json[id].SelectToken("type") != null)
+					type = (string)json[id]["type"];
+					if (json[id].SelectToken("name") != null)
+					name = (string)json[id]["name"];
+					if (json[id].SelectToken("modelid") != null)
+					model = (string)json[id]["modelid"];
+					if (json[id].SelectToken("manufacturername") != null)
+					manufacturer = (string)json[id]["manufacturername"];
+					if (json[id].SelectToken("uniqueid") != null)
+					uid = (string)json[id]["uniqueid"];
+					if (json[id].SelectToken("swversion") != null)
+					swver = (string)json[id]["swversion"];
 					if (json[id]["state"].SelectToken("colormode") != null)
 					{
 						colormode = (string)json[id]["state"]["colormode"];
 						if (json[id]["state"].SelectToken("hue") != null)
-						{
 							hue = (uint)json[id]["state"]["hue"];
-						}
 						if (json[id]["state"].SelectToken("sat") != null)
-						{
 							sat = (uint)json[id]["state"]["sat"];
-						}
 						if (json[id]["state"].SelectToken("ct") != null)
-						{
 							ct = (uint)json[id]["state"]["ct"];
-						}
 						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, ct, type, name, model, manufacturer, uid, swver, colormode, reachable));
 					}
 					else
