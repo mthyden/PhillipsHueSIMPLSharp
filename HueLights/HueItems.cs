@@ -6,64 +6,47 @@ using Crestron.SimplSharp;
 
 namespace HueLights
 {
-    public class HueItem
+    public interface IHueItem
     {
-        public string Id;
-        public string Name;
+        string Id { get; set; }
+        string Name { get; set; }
+		bool Reachable { get; set; }
+		string Type { get; set; }
+		string Model { get; set; }
+		string Manufacturer { get; set; }
+		string Uid { get; set; }
+		string SwVer { get; set; }
     }
 
-    public class HueBulb : HueItem
+    public class HueBulb : IHueItem
     {
-		public bool On;
-		public uint Bri;
-		public uint Hue;
-		public uint Sat;
-	    public uint Ct;
-		public string Alert;
-		public string Effect;
-		public string ColorMode;
-        public bool Reachable;
-		public string Type;
-		public string Model;
-		public string Manufacturer;
-		public string Uid;
-        public string SwVer;
+		public string Id { get; set; }
+		public string Name { get; set; }
+		public bool Reachable { get; set; }
+		public string Type { get; set; }
+		public string Model { get; set; }
+		public string Manufacturer { get; set; }
+		public string Uid { get; set; }
+		public string SwVer { get; set; }
+		public bool On { get; set; }
+		public uint Bri { get; set; }
+		public string ColorMode { get; set; }
+		public uint Hue { get; set; }
+		public uint Sat { get; set; }
+	    public uint Ct { get; set; }
+		public string Alert { get; set; }
+		public string Effect { get; set; }
 
-        public HueBulb(string id, bool on, uint bri, string type, string name, string model, string manufacturer, string uid, string swver, bool reachable)
+        public HueBulb()
         {
-            Id = id;
-            On = on;
-            Bri = bri;
-            Type = type;
-            Name = name;
-            Model = model;
-            Manufacturer = manufacturer;
-            Uid = uid;
-            SwVer = swver;
-	        Reachable = reachable;
-        }
 
-        public HueBulb(string id, bool on, uint bri, uint hue, uint sat, uint ct, string type, string name, string model, string manufacturer, string uid, string swver, string colormode, bool reachable)
-        {
-            Id = id;
-            On = on;
-            Bri = bri;
-            Hue = hue;
-            Sat = sat;
-	        Ct = ct;
-            Type = type;
-            Name = name;
-            Model = model;
-	        ColorMode = colormode;
-            Manufacturer = manufacturer;
-            Uid = uid;
-            SwVer = swver;
-	        Reachable = reachable;
         }
     }
 
-    public class HueGroup : HueItem
+    public class HueGroup
     {
+		public string Id;
+		public string Name;
 		public bool On;
 		public uint Bri;
 		public uint Hue;
@@ -92,8 +75,10 @@ namespace HueLights
         }
     }
 
-    public class HueScene : HueItem
+    public class HueScene
     {
+		public string Id;
+		public string Name;
         public string[] Loads = new string[20];
         public string Group;
 
@@ -105,8 +90,10 @@ namespace HueLights
         }
     }
 
-	public class HueSensor : HueItem
+	public class HueSensor
 	{
+		public string Id;
+		public string Name;
 		public string Type;
 		public string Uid;
 		public bool Daylight;

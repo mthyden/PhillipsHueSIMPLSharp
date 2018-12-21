@@ -7053,7 +7053,7 @@
         </member>
         <member name="F:Crestron.SimplSharp.CrestronLogger.LoggerModeEnum.CONSOLE">
             <summary>
-            Print messages only to the console.  
+            Print messages only to the console.  Not supported for <see cref="F:Crestron.SimplSharp.eDevicePlatform.Server"/>.
             </summary>
         </member>
         <member name="F:Crestron.SimplSharp.CrestronLogger.LoggerModeEnum.RM">
@@ -7214,6 +7214,7 @@
             Property to specify the Logger Mode(s) desired. 
             </summary>
             <exception cref="T:System.ArgumentOutOfRangeException">Invalid mode specified</exception>
+            <exception cref="T:System.NotSupportedException"><see cref="F:Crestron.SimplSharp.CrestronLogger.LoggerModeEnum.CONSOLE"/> is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="T:Crestron.SimplSharp.eRuntimeEnvironment">
             <summary>
@@ -13167,7 +13168,14 @@
             <summary>
             Return the working directory of the application.            
             </summary>           
-            <returns>The path of the current directory as a string. "\\SIMPL\\AppXX"</returns>
+            <returns>The path of the current directory as a string. "\\SIMPL\\AppXX" or "/SIMPL/AppXX" based on the platform.</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.CrestronIO.Directory.GetApplicationRootDirectory">
+            <summary>
+            Returns the application's 'root' directory. This is where NVRAM and HTML folders can be found. No trailing directory separator at the end.
+            </summary>           
+            <returns>The path of this applications 'root' as a string. For appliances, this would be ""; for servers, this would be the "{HOME}/RunningPrograms/RoomName".
+            </returns>
         </member>
         <member name="M:Crestron.SimplSharp.CrestronIO.Directory.GetFileSystemEntries(System.String)">
             <summary>
@@ -18818,6 +18826,14 @@
             <param name="url">file dest </param>
             <param name="lpath">file source. </param>
             <returns>return 0 if success</returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.Net.Http.HttpClient.FpostFile(System.String,System.String)">
+            <summary>
+            Posts the file data to the server from the local machine
+            </summary>
+            <param name="url"></param>
+            <param name="lpath"></param>
+            <returns>returns 0 if success</returns>
         </member>
         <member name="M:Crestron.SimplSharp.Net.Http.HttpClient.Post(System.String,System.Byte[])">
             <summary>
@@ -43613,6 +43629,14 @@
             <remarks>Non-ASCII characters are not currently supported.</remarks>
             <exception cref="T:System.ObjectDisposedException">The FTC Client has already been closed or disposed.</exception>
         </member>
+        <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.PostFile(System.String,System.String)">
+            <summary>
+            Uploads local file to the remote destination pointed by URL.
+            </summary>
+            <param name="url"></param>
+            <param name="localPath"></param>
+            <returns></returns>
+        </member>
         <member name="M:Crestron.SimplSharp.CrestronFileTransferClient.SetUserName(System.String)">
             <summary>
             Sets the user name to be used in protocol authentication.
@@ -49954,6 +49978,7 @@
             Sets Client Security Certificate associated with this object.
             </summary>
             <param name="cert">The client x509 certificate object</param>
+            <exception cref="T:System.NotSupportedException">This method is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
             <remarks>
             <see cref="T:Crestron.SimplSharp.Cryptography.X509Certificates.X509Certificate"/> object does not contain the corresponding private key so it must be provided using a SetClientPrivateKey method.
             This method requires firmware version 1.011.xxxx or later
@@ -49964,6 +49989,7 @@
             Sets Client Security Certificate associated with this object.
             </summary>
             <param name="cert">The client certificate in binary (DER) format</param>
+            <exception cref="T:System.NotSupportedException">This method is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
             <remarks>
             The client certificate in binary (DER) format does not contain the corresponding private key so that it must be provided using a SetClientPrivateKey method.
             This method requires firmware version 1.011.xxxx or later
@@ -49974,6 +50000,7 @@
             Sets the Private Key corresponding to the Client Certificate
             </summary>
             <param name="key">The private key in binary (DER) format</param>
+            <exception cref="T:System.NotSupportedException">This method is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
             <remarks>
             This method requires firmware version 1.011.xxxx or later
             </remarks>
@@ -49985,6 +50012,7 @@
             <param name="filepath">Path to the certificate file. If null or empty, the Machine certificate will be used and type is ignored.</param>
             <param name="pass">Password if the certificate is encrypted</param>
             <param name="type">The type (format) of the file</param>
+            <exception cref="T:System.NotSupportedException">This method is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
         </member>
         <member name="M:Crestron.SimplSharp.Net.Https.HttpsClient.SetClientPrivateKey(System.String,System.String,Crestron.SimplSharp.Net.Https.HttpsClient.ClientKeyType)">
             <summary>
@@ -49996,6 +50024,7 @@
             </param>
             <param name="pass">Password if the key is encrypted</param>
             <param name="type">The type (format) of the file</param>
+            <exception cref="T:System.NotSupportedException">This method is not supported on this platform. Use <see cref="P:Crestron.SimplSharp.CrestronEnvironment.DevicePlatform"/> to determine the running platform type.</exception>
             <exception cref="T:Crestron.SimplSharp.Cryptography.X509Certificates.CryptographicException">
             Error while processing P12-type file.
             </exception>
@@ -50131,6 +50160,14 @@
             <param name="lpath">file source. </param>
             <returns>returns 0 if success</returns>
         </member>
+        <member name="M:Crestron.SimplSharp.Net.Https.HttpsClient.FpostFile(System.String,System.String)">
+            <summary>
+            Posts the file data to the server from the local machine
+            </summary>
+            <param name="url"></param>
+            <param name="lpath"></param>
+            <returns>returns 0 if success</returns>
+        </member>
         <member name="M:Crestron.SimplSharp.Net.Https.HttpsClient.Post(System.String,System.Byte[])">
             <summary>
             Retrieves an HTTPs document (as a string) from the provided URL using the POST HTTPs command.
@@ -50206,6 +50243,9 @@
             <param name="aRequest"></param>
             <param name="internalDispatch"></param>
             <returns></returns>
+        </member>
+        <member name="M:Crestron.SimplSharp.Net.Https.HttpsClient.GetNewHttpConnection(System.String)">
+            <remarks>This method is not supported on Crestron server platform.</remarks>
         </member>
         <member name="M:Crestron.SimplSharp.Net.Https.HttpsClient.BeginGetRequestStream(Crestron.SimplSharp.Net.Https.HttpsStreamRequestCallbackEx,Crestron.SimplSharp.Net.Https.HttpsClientRequest,System.Object)">
             <summary>

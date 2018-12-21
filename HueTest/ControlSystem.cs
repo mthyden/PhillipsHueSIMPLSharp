@@ -98,7 +98,7 @@ namespace HueTest
 		{
 			try
 			{
-
+				_hue = new HueProc();
 			}
 			catch (Exception e)
 			{
@@ -154,52 +154,39 @@ namespace HueTest
 
 		public void ReadBulbs(string s)
 		{
-			ProcBulbs();
+			try
+			{
+				_bulbStream = new FileStream(@"\NVRAM\lights.txt", FileMode.Open, FileAccess.ReadWrite);
+				_bulbReader = new StreamReader(_bulbStream);
+				string jsonbulbs = _bulbReader.ReadToEnd();
+				_bulbStream.Close();
+				_bulbReader.Close();
+				_hue.ProcBulbs(jsonbulbs);
+			}
+			catch (Exception e)
+			{
+				CrestronConsole.PrintLine(e.ToString());
+			}
 		}
 
 		public void ReadGroups(string s)
 		{
-			ProcGroups();
+			try
+			{
+				_roomStream = new FileStream(@"\NVRAM\groups.txt", FileMode.Open, FileAccess.Read);
+				_roomReader = new StreamReader(_roomStream);
+				string jsonrooms = _roomReader.ReadToEnd();
+				_roomStream.Close();
+				_roomReader.Close();
+				_hue.ProcRooms(jsonrooms);
+			}
+			catch (Exception e)
+			{
+				CrestronConsole.PrintLine(e.ToString());
+			}
 		}
 
 		public void ReadScenes(string s)
-		{
-			ProcScenes();
-		}
-
-		public void ReadSensors(string s)
-		{
-			ProcSensors();
-		}
-
-		public void ProcBulbs()
-		{
-			_bulbStream = new FileStream(@"\NVRAM\lights.txt", FileMode.Open, FileAccess.ReadWrite);
-			_bulbReader = new StreamReader(_bulbStream);
-			string jsonbulbs = _bulbReader.ReadToEnd();
-			_bulbStream.Close();
-			_bulbReader.Close();
-			BulbsTest(jsonbulbs);			
-		}
-
-		public void ProcGroups()
-        {
-            try
-            {
-                _roomStream = new FileStream(@"\NVRAM\groups.txt", FileMode.Open, FileAccess.Read);
-                _roomReader = new StreamReader(_roomStream);
-                string jsonrooms = _roomReader.ReadToEnd();
-                _roomStream.Close();
-                _roomReader.Close();
-                RoomsTest(jsonrooms);
-            }
-            catch (Exception e)
-            {
-                CrestronConsole.PrintLine(e.ToString());
-            }
-        }
-
-		public void ProcScenes()
 		{
 			try
 			{
@@ -208,7 +195,7 @@ namespace HueTest
 				string jsonscenes = _scenesReader.ReadToEnd();
 				_scenesStream.Close();
 				_scenesReader.Close();
-				ScenesTest(jsonscenes);
+				_hue.ProcScenes(jsonscenes);
 			}
 			catch (Exception e)
 			{
@@ -216,7 +203,7 @@ namespace HueTest
 			}
 		}
 
-		public void ProcSensors()
+		public void ReadSensors(string s)
 		{
 			try
 			{
@@ -225,222 +212,12 @@ namespace HueTest
 				string jsonsensors = _sensorReader.ReadToEnd();
 				_sensorStream.Close();
 				_sensorReader.Close();
-				RoomsTest(jsonsensors);
+				_hue.ProcSensors(jsonsensors);
 			}
 			catch (Exception e)
 			{
 				CrestronConsole.PrintLine(e.ToString());
 			}
-		}
-
-		public void BulbsTest(string jsondata)
-		{
-			try
-			{
-				JObject jData = JObject.Parse(jsondata);
-				HueBridge.HueBulbs.Clear();
-				foreach (var bulb in jData)
-				{
-					string id = bulb.Key;
-					uint hue = 0;
-					uint sat = 0;
-					uint ct = 0;
-					string colormode;
-					bool on = (bool)jData[id]["state"]["on"];
-					uint bri = (uint)jData[id]["state"]["bri"];
-					string type = (string)jData[id]["type"];
-					string name = (string)jData[id]["name"];
-					string model = (string)jData[id]["modelid"];
-					string manufacturer = (string)jData[id]["manufacturername"];
-					string uid = (string)jData[id]["uniqueid"];
-					string swver = (string)jData[id]["swversion"];
-					if (jData[id]["state"].SelectToken("colormode") != null)
-					{
-						colormode = (string) jData[id]["state"]["colormode"];
-						if (jData[id]["state"].SelectToken("hue") != null)
-						{
-							hue = (uint)jData[id]["state"]["hue"];
-						}
-						if (jData[id]["state"].SelectToken("sat") != null)
-						{
-							sat = (uint)jData[id]["state"]["sat"];
-						}
-						if (jData[id]["state"].SelectToken("ct") != null)
-						{
-							ct = (uint)jData[id]["state"]["ct"];
-						}						
-						//HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, ct, type, name, model, manufacturer, uid, swver, colormode));
-					}
-					else
-					{
-						//HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, type, name, model, manufacturer, uid, swver));
-					}
-				}
-				var BulbNum = (ushort)HueBridge.HueBulbs.Count;
-				CrestronConsole.PrintLine("{0} Bulbs discovered", BulbNum);
-			}
-			catch (Exception e)
-			{
-				CrestronConsole.PrintLine("Error getting bulbs: {0}", e);
-			}
-		}
-
-        public void RoomsTest(string jsondata)
-        {
-            try
-            {
-                JObject jData = JObject.Parse(jsondata);
-                HueBridge.HueGroups.Clear();
-                foreach (var group in jData)
-                {
-                    string load;
-                    JArray loadList;
-	                uint bri;
-                    string[] loads;
-                    string id = group.Key;
-                    string name = (string)jData[group.Key]["name"];
-                    if (jData[group.Key]["lights"].HasValues)
-                    {
-                        load = (string)jData[group.Key]["lights"][0];
-                        loadList = (JArray)jData[group.Key]["lights"];
-                        loads = loadList.ToObject<string[]>();
-						bri = (uint)jData[group.Key]["action"]["bri"];
-                    }
-                    else
-                    {
-                        load = "0";
-                        loads = null;
-	                    bri = 0;
-                    }
-
-                    string type = (string)jData[group.Key]["type"];
-					string roomclass = (string)jData[group.Key]["class"];
-                    bool on = (bool)jData[group.Key]["action"]["on"];
-
-                    string alert = (string)jData[group.Key]["action"]["alert"];
-                    HueBridge.HueGroups.Add(new HueGroup(id, name, type, on, bri, load, loads, roomclass));
-                }
-
-                var GroupNum = (ushort)HueBridge.HueGroups.Count;
-                CrestronConsole.PrintLine("{0} Rooms discovered", GroupNum);
-            }
-            catch (Exception e)
-            {
-                CrestronConsole.PrintLine("Error getting rooms: {0}", e);
-            }
-        }
-
-        public void ScenesTest(string jsondata)
-        {
-            try
-            {
-                JObject jData = JObject.Parse(jsondata);
-                string id = "";
-                string name = "";
-                string load = "";
-                foreach (var scene in jData)
-                {
-                    id = scene.Key;
-                    name = (string)jData[id]["name"];
-                    if (jData[id]["lights"].HasValues)
-                    {
-                        load = (string)jData[id]["lights"][0];
-                    }
-                    else
-                    {
-                        load = "";
-                        //CrestronConsole.PrintLine("load is null");
-                    }
-                    for (int x = 0; x < (HueBridge.HueGroups.Count); x++)
-                    {
-                        if (HueBridge.HueGroups[x].Loads != null && load != "")
-                        {
-                            if (HueBridge.HueGroups[x].Loads.Contains(load))
-                            {
-                                //CrestronConsole.PrintLine("found room: {0}, with load: {1}", HueBridge.HueGroups[x].Name, load);
-                                for (int y = 1; y < 20; y++)
-                                {
-                                    if (HueBridge.HueGroups[x].SceneName[y] == null)
-                                    {
-                                        //CrestronConsole.PrintLine("SceneName: {0}, with D: {1}", name, id);
-                                        HueBridge.HueGroups[x].SceneName[y] = name;
-                                        HueBridge.HueGroups[x].SceneID[y] = id;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    } 
-
-                }
-                CrestronConsole.PrintLine("{0} Scenes discovered", jData.Count);
-                //HueOnline = 1;
-                HueBridge.Populated = true;
-                GrpName = new String[50];
-                BlbName = new String[50];
-
-                foreach (var huegroup in HueBridge.HueGroups)
-                {
-                    GrpName[Convert.ToUInt16(huegroup.Id)] = huegroup.Name;
-                }
-                foreach (var huebulb in HueBridge.HueBulbs)
-                {
-                    BlbName[Convert.ToUInt16(huebulb.Id)] = huebulb.Name;
-                }
-                
-                for (int i = 0 ; i < 50; i++)
-                {
-                    CrestronConsole.PrintLine("GrpName: {0}",GrpName[i]);
-                    CrestronConsole.PrintLine("BlbName: {0}", BlbName[i]);
-                }
-                //OnInitComplete();
-            }
-            catch (Exception e)
-            {
-                CrestronConsole.PrintLine("Error getting scenes: {0}", e);
-            }
-        }
-
-	    public void SensorTest(string jsondata)
-	    {
-		    string id;
-		    string type;
-		    string name;
-		    string daylight;
-		    bool presence;
-		    uint temp;
-		    ushort battery;
-		    bool reachable;
-		    string lastupdated;
-		    string alert;
-		    string uid;
-
-			HueBridge.HueSensors.Clear();
-			JObject json = JObject.Parse(jsondata);
-		    foreach (var sensor in json)
-		    {
-			    id = sensor.Key;
-			    type = (string) json[id]["type"];
-			    if (type == "ZLLPresence")
-			    {
-				    name = (string) json[id]["name"];
-				    uid = (string) json[id]["uid"];
-				    battery = (ushort) json[id]["config"]["battery"];
-				    reachable = (bool) json[id]["config"]["reachable"];
-				    presence = (bool) json[id]["state"]["presence"];
-				    lastupdated = (string) json[id]["state"]["lastupdated"];
-				    HueBridge.HueSensors.Add(new HueSensor(id, uid, name, type));
-			    }
-		    }
-			/*
-		    HueBridge.HueSensors[MotionId - 1].Daylight = (bool)json[MotionId]["state"]["on"];
-			HueBridge.HueSensors[MotionId - 1].Presence = (bool)json[MotionId]["state"]["on"];
-			HueBridge.HueSensors[MotionId - 1].Temp = (ushort)json[MotionId]["state"]["on"];
-			HueBridge.HueSensors[MotionId - 1].Reachable = (bool)json[MotionId]["state"]["on"];
-			MotionDaylight = (ushort)(HueBridge.HueSensors[MotionId - 1].Daylight ? 1 : 0);
-			MotionPresence = (ushort)(HueBridge.HueSensors[MotionId - 1].Presence ? 1 : 0);
-			MotionTemp = (ushort)(HueBridge.HueSensors[MotionId - 1].Temp);
-			Reachable = (ushort)(HueBridge.HueSensors[MotionId - 1].Reachable ? 1 : 0);*/
 		}
 
 		#endregion 
@@ -526,9 +303,4 @@ namespace HueTest
 
         }
     }
-
-	public class TestEvents
-	{
-		
-	}
 }

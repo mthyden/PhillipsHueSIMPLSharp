@@ -203,6 +203,7 @@ namespace HueLights
 	            bool reachable;
 	            string model;
 	            bool on;
+	            int index = 0;
 				foreach (var bulb in json)
 				{
 					string id = bulb.Key;
@@ -221,8 +222,6 @@ namespace HueLights
 					on = false;
 					if (json[id]["state"].SelectToken("on") != null)
 					on = (bool)json[id]["state"]["on"];
-					if (json[id]["state"].SelectToken("bri") != null)
-						bri = (uint)json[id]["state"]["bri"];
 					if (json[id]["state"].SelectToken("reachable") != null)
 						reachable = (bool)json[id]["state"]["reachable"];
 					if (json[id].SelectToken("type") != null)
@@ -237,20 +236,33 @@ namespace HueLights
 					uid = (string)json[id]["uniqueid"];
 					if (json[id].SelectToken("swversion") != null)
 					swver = (string)json[id]["swversion"];
+					HueBridge.HueBulbs.Add(new HueBulb() { Id = id, On = on, Type = type, Name = name, Model = model, Manufacturer = manufacturer, Uid = uid, SwVer = swver, Reachable = reachable});
+					index = HueBridge.HueBulbs.Count - 1;
+					if (json[id]["state"].SelectToken("bri") != null)
+					{
+						bri = (uint)json[id]["state"]["bri"];
+						HueBridge.HueBulbs[index].Bri = bri;
+					}	
 					if (json[id]["state"].SelectToken("colormode") != null)
-					{
+					{						
 						colormode = (string)json[id]["state"]["colormode"];
+						HueBridge.HueBulbs[index].ColorMode = colormode;
 						if (json[id]["state"].SelectToken("hue") != null)
+						{
 							hue = (uint)json[id]["state"]["hue"];
+							HueBridge.HueBulbs[index].Hue = hue;
+						}
 						if (json[id]["state"].SelectToken("sat") != null)
+						{
 							sat = (uint)json[id]["state"]["sat"];
+							HueBridge.HueBulbs[index].Sat = sat;
+						}
+							
 						if (json[id]["state"].SelectToken("ct") != null)
+						{
 							ct = (uint)json[id]["state"]["ct"];
-						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, hue, sat, ct, type, name, model, manufacturer, uid, swver, colormode, reachable));
-					}
-					else
-					{
-						HueBridge.HueBulbs.Add(new HueBulb(id, on, bri, type, name, model, manufacturer, uid, swver, reachable));
+							HueBridge.HueBulbs[index].Ct = ct;
+						}
 					}
 				}
 				/*
@@ -260,6 +272,7 @@ namespace HueLights
 	            }*/
                     BulbNum = (ushort)HueBridge.HueBulbs.Count;
                     CrestronConsole.PrintLine("{0} Bulbs discovered", BulbNum);
+					if(Authorized == 1)
                     HueBridge.GetBridgeInfo("groups");
                 }
             catch (Exception e)
@@ -286,23 +299,24 @@ namespace HueLights
 	                    string roomclass;
 	                    string type;
                         string id = group.Key;
-						if ((string)json[group.Key]["type"] == "Room")
+						if ((string)json[id]["type"] == "Room")
 	                    {
-							string name = (string)json[group.Key]["name"];
-							roomclass = (string)json[group.Key]["class"];
-							type = (string)json[group.Key]["type"];
-							if (json[group.Key]["lights"].HasValues)
+							string name = (string)json[id]["name"];
+							roomclass = (string)json[id]["class"];
+							type = (string)json[id]["type"];
+		                    bri = 0;
+							if (json[id]["lights"].HasValues)
 							{
-								load = (string)json[group.Key]["lights"][0];
-								loadList = (JArray)json[group.Key]["lights"];
+								load = (string)json[id]["lights"][0];
+								loadList = (JArray)json[id]["lights"];
 								loads = loadList.ToObject<string[]>();
-								bri = (uint)json[group.Key]["action"]["bri"];
+								if (json[id]["action"].SelectToken("bri") != null)
+								bri = (uint)json[id]["action"]["bri"];
 							}
 							else
 							{
 								load = "0";
 								loads = null;
-								bri = 0;
 								CrestronConsole.PrintLine("No lights in {0}", name);
 							}
 
@@ -312,6 +326,7 @@ namespace HueLights
                     }
                     GroupNum = (ushort)HueBridge.HueGroups.Count;
                     CrestronConsole.PrintLine("{0} Rooms discovered", GroupNum);
+					if (Authorized == 1)
                     HueBridge.GetBridgeInfo("scenes");
                 }
             catch (Exception e)

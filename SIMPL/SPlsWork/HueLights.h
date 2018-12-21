@@ -1,6 +1,5 @@
 namespace HueLights;
         // class declarations
-         class HueItem;
          class HueBulb;
          class HueGroup;
          class HueScene;
@@ -15,7 +14,7 @@ namespace HueLights;
          class HueProc;
          class HttpConnect;
          class HttpsConnect;
-     class HueItem 
+     class HueBulb 
     {
         // class delegates
 
@@ -26,10 +25,23 @@ namespace HueLights;
         SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
 
         // class variables
-        STRING Id[];
-        STRING Name[];
+        INTEGER __class_id__;
 
         // class properties
+        STRING Id[];
+        STRING Name[];
+        STRING Type[];
+        STRING Model[];
+        STRING Manufacturer[];
+        STRING Uid[];
+        STRING SwVer[];
+        LONG_INTEGER Bri;
+        STRING ColorMode[];
+        LONG_INTEGER Hue;
+        LONG_INTEGER Sat;
+        LONG_INTEGER Ct;
+        STRING Alert[];
+        STRING Effect[];
     };
 
      class HueMotion 

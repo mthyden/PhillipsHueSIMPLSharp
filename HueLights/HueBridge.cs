@@ -64,7 +64,8 @@ namespace HueLights
 	    private static string _cmd;
 	    private static string _response;
 
-        public static List<HueBulb> HueBulbs = new List<HueBulb>();
+		public static List<HueBulb> HueBulbs = new List<HueBulb>();
+		//public static List<IHueItem> HueBulbs = new List<IHueItem>();
         public static List<HueGroup> HueGroups = new List<HueGroup>();
 		public static List<HueSensor> HueSensors = new List<HueSensor>(); 
         
@@ -108,7 +109,8 @@ namespace HueLights
         {
             try
             {
-                CrestronDataStoreStatic.InitCrestronDataStore();
+                var err = CrestronDataStoreStatic.InitCrestronDataStore();
+				CrestronConsole.PrintLine("Error Initing DataStore: {0}", err);
                 CrestronDataStoreStatic.GlobalAccess = CrestronDataStore.CSDAFLAGS.OWNERREADWRITE;
             }
             catch (Exception e)

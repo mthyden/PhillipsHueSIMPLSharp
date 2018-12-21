@@ -71,15 +71,16 @@ namespace HueLights
 				}
 				if (_foundBulb == true)
 				{
-					BulbName = (String)HueBridge.HueBulbs[_bulbListId].Name;
-					BulbIsOn = (ushort)(HueBridge.HueBulbs[_bulbListId].On ? 1 : 0);
-					BulbType = (String)HueBridge.HueBulbs[_bulbListId].Type;
-					BulbBri = (ushort)HueBridge.HueBulbs[_bulbListId].Bri;
-					Reachable = (ushort)(HueBridge.HueBulbs[_bulbListId].Reachable ? 1 : 0);
-					if (HueBridge.HueBulbs[_bulbListId].Type.Contains("Color"))
+					var bulb = HueBridge.HueBulbs[_bulbListId];
+					BulbName = (String)bulb.Name;
+					BulbIsOn = (ushort)(bulb.On ? 1 : 0);
+					BulbType = (String)bulb.Type;
+					Reachable = (ushort)(bulb.Reachable ? 1 : 0);
+					BulbBri = (ushort)bulb.Bri;
+					if (bulb.Type.Contains("Color"))
 					{
-						BulbHue = (ushort)(HueBridge.HueBulbs[_bulbListId].Hue);
-						BulbSat = (ushort)(HueBridge.HueBulbs[_bulbListId].Sat);
+						BulbHue = (ushort)(bulb.Hue);
+						BulbSat = (ushort)(bulb.Sat);
 					}
 					BulbOnline = 1;
 					CrestronConsole.PrintLine("Get {0} is complete", BulbName);
