@@ -110,7 +110,7 @@ namespace HueLights
             try
             {
                 var err = CrestronDataStoreStatic.InitCrestronDataStore();
-				CrestronConsole.PrintLine("Error Initing DataStore: {0}", err);
+				CrestronConsole.PrintLine("DataStore status: {0}", err);
                 CrestronDataStoreStatic.GlobalAccess = CrestronDataStore.CSDAFLAGS.OWNERREADWRITE;
             }
             catch (Exception e)
@@ -145,8 +145,8 @@ namespace HueLights
 		/// </summary>
         public static void ResetDataStore()
         {
-           if(CrestronDataStoreStatic.SetLocalStringValue("apikey", null) != CrestronDataStore.CDS_ERROR.CDS_SUCCESS)
-               CrestronConsole.PrintLine("Error removing API key");
+			if (CrestronDataStoreStatic.clearLocal("apikey") != CrestronDataStore.CDS_ERROR.CDS_SUCCESS)
+				CrestronConsole.PrintLine("Error removing API key");
         }
 
         /// <summary>
@@ -192,6 +192,7 @@ namespace HueLights
                 CrestronConsole.PrintLine("Exception: {0}",e);
             }
         }
+
 		/// <summary>
 		/// determines command type, formats string and sends to HTTPConnect instance
 		/// </summary>

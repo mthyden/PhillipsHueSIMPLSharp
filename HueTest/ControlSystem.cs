@@ -53,13 +53,15 @@ namespace HueTest
 				CrestronEnvironment.EthernetEventHandler += new EthernetEventHandler(ControlSystem_ControllerEthernetEventHandler);
 
 				#region json cmds
-				CrestronConsole.AddNewConsoleCommand(ReadBulbs, "bulbs", "Tests the Hue request",
+				CrestronConsole.AddNewConsoleCommand(ReadBulbs, "getbulbs", "Tests the Hue request",
 					ConsoleAccessLevelEnum.AccessAdministrator);
-				CrestronConsole.AddNewConsoleCommand(ReadGroups, "groups", "Tests the Hue request",
+				CrestronConsole.AddNewConsoleCommand(ReadGroups, "getgroups", "Tests the Hue request",
 					ConsoleAccessLevelEnum.AccessAdministrator);
-				CrestronConsole.AddNewConsoleCommand(ReadScenes, "scenes", "Tests the Hue request",
+				CrestronConsole.AddNewConsoleCommand(ReadScenes, "getscenes", "Tests the Hue request",
 					ConsoleAccessLevelEnum.AccessAdministrator);
-				CrestronConsole.AddNewConsoleCommand(ReadSensors, "sensors", "Tests the Hue request",
+				CrestronConsole.AddNewConsoleCommand(ReadSensors, "getsensors", "Tests the Hue request",
+					ConsoleAccessLevelEnum.AccessAdministrator);
+				CrestronConsole.AddNewConsoleCommand(RoomInit, "roominit", "inits a room class based on room name",
 					ConsoleAccessLevelEnum.AccessAdministrator);
 				#endregion
 
@@ -71,6 +73,11 @@ namespace HueTest
 				CrestronConsole.AddNewConsoleCommand(DsRead, "dsread", "reads datastore",
 	ConsoleAccessLevelEnum.AccessAdministrator);
 				CrestronConsole.AddNewConsoleCommand(DsDel, "dsdel", "deletes datastore",
+	ConsoleAccessLevelEnum.AccessAdministrator);
+				#endregion
+
+				#region Bridge cmds
+				CrestronConsole.AddNewConsoleCommand(BridgeReg, "bridgeregister", "registers to the bridge",
 	ConsoleAccessLevelEnum.AccessAdministrator);
 				#endregion
 
@@ -99,6 +106,7 @@ namespace HueTest
 			try
 			{
 				_hue = new HueProc();
+				_hue.InitComplete += new EventHandler(_hue_InitComplete);
 			}
 			catch (Exception e)
 			{
@@ -144,8 +152,10 @@ namespace HueTest
 
 		void DsDel(string s)
 		{
-			if(CrestronDataStoreStatic.SetLocalStringValue("apikey", null) != CrestronDataStore.CDS_ERROR.CDS_SUCCESS)
+			if(CrestronDataStoreStatic.clearLocal("apikey") != CrestronDataStore.CDS_ERROR.CDS_SUCCESS )
 				CrestronConsole.PrintLine("Error removing API key");
+
+			;
 		}
 
 		#endregion 
@@ -156,7 +166,7 @@ namespace HueTest
 		{
 			try
 			{
-				_bulbStream = new FileStream(@"\NVRAM\lights.txt", FileMode.Open, FileAccess.ReadWrite);
+				_bulbStream = new FileStream(@"\NVRAM\lights.json", FileMode.Open, FileAccess.ReadWrite);
 				_bulbReader = new StreamReader(_bulbStream);
 				string jsonbulbs = _bulbReader.ReadToEnd();
 				_bulbStream.Close();
@@ -173,7 +183,7 @@ namespace HueTest
 		{
 			try
 			{
-				_roomStream = new FileStream(@"\NVRAM\groups.txt", FileMode.Open, FileAccess.Read);
+				_roomStream = new FileStream(@"\NVRAM\groups.json", FileMode.Open, FileAccess.Read);
 				_roomReader = new StreamReader(_roomStream);
 				string jsonrooms = _roomReader.ReadToEnd();
 				_roomStream.Close();
@@ -190,7 +200,7 @@ namespace HueTest
 		{
 			try
 			{
-				_scenesStream = new FileStream(@"\NVRAM\Scenes.txt", FileMode.Open, FileAccess.Read);
+				_scenesStream = new FileStream(@"\NVRAM\Scenes.json", FileMode.Open, FileAccess.Read);
 				_scenesReader = new StreamReader(_scenesStream);
 				string jsonscenes = _scenesReader.ReadToEnd();
 				_scenesStream.Close();
@@ -220,7 +230,43 @@ namespace HueTest
 			}
 		}
 
+		public void RoomInit(string s)
+		{
+			var room = new HueRoom();
+			room.GroupName = s;
+			room.RoomInit();
+			CrestronConsole.Print("online:{0} Id:{1}", room.RoomOnline, room.RoomId);
+		}
+
 		#endregion 
+
+		#region bridge
+		void BridgeReg(string s)
+		{
+			try
+			{
+				_hue.getIP();
+				_hue.Register();
+			}
+			catch (Exception e)
+			{
+				CrestronConsole.PrintLine("Exception is {0}", e);
+			}
+		}
+
+		void _hue_InitComplete(object sender, EventArgs e)
+		{
+			CrestronConsole.PrintLine("bulbnum: {0}, groupnum: {1}",_hue.BulbNum, _hue.GroupNum);
+			for (int i = 1; i <= _hue.BulbNum; i++)
+			{
+				CrestronConsole.PrintLine("Bulb {0} : {1}",i, _hue.BlbName[i]);
+			}
+			for (int i = 1; i <= _hue.GroupNum; i++)
+			{
+				CrestronConsole.PrintLine("Group {0} : {1}", i, _hue.GrpName[i]);
+			}
+		}
+		#endregion
 
 		/// <summary>
         /// Event Handler for Ethernet events: Link Up and Link Down. 

@@ -269,11 +269,13 @@ namespace HueLights
 	            foreach (var bulb in HueBridge.HueBulbs)
 	            {
 					CrestronConsole.PrintLine("Bulb Name: {0}, Bulb ID: {1}", bulb.Name, bulb.Id);
-	            }*/
-                    BulbNum = (ushort)HueBridge.HueBulbs.Count;
+	            }
+				*/
+				BulbNum = (ushort)HueBridge.HueBulbs.Count;
                     CrestronConsole.PrintLine("{0} Bulbs discovered", BulbNum);
 					if(Authorized == 1)
                     HueBridge.GetBridgeInfo("groups");
+				
                 }
             catch (Exception e)
             {
