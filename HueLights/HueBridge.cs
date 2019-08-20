@@ -64,10 +64,10 @@ namespace HueLights
 	    private static string _cmd;
 	    private static string _response;
 
-		public static List<HueBulb> HueBulbs = new List<HueBulb>();
+		public static Dictionary<string, HueBulb> HueBulbs = new Dictionary<string, HueBulb>();
+        public static Dictionary<string, HueGroup> HueGroups = new Dictionary<string, HueGroup>();
+		public static Dictionary<string, HueSensor> HueSensors = new Dictionary<string, HueSensor>();
 		//public static List<IHueItem> HueBulbs = new List<IHueItem>();
-        public static List<HueGroup> HueGroups = new List<HueGroup>();
-		public static List<HueSensor> HueSensors = new List<HueSensor>(); 
         
         /// <summary>
         /// registers with bridge, authorizes a user based on API key from the pairing

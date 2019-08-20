@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Crestron.SimplSharp;
 using Newtonsoft.Json.Linq;
 
@@ -28,6 +29,7 @@ namespace HueLights
 	    private JObject _json;
 	    private string _jsontext;
 	    private bool _supportsColor;
+	    private HueGroup _room;
 
         public event EventHandler RoomBriUpdate;
 
@@ -62,24 +64,26 @@ namespace HueLights
 		    if (HueBridge.Populated == true)
 		    {
 			    _foundroom = false;
-			    foreach (var huegroup in HueBridge.HueGroups)
+			    foreach (KeyValuePair<string, HueGroup> entry in HueBridge.HueGroups)
 			    {
-				    if (huegroup.Name == GroupName)
+				    if (entry.Value.Name == GroupName)
 				    {
-					    RoomId = Convert.ToUInt16(huegroup.Id);
-					    _foundroom = true;
-					    break;
-				    }	
-				}
+						RoomId = Convert.ToUInt16(entry.Key);
+						_foundroom = true;
+					    _room = entry.Value;
+						break;
+				    }
+			    }
+
 			    if (_foundroom)
 			    {
-					RoomClass = HueBridge.HueGroups[RoomId - 1].GroupClass;
+					RoomClass = _room.GroupClass;
 					for (int i = 1; i <= 20; i++)
 					{
-						if (HueBridge.HueGroups[RoomId - 1].SceneName[i] != null)
+						if (_room.SceneName[i] != null)
 						{
-							SceneName[i] = HueBridge.HueGroups[RoomId - 1].SceneName[i];
-							SceneId[i] = HueBridge.HueGroups[RoomId - 1].SceneID[i];
+							SceneName[i] = _room.SceneName[i];
+							SceneId[i] = _room.SceneID[i];
 						}
 						else
 						{
@@ -112,13 +116,13 @@ namespace HueLights
 
 					if (_json["action"].SelectToken("on") != null)
 					{
-						HueBridge.HueGroups[RoomId - 1].On = (bool)_json["action"]["on"];
-						GroupIsOn = (ushort)(HueBridge.HueGroups[RoomId - 1].On ? 1 : 0);
+						_room.On = (bool)_json["action"]["on"];
+						GroupIsOn = (ushort)(_room.On ? 1 : 0);
 					}
 					if (_json["action"].SelectToken("bri") != null)
 					{
-						HueBridge.HueGroups[RoomId - 1].Bri = (ushort)_json["action"]["bri"];
-						RoomBri = (ushort)(HueBridge.HueGroups[RoomId - 1].Bri);
+						_room.Bri = (ushort)_json["action"]["bri"];
+						RoomBri = (ushort)(_room.Bri);
 					}		
 					if (_json["action"].SelectToken("colormode") != null)
 					{
@@ -128,18 +132,18 @@ namespace HueLights
 					{
 						if (_json["action"].SelectToken("hue") != null)
 						{
-							HueBridge.HueGroups[RoomId - 1].Hue = (uint)_json["action"]["hue"];
-							RoomHue = (ushort)(HueBridge.HueGroups[RoomId - 1].Hue);
+							_room.Hue = (uint)_json["action"]["hue"];
+							RoomHue = (ushort)(_room.Hue);
 						}
 						if (_json["action"].SelectToken("sat") != null)
 						{
-							HueBridge.HueGroups[RoomId - 1].Sat = (uint)_json["action"]["sat"];
-							RoomSat = (ushort)(HueBridge.HueGroups[RoomId - 1].Sat);
+							_room.Sat = (uint)_json["action"]["sat"];
+							RoomSat = (ushort)(_room.Sat);
 						}
 						if (_json["action"].SelectToken("ct") != null)
 						{
-							HueBridge.HueGroups[RoomId - 1].Ct = (uint)_json["action"]["ct"];
-							RoomCt = (ushort)(HueBridge.HueGroups[RoomId - 1].Ct);
+							_room.Ct = (uint)_json["action"]["ct"];
+							RoomCt = (ushort)(_room.Ct);
 						}
 					}
 				}
@@ -178,8 +182,8 @@ namespace HueLights
                         string whodidwhat = myaction.ToString();
                         if (whodidwhat.Contains(tokenreturn))
                         {
-                            HueBridge.HueGroups[RoomId - 1].On = (bool)myaction[tokenreturn];
-                            GroupIsOn = (ushort)(HueBridge.HueGroups[RoomId - 1].On ? 1 : 0);
+                            _room.On = (bool)myaction[tokenreturn];
+                            GroupIsOn = (ushort)(_room.On ? 1 : 0);
                             TriggerRoomOnOffUpdate();
                         }
                     }
@@ -218,22 +222,22 @@ namespace HueLights
                         {
                             case "bri":
                                 {
-                                    HueBridge.HueGroups[RoomId - 1].Bri = (uint)jData[0]["success"][nodeVal];
-                                    RoomBri = (ushort)HueBridge.HueGroups[RoomId - 1].Bri;
+                                    _room.Bri = (uint)jData[0]["success"][nodeVal];
+                                    RoomBri = (ushort)_room.Bri;
                                     TriggerRoomBriUpdate();
                                     break;
                                 }
                             case "hue":
                                 {
-                                    HueBridge.HueGroups[RoomId - 1].Hue = (uint)jData[0]["success"][nodeVal];
-                                    RoomHue = (ushort)HueBridge.HueGroups[RoomId - 1].Hue;
+									_room.Hue = (uint)jData[0]["success"][nodeVal];
+									RoomHue = (ushort)_room.Hue;
                                     TriggerRoomHueUpdate();
                                     break;
                                 }
                             case "sat":
                                 {
-                                    HueBridge.HueGroups[RoomId - 1].Sat = (uint)jData[0]["success"][nodeVal];
-                                    RoomSat = (ushort)HueBridge.HueGroups[RoomId - 1].Sat;
+									_room.Sat = (uint)jData[0]["success"][nodeVal];
+									RoomSat = (ushort)_room.Sat;
                                     TriggerRoomSatUpdate();
                                     break;
                                 }

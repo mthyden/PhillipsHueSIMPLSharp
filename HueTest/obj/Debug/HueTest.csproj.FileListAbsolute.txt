@@ -11,3 +11,10 @@ C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\HueLights
 C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpSQLHelperInterface.dll
 C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpNewtonsoft.dll
 C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpReflectionInterface.dll
+C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueTest\bin\Debug\HueTest.dll
+C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueTest\bin\Debug\HueTest.pdb
+C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueTest\bin\Debug\HueLights.dll
+C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpSQLHelperInterface.dll
+C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueTest\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueTest\obj\Debug\HueTest.dll
+C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueTest\obj\Debug\HueTest.pdb

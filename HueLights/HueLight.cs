@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Crestron.SimplSharp;
 using Newtonsoft.Json.Linq;
 
@@ -25,7 +26,7 @@ namespace HueLights
 	    private JObject _json;
 	    private string _jsontext;
 	    private bool _supportsColor;
-	    private int _bulbListId;
+	    private HueBulb _bulb;
 
         public event EventHandler BulbBriUpdate;
 
@@ -47,7 +48,6 @@ namespace HueLights
 	    public void BulbInit()
 	    {
 		    BulbOnline = 0;
-			_bulbListId = 0;
 		    BulbIsOn = 0;
 		    BulbType = "";
 		    BulbBri = 0;
@@ -58,29 +58,27 @@ namespace HueLights
 			if (HueBridge.Populated == true)
 			{
 				BulbOnline = 0;
-				for (int i = 0; i < HueBridge.HueBulbs.Count; i++)
+				foreach (KeyValuePair<string, HueBulb> entry in HueBridge.HueBulbs)
 				{
-					if (HueBridge.HueBulbs[i].Name == BulbName)
+					if (entry.Value.Name == BulbName)
 					{
-						BulbId = Convert.ToUInt16(HueBridge.HueBulbs[i].Id);
-						//CrestronConsole.PrintLine("BulbID: {0}", HueBridge.HueBulbs[i].Id);
+						BulbId = Convert.ToUInt16(entry.Key);
 						_foundBulb = true;
-						_bulbListId = i;
+						_bulb = entry.Value;
 						break;
 					}
 				}
 				if (_foundBulb == true)
 				{
-					var bulb = HueBridge.HueBulbs[_bulbListId];
-					BulbName = (String)bulb.Name;
-					BulbIsOn = (ushort)(bulb.On ? 1 : 0);
-					BulbType = (String)bulb.Type;
-					Reachable = (ushort)(bulb.Reachable ? 1 : 0);
-					BulbBri = (ushort)bulb.Bri;
-					if (bulb.Type.Contains("Color"))
+					BulbName = (String)_bulb.Name;
+					BulbIsOn = (ushort)(_bulb.On ? 1 : 0);
+					BulbType = (String)_bulb.Type;
+					Reachable = (ushort)(_bulb.Reachable ? 1 : 0);
+					BulbBri = (ushort)_bulb.Bri;
+					if (_bulb.Type.Contains("Color"))
 					{
-						BulbHue = (ushort)(bulb.Hue);
-						BulbSat = (ushort)(bulb.Sat);
+						BulbHue = (ushort)(_bulb.Hue);
+						BulbSat = (ushort)(_bulb.Sat);
 					}
 					BulbOnline = 1;
 					CrestronConsole.PrintLine("Get {0} is complete", BulbName);
@@ -106,40 +104,40 @@ namespace HueLights
 
 			        if (_json["state"].SelectToken("reachable") != null)
 			        {
-						HueBridge.HueBulbs[_bulbListId].Reachable = (bool)_json["state"]["reachable"];
-						Reachable = (ushort)(HueBridge.HueBulbs[_bulbListId].Reachable ? 1 : 0);
+						_bulb.Reachable = (bool)_json["state"]["reachable"];
+						Reachable = (ushort)(_bulb.Reachable ? 1 : 0);
 			        }			
 			        if (_json["state"].SelectToken("on") != null)
 			        {
-						HueBridge.HueBulbs[_bulbListId].On = (bool)_json["state"]["on"];
-						BulbIsOn = (ushort)(HueBridge.HueBulbs[_bulbListId].On ? 1 : 0);
+						_bulb.On = (bool)_json["state"]["on"];
+						BulbIsOn = (ushort)(_bulb.On ? 1 : 0);
 			        }	
 			        if (_json["state"].SelectToken("bri") != null)
 			        {
-						HueBridge.HueBulbs[_bulbListId].Bri = (ushort)_json["state"]["bri"];
-						BulbBri = (ushort)(HueBridge.HueBulbs[_bulbListId].Bri);
+						_bulb.Bri = (ushort)_json["state"]["bri"];
+						BulbBri = (ushort)(_bulb.Bri);
 			        }
 					if (_json["state"].SelectToken("colormode") != null)
 					{
-						HueBridge.HueBulbs[_bulbListId].ColorMode = (string)_json["state"]["colormode"];
+						_bulb.ColorMode = (string)_json["state"]["colormode"];
 						_supportsColor = true;
 					}
 			        if (_supportsColor)
 			        {
 				        if (_json["state"].SelectToken("hue") != null)
 				        {
-							HueBridge.HueBulbs[_bulbListId].Hue = (uint)_json["state"]["hue"];
-							BulbHue = (ushort)(HueBridge.HueBulbs[_bulbListId].Hue); 
+							_bulb.Hue = (uint)_json["state"]["hue"];
+							BulbHue = (ushort)(_bulb.Hue); 
 				        }
 				        if (_json["state"].SelectToken("sat") != null)
 				        {
-							HueBridge.HueBulbs[_bulbListId].Sat = (uint)_json["state"]["sat"];
-							BulbSat = (ushort)(HueBridge.HueBulbs[_bulbListId].Sat);
+							_bulb.Sat = (uint)_json["state"]["sat"];
+							BulbSat = (ushort)(_bulb.Sat);
 				        }
 				        if (_json["state"].SelectToken("ct") != null)
 				        {
-							HueBridge.HueBulbs[_bulbListId].Ct = (uint)_json["state"]["ct"];
-							BulbCt = (ushort)(HueBridge.HueBulbs[_bulbListId].Ct);
+							_bulb.Ct = (uint)_json["state"]["ct"];
+							BulbCt = (ushort)(_bulb.Ct);
 				        }	
 			        }
 					BulbColor = (ushort)(_supportsColor ? 1 : 0);
@@ -172,8 +170,8 @@ namespace HueLights
                         string whodidwhat = myaction.ToString();
                         if (whodidwhat.Contains(tokenreturn))
                         {
-							HueBridge.HueBulbs[_bulbListId].On = (bool)myaction[tokenreturn];
-							BulbIsOn = (ushort)(HueBridge.HueBulbs[_bulbListId].On ? 1 : 0);
+							_bulb.On = (bool)myaction[tokenreturn];
+							BulbIsOn = (ushort)(_bulb.On ? 1 : 0);
                             TriggerBulbOnOffUpdate();
                         }
                     }
@@ -206,22 +204,22 @@ namespace HueLights
                         {
                             case "bri":
                                 {
-									HueBridge.HueBulbs[_bulbListId].Bri = (uint)jData[0]["success"][nodeVal];
-									BulbBri = (ushort)HueBridge.HueBulbs[_bulbListId].Bri;
+									_bulb.Bri = (uint)jData[0]["success"][nodeVal];
+									BulbBri = (ushort)_bulb.Bri;
                                     TriggerBulbBriUpdate();
                                     break;
                                 }
                             case "hue":
                                 {
-									HueBridge.HueBulbs[_bulbListId].Hue = (uint)jData[0]["success"][nodeVal];
-									BulbHue = (ushort)HueBridge.HueBulbs[_bulbListId].Hue;
+									_bulb.Hue = (uint)jData[0]["success"][nodeVal];
+									BulbHue = (ushort)_bulb.Hue;
                                     TriggerBulbHueUpdate();
                                     break;
                                 }
                             case "sat":
 								{
-									HueBridge.HueBulbs[_bulbListId].Sat = (uint)jData[0]["success"][nodeVal];
-									BulbSat = (ushort)HueBridge.HueBulbs[_bulbListId].Sat;
+									_bulb.Sat = (uint)jData[0]["success"][nodeVal];
+									BulbSat = (ushort)_bulb.Sat;
                                     TriggerBulbSatUpdate();
                                     break;
                                 }

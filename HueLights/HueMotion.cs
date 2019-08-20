@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Crestron.SimplSharp;
 using Newtonsoft.Json.Linq;
 
@@ -19,9 +20,9 @@ namespace HueLights
 		private string _jsontext;
 		private JObject _json;
 		private bool _foundsensor;
+		private HueSensor _sensor;
 
 		public event EventHandler PresenceUpdate;
-
 
 		public HueMotion()
 		{
@@ -34,13 +35,13 @@ namespace HueLights
 			MotionOnline = 0;
 			if (HueBridge.Populated == true)
 			{
-				foreach (var sensor in HueBridge.HueSensors)
+				foreach (KeyValuePair<string, HueSensor> entry in HueBridge.HueSensors)
 				{
-					if (sensor.Name == MotionName)
+					if (entry.Value.Name == MotionName)
 					{
-						MotionId = Convert.ToUInt16(sensor.Id);
+						MotionId = Convert.ToUInt16(entry.Key);
 						_foundsensor = true;
-						GetMotion();
+						_sensor = entry.Value;
 						break;
 					}
 				}
@@ -60,11 +61,11 @@ namespace HueLights
 					_url = string.Format("http://{0}/api/{1}/{2}/{3}", HueBridge.BridgeIp, HueBridge.BridgeApi, "sensors", MotionId);
 					_jsontext = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
 					_json = JObject.Parse(_jsontext);
-					HueBridge.HueSensors[MotionId - 1].Presence = (bool)_json["state"]["presence"];
-					HueBridge.HueSensors[MotionId - 1].Battery = (ushort)_json["config"]["battery"];
-					HueBridge.HueSensors[MotionId - 1].Reachable = (bool)_json["config"]["reachable"];
-					MotionPresence = (ushort)(HueBridge.HueSensors[MotionId - 1].Presence ? 1 : 0);
-					MotionOnline = (ushort)(HueBridge.HueSensors[MotionId - 1].Reachable ? 1 : 0);
+					_sensor.Presence = (bool)_json["state"]["presence"];
+					_sensor.Battery = (ushort)_json["config"]["battery"];
+					_sensor.Reachable = (bool)_json["config"]["reachable"];
+					MotionPresence = (ushort)(_sensor.Presence ? 1 : 0);
+					MotionOnline = (ushort)(_sensor.Reachable ? 1 : 0);
 					TriggerPresenceUpdate();
 				}
 				else

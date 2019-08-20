@@ -8,7 +8,6 @@ namespace HueLights
 {
     public interface IHueItem
     {
-        string Id { get; set; }
         string Name { get; set; }
 		bool Reachable { get; set; }
 		string Type { get; set; }
@@ -20,7 +19,6 @@ namespace HueLights
 
     public class HueBulb : IHueItem
     {
-		public string Id { get; set; }
 		public string Name { get; set; }
 		public bool Reachable { get; set; }
 		public string Type { get; set; }
@@ -45,7 +43,6 @@ namespace HueLights
 
     public class HueGroup
     {
-		public string Id;
 		public string Name;
 		public bool On;
 		public uint Bri;
@@ -62,9 +59,8 @@ namespace HueLights
         public string[] SceneName = new string[20];
         public string[] SceneID = new string[20];
 
-        public HueGroup(string id, string roomname, string roomtype, bool on, uint bri, string load, string[] loads, string groupclass)
+        public HueGroup(string roomname, string roomtype, bool on, uint bri, string load, string[] loads, string groupclass)
         {
-            Id = id;
             Name = roomname;
             RoomType = roomtype;
             On = on;
@@ -77,14 +73,12 @@ namespace HueLights
 
     public class HueScene
     {
-		public string Id;
 		public string Name;
         public string[] Loads = new string[20];
         public string Group;
 
-        public HueScene(string id, string name, string[] loads)
+        public HueScene(string name, string[] loads)
         {
-            Id = id;
             Name = name;
             Loads = loads;
         }
@@ -92,7 +86,6 @@ namespace HueLights
 
 	public class HueSensor
 	{
-		public string Id;
 		public string Name;
 		public string Type;
 		public string Uid;
@@ -104,9 +97,8 @@ namespace HueLights
 		public bool Reachable;
 		public ushort Battery;
 
-		public HueSensor(string id, string uid, string name, string type)
+		public HueSensor(string uid, string name, string type)
 		{
-			Id = id;
 			Uid = uid;
 			Name = name;
 			Type = type;
