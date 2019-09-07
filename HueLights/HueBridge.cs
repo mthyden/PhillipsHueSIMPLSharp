@@ -144,10 +144,10 @@ namespace HueLights
 		/// resets the datastore
 		/// </summary>
         public static void ResetDataStore()
-        {
+		{
 			if (CrestronDataStoreStatic.clearLocal("apikey") != CrestronDataStore.CDS_ERROR.CDS_SUCCESS)
 				CrestronConsole.PrintLine("Error removing API key");
-        }
+		}
 
         /// <summary>
         /// gets the IP of the local bridge, currently one bridge is supported
