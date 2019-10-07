@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Crestron.SimplSharp;
 using Newtonsoft.Json.Linq;
 
@@ -45,7 +46,7 @@ namespace HueLights
 
         public HueRoom()
         {
-
+			
         }
 
 	    public void RoomInit()
@@ -78,21 +79,13 @@ namespace HueLights
 			    if (_foundroom)
 			    {
 					RoomClass = _room.GroupClass;
-					for (int i = 1; i <= 20; i++)
+					for (int i = 0; i < _room.ScenesNum; i++)
 					{
-						if (_room.SceneName[i] != null)
-						{
-							SceneName[i] = _room.SceneName[i];
-							SceneId[i] = _room.SceneID[i];
-						}
-						else
-						{
-							int x;
-							x = i - 1;
-							SceneNum = (ushort)x;
-							break;
-						}
+						SceneName[i+1] = _room.Scenes[i].Name;
+						SceneId[i + 1] = _room.Scenes[i].SceneId;
 					}
+					SceneNum = (ushort)_room.ScenesNum;
+					//CrestronConsole.PrintLine("scenenum: {0}",SceneNum);
 					RoomOnline = 1;
 					CrestronConsole.PrintLine("Get {0} is complete", GroupName);
 					TriggerRoomOnlineUpdate(); 

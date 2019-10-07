@@ -56,8 +56,7 @@ namespace HueLights
         public string AssignedLoad;
         public uint ScenesNum;
         public string[] Loads = new string[20];
-        public string[] SceneName = new string[20];
-        public string[] SceneID = new string[20];
+	    public List<HueScene> Scenes; 
 
         public HueGroup(string roomname, string roomtype, bool on, uint bri, string load, string[] loads, string groupclass)
         {
@@ -68,20 +67,15 @@ namespace HueLights
             AssignedLoad = load;
             Loads = loads;
 	        GroupClass = groupclass;
+			Scenes = new List<HueScene>();
         }
     }
 
     public class HueScene
     {
 		public string Name;
-        public string[] Loads = new string[20];
         public string Group;
-
-        public HueScene(string name, string[] loads)
-        {
-            Name = name;
-            Loads = loads;
-        }
+	    public string SceneId;
     }
 
 	public class HueSensor

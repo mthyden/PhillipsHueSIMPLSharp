@@ -166,6 +166,24 @@ namespace HueLights;
         STRING Effect[];
     };
 
+     class HueScene 
+    {
+        // class delegates
+
+        // class events
+
+        // class functions
+        STRING_FUNCTION ToString ();
+        SIGNED_LONG_INTEGER_FUNCTION GetHashCode ();
+
+        // class variables
+        STRING Name[];
+        STRING Group[];
+        STRING SceneId[];
+
+        // class properties
+    };
+
      class HttpConnect 
     {
         // class delegates

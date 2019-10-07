@@ -276,17 +276,10 @@ namespace HueLights
 						}
 					}
 				}
-				/*
-	            foreach (var bulb in HueBridge.HueBulbs)
-	            {
-					CrestronConsole.PrintLine("Bulb Name: {0}, Bulb ID: {1}", bulb.Name, bulb.Id);
-	            }
-				*/
 				BulbNum = (ushort)HueBridge.HueBulbs.Count;
-                    CrestronConsole.PrintLine("{0} Bulbs discovered", BulbNum);
-					if(Authorized == 1)
-                    HueBridge.GetBridgeInfo("groups");
-				
+                CrestronConsole.PrintLine("{0} Bulbs discovered", BulbNum);
+				if(Authorized == 1)
+                HueBridge.GetBridgeInfo("groups");
                 }
             catch (Exception e)
             {
@@ -312,8 +305,6 @@ namespace HueLights
 	                    string roomclass;
 	                    string type;
                         string id = group.Key;
-						if ((string)json[id]["type"] == "Room")
-	                    {
 							string name = (string)json[id]["name"];
 							roomclass = (string)json[id]["class"];
 							type = (string)json[id]["type"];
@@ -335,8 +326,8 @@ namespace HueLights
 
 							bool on = (bool)json[group.Key]["action"]["on"];
 							HueBridge.HueGroups.Add(id, new HueGroup(name, type, on, bri, load, loads, roomclass));
+							
 	                    }
-                    }
                     GroupNum = (ushort)HueBridge.HueGroups.Count;
                     CrestronConsole.PrintLine("{0} Rooms discovered", GroupNum);
 					if (Authorized == 1)
@@ -358,39 +349,15 @@ namespace HueLights
 				JObject json = JObject.Parse(jsondata);
                 string id = "";
                 string name = "";
+	            string group = "";
                 string load = "";
 				foreach (var scene in json)
                 {
                     id = scene.Key;
 					name = (string)json[id]["name"];
-					if (json[id]["lights"].HasValues)
-                    {
-						load = (string)json[id]["lights"][0];
-                    }
-                    else
-                    {
-                        load = "";
-                        //CrestronConsole.PrintLine("load is null");
-                    }
-					foreach (KeyValuePair<string, HueGroup> entry in HueBridge.HueGroups)
-					{
-						if (entry.Value.Loads != null && load != "")
-						{
-							if (entry.Value.Loads.Contains((load)))
-							{
-								for (int y = 1; y < 20; y++)
-								{
-									if (entry.Value.SceneName[y] == null)
-									{
-										//CrestronConsole.PrintLine("SceneName: {0}, with D: {1}", name, id);
-										entry.Value.SceneName[y] = name;
-										entry.Value.SceneID[y] = id;
-										break;
-									}
-								}
-							}
-						}
-                    } 
+	                group = (string) json[id]["group"];
+					//CrestronConsole.PrintLine("Group: {0}, SceneName: {1}, with D: {2}", group, name, id);
+					HueBridge.HueGroups[group].Scenes.Add(new HueScene(){Group = group, Name = name, SceneId = id});
                 }
 				CrestronConsole.PrintLine("{0} Scenes discovered", json.Count);
                 HueOnline = 1;
@@ -401,6 +368,8 @@ namespace HueLights
 	            int i = 1;
 				foreach (KeyValuePair<string, HueGroup> entry in HueBridge.HueGroups)
 				{
+					HueBridge.HueGroups[entry.Key].ScenesNum = (ushort)entry.Value.Scenes.Count;
+					//CrestronConsole.PrintLine("Group: {0}, Scene count: {1}",entry.Key, entry.Value.Scenes.Count);
 					GrpName[i] = entry.Value.Name;
 					i++;
 				}

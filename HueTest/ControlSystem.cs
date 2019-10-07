@@ -200,7 +200,7 @@ namespace HueTest
 		{
 			try
 			{
-				_scenesStream = new FileStream(@"\NVRAM\Scenes.json", FileMode.Open, FileAccess.Read);
+				_scenesStream = new FileStream(@"\NVRAM\scenes.json", FileMode.Open, FileAccess.Read);
 				_scenesReader = new StreamReader(_scenesStream);
 				string jsonscenes = _scenesReader.ReadToEnd();
 				_scenesStream.Close();
