@@ -26,6 +26,9 @@ C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSh
 C:\Dropbox\Projects\SIMPLSharp\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSharpReflectionInterface.dll
 C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueLights\bin\Debug\HueLights.dll
 C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueLights\bin\Debug\HueLights.pdb
+C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSharpHelperInterface.dll
+C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSharpNewtonsoft.dll
 C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSharpSQLHelperInterface.dll
 C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSharpReflectionInterface.dll
 C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueLights\obj\Debug\ResolveAssemblyReference.cache

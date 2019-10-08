@@ -355,11 +355,17 @@ namespace HueLights
                 {
                     id = scene.Key;
 					name = (string)json[id]["name"];
-	                group = (string) json[id]["group"];
-					//CrestronConsole.PrintLine("Group: {0}, SceneName: {1}, with D: {2}", group, name, id);
-					HueBridge.HueGroups[group].Scenes.Add(new HueScene(){Group = group, Name = name, SceneId = id});
+	                if (json[id].SelectToken("group") != null)
+	                {
+						group = (string)json[id]["group"];
+						if (HueBridge.HueGroups.ContainsKey(group)) { HueBridge.HueGroups[group].Scenes.Add(new HueScene() { Group = group, Name = name, SceneId = id }); }
+	                }
+	                else
+	                {
+						CrestronConsole.PrintLine("SceneName: {0} is invalid, recreate from the Hue app",name);
+	                }	
                 }
-				CrestronConsole.PrintLine("{0} Scenes discovered", json.Count);
+				
                 HueOnline = 1;
                 HueBridge.Populated = true;
                 GrpName = new String[50];
@@ -369,7 +375,7 @@ namespace HueLights
 				foreach (KeyValuePair<string, HueGroup> entry in HueBridge.HueGroups)
 				{
 					HueBridge.HueGroups[entry.Key].ScenesNum = (ushort)entry.Value.Scenes.Count;
-					//CrestronConsole.PrintLine("Group: {0}, Scene count: {1}",entry.Key, entry.Value.Scenes.Count);
+					CrestronConsole.PrintLine("{0} Scenes discovered in the {1} group", entry.Value.Scenes.Count, entry.Value.Name);
 					GrpName[i] = entry.Value.Name;
 					i++;
 				}
