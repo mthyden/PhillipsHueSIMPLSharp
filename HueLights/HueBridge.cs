@@ -157,7 +157,7 @@ namespace HueLights
         {
             try
             {
-	            _url = "https://www.meethue.com/api/nupnp";
+				_url = "https://discovery.meethue.com";
 	            _response = HttpsConnect.Instance.Request(_url, null);
                 /*
                  [{"id":"001788fffe2ad33b","internalipaddress":"172.22.131.242"}]
