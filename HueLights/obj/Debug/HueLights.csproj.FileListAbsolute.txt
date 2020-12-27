@@ -34,3 +34,14 @@ C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueLights\bin\Debug\Simp
 C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueLights\obj\Debug\ResolveAssemblyReference.cache
 C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueLights\obj\Debug\HueLights.dll
 C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueLights\obj\Debug\HueLights.pdb
+C:\Github\PhillipsHueSIMPLSharp\HueLights\bin\Debug\HueLights.dll
+C:\Github\PhillipsHueSIMPLSharp\HueLights\bin\Debug\HueLights.pdb
+C:\Github\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Github\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSharpHelperInterface.dll
+C:\Github\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSharpNewtonsoft.dll
+C:\Github\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSharpSQLHelperInterface.dll
+C:\Github\PhillipsHueSIMPLSharp\HueLights\bin\Debug\SimplSharpReflectionInterface.dll
+C:\Github\PhillipsHueSIMPLSharp\HueLights\obj\Debug\ResolveAssemblyReference.cache
+C:\Github\PhillipsHueSIMPLSharp\HueLights\obj\Debug\HueLights.dll
+C:\Github\PhillipsHueSIMPLSharp\HueLights\obj\Debug\HueLights.pdb
+C:\Github\PhillipsHueSIMPLSharp\HueLights\bin\Debug\Newtonsoft.Json.Compact.dll

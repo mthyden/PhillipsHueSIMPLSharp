@@ -1,0 +1,164 @@
+/*
+Programmer:  Monte Thyden
+Comments: Scenes partially implemented needs work in SIMPLSharp to align the scenes with the correct room.
+*/
+
+//*****     COMPILER     *****
+#DEFAULT_VOLATILE
+#ENABLE_STACK_CHECKING
+#PRINT_TO_TRACE
+#ENABLE_TRACE
+
+//*****    INCLUDES      *****
+#USER_SIMPLSHARP_LIBRARY "HueLights"
+
+//*****       IOs        *****
+digital_input _skip_, Init, getInfo;
+digital_input lightOn, lightOff, _skip_;                                                              
+analog_input BriIn, HueIn, SatIn, CtIn;
+string_input LightNameListItem[50];
+
+digital_output _skip_, LoadOnline, LoadIsOn, LoadReachable, LoadIsColor;
+String_output LightType; 
+Analog_output BriOut, HueOut, SatOut, CtOut;
+
+STRING_PARAMETER LightName[50];
+
+HueLight myLight;
+
+//*****     EVENTS       *****
+
+push getInfo
+{
+	myLight.GetBulb();
+	
+}
+
+push Init
+{
+	if(len(LightNameListItem) > 0)
+	{
+   	myLight.BulbName = LightNameListItem;
+	}
+   else
+	{
+		myLight.BulbName = LightName;		
+	}
+	myLight.BulbInit();
+	
+}
+
+push LightOn
+{
+    myLight.LightsAction("on", "true", "none");
+}
+
+push LightOff
+{
+    myLight.LightsAction("on", "false", "none");
+
+}
+
+threadsafe change BriIn
+{    
+    myLight.LightsVal("bri", BriIn);
+	BriOut = myLight.BulbBri;
+}
+
+threadsafe change HueIn
+{  
+    myLight.LightsVal("hue", HueIn);
+	HueOut = myLight.BulbHue;
+}
+
+threadsafe change SatIn
+{   
+    myLight.LightsVal("sat", SatIn);
+	SatOut = myLight.BulbSat;
+}
+
+threadsafe change CtIn
+{   
+    myLight.LightsVal("ct", CtIn);
+	CtOut = myLight.BulbCt;
+}
+
+eventhandler myOnOffHandler(HueLight sender, EVentArgs args)
+{
+	if(sender = myLight)
+	{
+		LoadIsOn = myLight.BulbIsOn;	
+	}
+}
+
+eventhandler myBriHandler(HueLight sender, EventArgs args)
+{
+	if(sender = myLight)
+	{
+    	BriOut = myLight.BulbBri;	
+	}
+}
+
+eventhandler myHueHandler(HueLight sender, EventArgs args)
+{
+	if(sender = myLight)
+	{
+    	HueOut = myLight.BulbHue;	
+	}
+}
+
+eventhandler mySatHandler(HueLight sender, EventArgs args)
+{
+	if(sender = myLight)
+	{
+    	SatOut = myLight.BulbSat;	
+	}
+}
+
+eventhandler myCtHandler(HueLight sender, EventArgs args)
+{
+	if(sender = myLight)
+	{
+    	CtOut = myLight.BulbCt;	
+	}
+}
+
+eventhandler myLightHandler(HueLight sender, EventArgs args)
+{
+	if(myLight.Reachable)
+	{
+     	LoadOnline = myLight.BulbOnline;
+		LoadIsOn = myLight.BulbIsOn;
+		LightType = myLight.BulbType;
+		BriOut = myLight.BulbBri;
+		LoadReachable = myLight.Reachable;
+		LoadIsColor = myLight.BulbColor;
+		HueOut = myLight.BulbHue;
+		SatOut = myLight.BulbSat;
+		CtOut = myLight.BulbCt;
+	}
+}
+
+eventhandler myOnlineHandler(HueLight sender, EventArgs args)
+{
+	if(sender = myLight)
+	{
+     	LoadOnline = myLight.BulbOnline;
+		LightType = myLight.BulbType;
+		LoadReachable = myLight.Reachable;
+		myLight.GetBulb();	
+	}
+}
+
+Function Main()
+{
+    WaitForInitializationComplete();
+	RegisterEvent(myLight, BulbOnOffUpdate, myOnOffHandler);
+	RegisterEvent(myLight, BulbBriUpdate, myBriHandler);
+	RegisterEvent(myLight, BulbHueUpdate, myHueHandler);
+	RegisterEvent(myLight, BulbSatUpdate, mySatHandler);
+	RegisterEvent(myLight, BulbCtUpdate, myCtHandler);
+	RegisterEvent(myLight, BulbOnlineUpdate, myOnlineHandler);
+	RegisterEvent(myLight, BulbUpdate, myLightHandler);
+
+}

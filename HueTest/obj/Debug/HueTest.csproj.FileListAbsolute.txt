@@ -24,3 +24,17 @@ C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplS
 C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpSQLHelperInterface.dll
 C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueTest\obj\Debug\HueTest.dll
 C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueTest\obj\Debug\HueTest.pdb
+C:\Github\PhillipsHueSIMPLSharp\HueTest\bin\Debug\HueTest.dll
+C:\Github\PhillipsHueSIMPLSharp\HueTest\bin\Debug\HueTest.pdb
+C:\Github\PhillipsHueSIMPLSharp\HueTest\bin\Debug\Crestron.SimplSharpPro.DeviceSupport.dll
+C:\Github\PhillipsHueSIMPLSharp\HueTest\bin\Debug\HueLights.dll
+C:\Github\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpCustomAttributesInterface.dll
+C:\Github\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpHelperInterface.dll
+C:\Github\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpNewtonsoft.dll
+C:\Github\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpPro.exe
+C:\Github\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpReflectionInterface.dll
+C:\Github\PhillipsHueSIMPLSharp\HueTest\bin\Debug\SimplSharpSQLHelperInterface.dll
+C:\Github\PhillipsHueSIMPLSharp\HueTest\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\Github\PhillipsHueSIMPLSharp\HueTest\obj\Debug\ResolveAssemblyReference.cache
+C:\Github\PhillipsHueSIMPLSharp\HueTest\obj\Debug\HueTest.dll
+C:\Github\PhillipsHueSIMPLSharp\HueTest\obj\Debug\HueTest.pdb

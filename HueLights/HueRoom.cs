@@ -38,6 +38,8 @@ namespace HueLights
 
         public event EventHandler RoomSatUpdate;
 
+		public event EventHandler RoomCtUpdate;
+
         public event EventHandler RoomOnOffUpdate;
 
         public event EventHandler RoomUpdate;
@@ -116,7 +118,12 @@ namespace HueLights
 					{
 						_room.Bri = (ushort)_json["action"]["bri"];
 						RoomBri = (ushort)(_room.Bri);
-					}		
+					}
+					if (_json["action"].SelectToken("ct") != null)
+					{
+						_room.Ct = (ushort)_json["action"]["ct"];
+						RoomCt = (ushort)(_room.Ct);
+					}
 					if (_json["action"].SelectToken("colormode") != null)
 					{
 						_supportsColor = true;
@@ -234,6 +241,13 @@ namespace HueLights
                                     TriggerRoomSatUpdate();
                                     break;
                                 }
+							case "ct":
+								{
+									_room.Ct = (uint)jData[0]["success"][nodeVal];
+									RoomCt = (ushort)_room.Ct;
+									TriggerRoomCtUpdate();
+									break;
+								}
                             default:
                                 break;
                         }
@@ -305,6 +319,11 @@ namespace HueLights
         {
             RoomSatUpdate(this, new EventArgs());
         }
+
+		public void TriggerRoomCtUpdate()
+		{
+			RoomCtUpdate(this, new EventArgs());
+		}
 
         public void TriggerRoomOnOffUpdate()
         {

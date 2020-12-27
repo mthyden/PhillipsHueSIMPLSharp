@@ -1,0 +1,216 @@
+/*
+Programmer:  Monte Thyden
+Comments: 
+*/
+
+//*****     COMPILER     *****
+#DEFAULT_VOLATILE
+#ENABLE_STACK_CHECKING
+#PRINT_TO_TRACE
+#ENABLE_TRACE
+
+#HELP_BEGIN
+This implementation of the Phllips Hue Will pole the local network for a hillips Hue Bridge, 
+if Bridge is on DHCP I would create a nightly routine to request bridge IP.
+
+50 bulbs are supported in this module since a single bridge can only support 50 bulbs
+however this module could be easily augmented to increase the bulb count.
+
+After the IP for a bridge is established the Register function must run. 
+To Register press the physical button on the top of the bridge and then trigger the register function. 
+A digital feedback will show successful registration. Registration will determine the username (AKA API Key)
+used to send all commands. When the API key is parsed it is stored in the CrestronDataStore. 
+After reboots or program uploads, the regitration sequence will attempt to read from the DataStore
+before requiring the manual button on the HueBridge being pushed.
+
+Then a bulb request should be issued which will parse all the bulbs currently on the HueBridge, 
+if Bulbs are changed our, names, etc a new bulb quest query should be issued.
+#HELP_END
+
+//*****    INCLUDES      *****
+#USER_SIMPLSHARP_LIBRARY "HueLights"
+
+//*****       IOs        *****
+DIGITAL_INPUT _skip_, Init, getInfo, roomOn, roomOff, colorloopOn;
+
+ANALOG_INPUT roomBriIn, roomHueIn, roomSatIn, roomCtIn; 
+
+STRING_INPUT roomNameListItem[20];
+
+ANALOG_INPUT xyVal[2];
+
+DIGITAL_INPUT scenes[20];
+
+DIGITAL_OUTPUT _skip_, RoomOnline, RoomIsOn; 
+
+ANALOG_OUTPUT ScenesNum, RoomBriOut, RoomHueOut, RoomSatOut, RoomCtOut; 
+
+String_Output RmClass, RoomSceneName[20];
+
+STRING_PARAMETER RoomName[20];
+
+HueRoom myRoom;
+
+//Global variables
+integer colorloop;
+
+//*****     EVENTS       *****
+
+push getInfo
+{
+		myRoom.GetRoom();
+}
+
+push Init
+{
+	if(len(roomNameListItem) > 0)
+	{
+         myRoom.GroupName = roomNameListItem;
+	}
+   else
+	{
+			myRoom.GroupName = RoomName;		
+	}
+	myRoom.RoomInit();
+}
+
+push roomOn
+{
+	if(colorloop)
+	{
+		myRoom.GroupAction("on", "true", "colorloop");
+	}
+	else
+	{
+		myRoom.GroupAction("on", "true", "none");
+	}
+}
+
+push roomOff
+{
+	myRoom.GroupAction("on", "false", "none");	
+}
+
+push colorloopOn
+{
+	colorloop = 1;
+}
+release colorloopOn
+{
+	colorloop = 0;
+}   
+
+push scenes
+{
+	integer i;
+	i = getlastmodifiedarrayindex();
+	myRoom.RecallScene(i);
+	RoomIsOn = 1;	
+}
+
+threadsafe change roomBriIn
+{    
+    myRoom.LightsVal("bri", roomBriIn);
+}
+
+threadsafe change roomHueIn
+{     
+    myRoom.LightsVal("hue", roomHueIn);
+}
+
+threadsafe change roomSatIn
+{     
+    myRoom.LightsVal("sat", roomSatIn);
+}
+
+threadsafe change roomCtIn
+{     
+    myRoom.LightsVal("ct", roomCtIn);
+}
+
+threadsafe change xyVal
+{
+	myRoom.XYVal(xyVal[1], xyVal[2]);
+}
+
+eventhandler myOnOffHandler(HueRoom sender, EVentArgs args)
+{
+	if(sender = myRoom)
+	{
+		RoomIsOn = myRoom.GroupIsOn;	
+	}
+}
+
+eventhandler myBriHandler(HueRoom sender, EventArgs args)
+{
+	if(sender = myRoom)
+	{
+    	RoomBriOut = myRoom.RoomBri;	
+	}
+}
+
+eventhandler myHueHandler(HueRoom sender, EventArgs args)
+{
+	if(sender = myRoom)
+	{
+    	RoomHueOut = myRoom.RoomHue;	
+	}
+}
+
+eventhandler mySatHandler(HueRoom sender, EventArgs args)
+{
+	if(sender = myRoom)
+	{
+    	RoomSatOut = myRoom.RoomSat;	
+	}
+}
+
+eventhandler myCtHandler(HueRoom sender, EventArgs args)
+{
+	if(sender = myRoom)
+	{
+    	RoomCtOut = myRoom.RoomCt;	
+	}
+}
+
+eventhandler myRoomHandler(HueRoom sender, EventArgs args)
+{
+	if(sender = myRoom)
+	{
+    	RoomOnline = myRoom.RoomOnline;
+      RoomIsOn = myRoom.GroupIsOn;
+		RoomBriOut = myRoom.RoomBri;
+		RoomHueOut = myRoom.RoomHue;
+		RoomSatOut = myRoom.RoomSat;
+		RoomCtOut = myRoom.RoomCt;
+	}
+}
+
+eventhandler myOnlineHandler(HueRoom sender, EventArgs args)
+{
+	integer i;
+	if(sender = myRoom)
+	{
+    	RoomOnline = myRoom.RoomOnline;
+		ScenesNum = myRoom.SceneNum;
+		RmClass = myRoom.RoomClass;
+		for(i = 1 to ScenesNum)
+		{
+   			roomSceneName[i] = myRoom.SceneName[i]; 	
+		}
+	}
+	myRoom.GetRoom();
+}
+
+
+Function Main()
+{
+   WaitForInitializationComplete();
+	RegisterEvent(myRoom, RoomOnOffUpdate, myOnOffHandler);
+	RegisterEvent(myRoom, RoomBriUpdate, myBriHandler);
+	RegisterEvent(myRoom, RoomHueUpdate, myHueHandler);
+	RegisterEvent(myRoom, RoomSatUpdate, mySatHandler);
+	RegisterEvent(myRoom, RoomCtUpdate, myCtHandler);
+	RegisterEvent(myRoom, RoomUpdate, myRoomHandler);
+	RegisterEvent(myRoom, RoomOnlineUpdate, myOnlineHandler);
+}

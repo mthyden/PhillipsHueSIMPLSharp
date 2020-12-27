@@ -34,6 +34,8 @@ namespace HueLights
 
         public event EventHandler BulbSatUpdate;
 
+	    public event EventHandler BulbCtUpdate;
+
         public event EventHandler BulbOnlineUpdate;
 
 	    public event EventHandler BulbUpdate;
@@ -122,6 +124,11 @@ namespace HueLights
 						_bulb.ColorMode = (string)_json["state"]["colormode"];
 						_supportsColor = true;
 					}
+					if (_json["state"].SelectToken("ct") != null)
+					{
+						_bulb.Ct = (ushort)_json["state"]["ct"];
+						BulbCt = (ushort)(_bulb.Ct);
+					}
 			        if (_supportsColor)
 			        {
 				        if (_json["state"].SelectToken("hue") != null)
@@ -133,11 +140,6 @@ namespace HueLights
 				        {
 							_bulb.Sat = (uint)_json["state"]["sat"];
 							BulbSat = (ushort)(_bulb.Sat);
-				        }
-				        if (_json["state"].SelectToken("ct") != null)
-				        {
-							_bulb.Ct = (uint)_json["state"]["ct"];
-							BulbCt = (ushort)(_bulb.Ct);
 				        }	
 			        }
 					BulbColor = (ushort)(_supportsColor ? 1 : 0);
@@ -223,6 +225,13 @@ namespace HueLights
                                     TriggerBulbSatUpdate();
                                     break;
                                 }
+							case "ct":
+								{
+									_bulb.Ct = (uint)jData[0]["success"][nodeVal];
+									BulbCt = (ushort)_bulb.Ct;
+									TriggerBulbCtUpdate();
+									break;
+								}
                             default:
                                 break;
                         }
@@ -253,6 +262,11 @@ namespace HueLights
         {
             BulbSatUpdate(this, new EventArgs());
         }
+
+		public void TriggerBulbCtUpdate()
+		{
+			BulbCtUpdate(this, new EventArgs());
+		}
 
         public void TriggerBulbOnOffUpdate()
         {
