@@ -1,9 +1,9 @@
 # PhilipsHueSIMPLSharp
-Crestron SIMPLSharp Phillips Hue Implementation
+Crestron SIMPLSharp Philips Hue Implementation
 
 Current features:
 - Bridge discovery, Bridge registration, bulb/Room count
-- Hue Room on/off/Tog/Color Loop, Brightness, Hue, Saturation adjustment, 20 scenes, XY color adjustment
+- Hue Room on/off/Tog/Color Loop, Brightness, Hue, Saturation, CT adjustment, 20 scenes, XY color adjustment
 - Hue bulb adjustment
 - SIMPL windows and sample UI code are included. 
 
@@ -18,7 +18,7 @@ After the IP for a bridge is established the Register function must run. To regi
 Hue Room and Hue Bulb modules now have the ability to be defined in one of two ways, either via the parameter field in the module requiring the exact room and or bulb name (case sensitive) or from the serial join input which can be fed directly from an ISC symbol that hooks to the output from the main processor module. Those two output serials contain the list of discovered bulbs and discovered rooms. Empty rooms are AOK, this has been resolved in the 2.1 room module.
 
 known issues:
-- Using the parameter field to populate the room name for the Room modules will inadvertently pass the literal "[#Room Name]" I need to investigate this further but it may be a bug in SIMPL Windows ver 4.8.15
+- none
 
 Best Practices:
 If the Init routine is being run for the first time be sure to press the button on the bridge prior to the Hue Init signal going high or simply trigger it manualy from SIMPLdebugger.
