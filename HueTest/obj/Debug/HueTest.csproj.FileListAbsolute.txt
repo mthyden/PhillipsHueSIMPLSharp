@@ -38,3 +38,4 @@ C:\Github\PhillipsHueSIMPLSharp\HueTest\bin\Debug\Newtonsoft.Json.Compact.dll
 C:\Github\PhillipsHueSIMPLSharp\HueTest\obj\Debug\ResolveAssemblyReference.cache
 C:\Github\PhillipsHueSIMPLSharp\HueTest\obj\Debug\HueTest.dll
 C:\Github\PhillipsHueSIMPLSharp\HueTest\obj\Debug\HueTest.pdb
+C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueTest\bin\Debug\Newtonsoft.Json.Compact.dll

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Crestron.SimplSharp;
+using Crestron.SimplSharp.Net.Http;
 using Newtonsoft.Json.Linq;
 
 namespace HueLights
@@ -29,17 +30,11 @@ namespace HueLights
 	    private HueBulb _bulb;
 
         public event EventHandler BulbBriUpdate;
-
         public event EventHandler BulbHueUpdate;
-
         public event EventHandler BulbSatUpdate;
-
 	    public event EventHandler BulbCtUpdate;
-
         public event EventHandler BulbOnlineUpdate;
-
 	    public event EventHandler BulbUpdate;
-
         public event EventHandler BulbOnOffUpdate;
 
         public HueLight()
@@ -84,6 +79,8 @@ namespace HueLights
 					}
 					BulbOnline = 1;
 					CrestronConsole.PrintLine("Get {0} is complete", BulbName);
+					_bulb.HueUpdated += _bulbUpdated;
+					_bulb.Online = true;
 					TriggerBulbOnlineUpdate();
 				}
 				else
@@ -101,7 +98,7 @@ namespace HueLights
 		        {
 			        _url = string.Format("http://{0}/api/{1}/{2}/{3}", HueBridge.BridgeIp, HueBridge.BridgeApi, "lights", BulbId);
 					//CrestronConsole.PrintLine("url: {0}", _url);
-			        _jsontext = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
+			        _jsontext = HttpConnect.Instance.RequestInfo(_url, null, RequestType.Get);
 			        _json = JObject.Parse(_jsontext);
 
 			        if (_json["state"].SelectToken("reachable") != null)
@@ -163,20 +160,7 @@ namespace HueLights
                 if (HueBridge.Authorized == true && HueBridge.Populated == true)
                 {
                     Payload payload = new Payload() { SetType = "lights", LvlType = lvltype, OnOff = val, Effect = effect };
-                    string json = HueBridge.SetCmd(PayloadType.BulbOnOff, payload, BulbId);
-					JArray JReturn = JArray.Parse(json);
-                    string tokenreturn = "/lights/" + BulbId + "/state/on";
-                    foreach (var Jobj in JReturn)
-                    {
-                        var myaction = Jobj["success"];
-                        string whodidwhat = myaction.ToString();
-                        if (whodidwhat.Contains(tokenreturn))
-                        {
-							_bulb.On = (bool)myaction[tokenreturn];
-							BulbIsOn = (ushort)(_bulb.On ? 1 : 0);
-                            TriggerBulbOnOffUpdate();
-                        }
-                    }
+                    HueBridge.SetCmd(PayloadType.BulbOnOff, payload, BulbId);
                 }
                 else
                 {
@@ -196,46 +180,7 @@ namespace HueLights
                 if (HueBridge.Authorized == true)
                 {
                     var payload = new Payload() { SetType = "lights", Lvl = val, LvlType = lvltype };
-                    var json = HueBridge.SetCmd(PayloadType.Lvl, payload, BulbId);
-					//CrestronConsole.PrintLine("json: {0}",json);
-                    if (json.Contains("success"))
-                    {
-                        var jData = JArray.Parse(json);
-                        var nodeVal = "/" + payload.SetType + "/" + BulbId + "/"+ payload.CmdType + "/" + lvltype;
-                        switch (lvltype)
-                        {
-                            case "bri":
-                                {
-									_bulb.Bri = (uint)jData[0]["success"][nodeVal];
-									BulbBri = (ushort)_bulb.Bri;
-                                    TriggerBulbBriUpdate();
-                                    break;
-                                }
-                            case "hue":
-                                {
-									_bulb.Hue = (uint)jData[0]["success"][nodeVal];
-									BulbHue = (ushort)_bulb.Hue;
-                                    TriggerBulbHueUpdate();
-                                    break;
-                                }
-                            case "sat":
-								{
-									_bulb.Sat = (uint)jData[0]["success"][nodeVal];
-									BulbSat = (ushort)_bulb.Sat;
-                                    TriggerBulbSatUpdate();
-                                    break;
-                                }
-							case "ct":
-								{
-									_bulb.Ct = (uint)jData[0]["success"][nodeVal];
-									BulbCt = (ushort)_bulb.Ct;
-									TriggerBulbCtUpdate();
-									break;
-								}
-                            default:
-                                break;
-                        }
-                    }
+                    HueBridge.SetCmd(PayloadType.Lvl, payload, BulbId);
                 }
                 else
                 {
@@ -247,6 +192,43 @@ namespace HueLights
                 CrestronConsole.PrintLine("Exception is {0}", e);
             }
         }
+
+		void _bulbUpdated(object sender, HueInstanceEventArgs e)
+		{
+			switch (e.HueEventId)
+			{
+				case HueEventId.Bri:
+					{
+						BulbBri = (ushort)_bulb.Bri;
+						TriggerBulbBriUpdate();
+						break;
+					}
+				case HueEventId.Hue:
+					{
+						BulbHue = (ushort)_bulb.Hue;
+						TriggerBulbHueUpdate();
+						break;
+					}
+				case HueEventId.Sat:
+					{
+						BulbSat = (ushort)_bulb.Sat;
+						TriggerBulbSatUpdate();
+						break;
+					}
+				case HueEventId.Ct:
+					{
+						BulbCt = (ushort)_bulb.Ct;
+						TriggerBulbCtUpdate();
+						break;
+					}
+				case HueEventId.On:
+					{
+						BulbIsOn = (ushort)(_bulb.On ? 1 : 0);
+						TriggerBulbOnOffUpdate();
+						break;
+					}
+			}
+		}
 
         public void TriggerBulbBriUpdate()
         {

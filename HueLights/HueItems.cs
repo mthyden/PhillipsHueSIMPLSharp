@@ -19,6 +19,7 @@ namespace HueLights
 
     public class HueBulb : IHueItem
     {
+		public event EventHandler<HueInstanceEventArgs> HueUpdated;
 		public string Name { get; set; }
 		public bool Reachable { get; set; }
 		public string Type { get; set; }
@@ -26,37 +27,165 @@ namespace HueLights
 		public string Manufacturer { get; set; }
 		public string Uid { get; set; }
 		public string SwVer { get; set; }
-		public bool On { get; set; }
-		public uint Bri { get; set; }
 		public string ColorMode { get; set; }
-		public uint Hue { get; set; }
-		public uint Sat { get; set; }
-	    public uint Ct { get; set; }
 		public string Alert { get; set; }
 		public string Effect { get; set; }
+		public bool Online;
+		public bool On
+		{
+			get { return _on; }
+			set
+			{
+				_on = value;
+				if (Online)
+					OnHueItemUpdated(HueEventId.On);
+			}
+		}
+		public uint Bri
+		{
+			get { return _bri; }
+			set
+			{
+				_bri = value;
+				if (Online)
+					OnHueItemUpdated(HueEventId.Bri);
+			}
+		}
+		public uint Hue
+		{
+			get
+			{
+				return _hue;
+			}
+			set
+			{
+				_hue = value;
+				if (Online)
+					OnHueItemUpdated(HueEventId.Hue);
+			}
+		}
+		public uint Ct
+		{
+			get
+			{
+				return _ct;
+			}
+			set
+			{
+				_ct = value;
+				if (Online)
+					OnHueItemUpdated(HueEventId.Ct);
+			}
+		}
+		public uint Sat
+		{
+			get
+			{
+				return _sat;
+			}
+			set
+			{
+				_sat = value;
+				if (Online)
+					OnHueItemUpdated(HueEventId.Sat);
+			}
+		}
+
+		private bool _on;
+		private uint _bri;
+		private uint _hue;
+		private uint _sat;
+		private uint _ct;
 
         public HueBulb()
         {
 
         }
+
+		public void OnHueItemUpdated(HueEventId id)
+		{
+			if (id != 0)
+				HueUpdated(null, new HueInstanceEventArgs() { HueEventId = id });
+		}
     }
 
     public class HueGroup
     {
+	    public event EventHandler<HueInstanceEventArgs> HueUpdated;
 		public string Name;
-		public bool On;
-		public uint Bri;
-		public uint Hue;
-		public uint Sat;
-	    public uint Ct;
+	    public bool Online;
+		public bool On {
+			get { return _on; }
+			set
+			{
+				_on = value;
+				if(Online)
+					OnHueItemUpdated(HueEventId.On);
+			}
+		}
+	    public uint Bri
+	    {
+		    get { return _bri; }
+		    set
+		    {
+			    _bri = value;
+				if (Online)
+					OnHueItemUpdated(HueEventId.Bri);
+		    }
+	    }
+	    public uint Hue
+	    {
+		    get
+		    {
+			    return _hue;
+		    }
+		    set
+		    {
+				_hue = value;
+				if (Online)
+					OnHueItemUpdated(HueEventId.Hue);
+		    }
+	    }
+		public uint Ct
+		{
+			get
+			{
+				return _ct;
+			}
+			set
+			{
+				_ct = value;
+				if (Online)
+					OnHueItemUpdated(HueEventId.Ct);
+			}
+		}
+		public uint Sat
+		{
+			get
+			{
+				return _sat;
+			}
+			set
+			{
+				_sat = value;
+				if (Online)
+					OnHueItemUpdated(HueEventId.Sat);
+			}
+		}
         public string RoomType;
-        public string Alert;
+        public string Alert { get; set; }
 	    public string ColorMode;
 	    public string GroupClass;
         public string AssignedLoad;
         public uint ScenesNum;
         public string[] Loads = new string[20];
-	    public List<HueScene> Scenes; 
+	    public List<HueScene> Scenes;
+
+	    private bool _on;
+	    private uint _bri;
+	    private uint _hue;
+	    private uint _sat;
+	    private uint _ct;
 
         public HueGroup(string roomname, string roomtype, bool on, uint bri, string load, string[] loads, string groupclass)
         {
@@ -69,6 +198,12 @@ namespace HueLights
 	        GroupClass = groupclass;
 			Scenes = new List<HueScene>();
         }
+
+		public void OnHueItemUpdated(HueEventId id)
+	    {
+			if(id != 0)
+		    HueUpdated(null, new HueInstanceEventArgs() {HueEventId = id});
+	    }
     }
 
     public class HueScene

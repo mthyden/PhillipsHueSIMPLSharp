@@ -59,7 +59,7 @@ namespace HueLights
 				if (_foundsensor == true)
 				{
 					_url = string.Format("http://{0}/api/{1}/{2}/{3}", HueBridge.BridgeIp, HueBridge.BridgeApi, "sensors", MotionId);
-					_jsontext = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
+					_jsontext = HttpConnect.Instance.RequestInfo(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
 					_json = JObject.Parse(_jsontext);
 					_sensor.Presence = (bool)_json["state"]["presence"];
 					_sensor.Battery = (ushort)_json["config"]["battery"];

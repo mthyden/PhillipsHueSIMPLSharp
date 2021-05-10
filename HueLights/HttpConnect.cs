@@ -9,11 +9,14 @@ namespace HueLights
 {
 	public sealed class HttpConnect	//Singleton for HTTP client
 	{
+		public event EventHandler<HueEventArgs> ResponseUpdated;
+
 		private static HttpConnect _Instance;
 		private static readonly object _Lock = new object();
 		private readonly HttpClient _client;
 		private readonly HttpClientRequest _request;
-		private HttpClientResponse _response;
+		private PayloadType _payloadType;
+		private string _setType;
 
 		public static HttpConnect Instance
 		{
@@ -38,10 +41,31 @@ namespace HueLights
 			_request = new HttpClientRequest();
 		}
 
-		public string Request(string url, string cmd, Crestron.SimplSharp.Net.Http.RequestType reqtype)
+		public string RequestInfo(string url, string cmd,Crestron.SimplSharp.Net.Http.RequestType req)
 		{
+				_request.Url.Parse(url);
+				_request.RequestType = req;
+				if (cmd == null)
+				{
+					_request.ContentString = "";
+				}
+				else
+				{
+					_request.ContentString = cmd;
+				}
+				var response =_client.Dispatch(_request);
+				response.Encoding = Encoding.UTF8;
+				String jsontext = response.ContentString;
+			return jsontext;
+
+		}
+
+		public void SetCmd(string url, string cmd, string settype, PayloadType payloadtype)
+		{
+			_payloadType = payloadtype;
+			_setType = settype;
 			_request.Url.Parse(url);
-			_request.RequestType = reqtype;
+			_request.RequestType = Crestron.SimplSharp.Net.Http.RequestType.Put;
 			if (cmd == null)
 			{
 				_request.ContentString = "";
@@ -50,10 +74,23 @@ namespace HueLights
 			{
 				_request.ContentString = cmd;
 			}
-			_response = _client.Dispatch(_request);
-			_response.Encoding = Encoding.UTF8;
-			String jsontext = _response.ContentString;
-			return jsontext;
+			_client.DispatchAsync(_request, OnTransferResponse);
+
+		}
+
+		private void OnTransferResponse(HttpClientResponse response, HTTP_CALLBACK_ERROR error)
+		{
+			if (response.Code == 200)
+			{
+				response.Encoding = Encoding.UTF8;
+				String jsontext = response.ContentString;
+				OnResponseUpdated(jsontext, _setType, _payloadType);
+			}	
+		}
+
+		public void OnResponseUpdated(string response, string setType, PayloadType payloadType)
+		{
+			ResponseUpdated(null, new HueEventArgs() { Response = response });
 		}
 	}
 

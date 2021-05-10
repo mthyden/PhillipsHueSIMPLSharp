@@ -2,58 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Crestron.SimplSharp;
+using Crestron.SimplSharp.Net.Http;
 using Newtonsoft.Json.Linq;
 using Crestron.SimplSharp.CrestronDataStore;
 
 namespace HueLights
 {
-    public class InfoEventArgs : EventArgs
-    {
-        public String InfoType { get; set; }
-        public String JsonData { get; set; }
-    }
-
-    public enum PayloadType
-    {
-        RoomOnOff,
-		BulbOnOff,
-        Lvl,
-        XY,
-        Scene
-    }
-
-    public class Payload
-    {
-        private string _settype, _cmdtype;
-        public string OnOff { get; set; }
-        public ushort Lvl { get; set; }
-        public string LvlType { get; set; }
-        public string Effect { get; set; }
-        public ushort Xval { get; set; }
-        public ushort Yval { get; set; }
-        public string Scene { get; set; }
-        public string SetType
-        {
-            get { return this._settype; }
-            set
-            {
-                this._settype = value;
-                if (value == "lights")
-                    _cmdtype = "state";
-                else if (value == "groups")
-                    _cmdtype = "action";
-            }
-        }
-        public string CmdType
-        {
-            get { return this._cmdtype; }
-
-        }
-    }
-
     public static class HueBridge
     {
         public static event EventHandler<InfoEventArgs> InfoReceived;  //event handler indicating data received 
+	    //public static event EventHandler<HueEventArgs> CmdReceived;
 
 	    public static bool LocalKey;
         public static bool Authorized;
@@ -79,7 +37,7 @@ namespace HueLights
             {
 				_url = string.Format("http://{0}/api", BridgeIp);
 	            _cmd = "{\"devicetype\":\"my_hue_app#crestron\"}";
-				_response = HttpConnect.Instance.Request(_url, _cmd, Crestron.SimplSharp.Net.Http.RequestType.Post);
+				_response = HttpConnect.Instance.RequestInfo(_url, _cmd, Crestron.SimplSharp.Net.Http.RequestType.Post);
 				if (_response.Contains("link button not pressed"))
                 {
                     Authorized = false;
@@ -174,6 +132,11 @@ namespace HueLights
             return BridgeIp;
         }
 
+	    public static void RegisterEvents()
+	    {
+			HttpConnect.Instance.ResponseUpdated += Instance_ResponseUpdated;
+	    }
+
         /// <summary>
         /// generic request for lights, groups, scenes returns a JSON string to be parsed
         /// </summary>
@@ -184,7 +147,7 @@ namespace HueLights
             try
             {
 				_url = string.Format("http://{0}/api/{1}/{2}", BridgeIp, BridgeApi, infotype);
-				string json = HttpConnect.Instance.Request(_url, null, Crestron.SimplSharp.Net.Http.RequestType.Get);
+				string json = HttpConnect.Instance.RequestInfo(_url, null, RequestType.Get);
 				OnInfoReceived(infotype, json);
             }
             catch (Exception e)
@@ -200,41 +163,139 @@ namespace HueLights
 		/// <param name="payload"></param>
 		/// <param name="setid"></param>
 		/// <returns></returns>
-        public static string SetCmd(PayloadType payloadtype, Payload payload, ushort setid)
+        public static void SetCmd(PayloadType payloadtype, Payload payload, ushort setid)
         {
-            _url = string.Format("http://{0}/api/{1}/{2}/{3}/{4}", BridgeIp, BridgeApi, payload.SetType, setid, payload.CmdType);
-            switch (payloadtype)
-            {
-                case PayloadType.RoomOnOff:
-                {
-					_cmd = String.Format("{0}\"on\":{1},\"effect\":\"{2}\"{3}", '{', payload.OnOff, payload.Effect, '}');
-                    break;
-                }
-				case PayloadType.BulbOnOff:
+				_url = string.Format("http://{0}/api/{1}/{2}/{3}/{4}", BridgeIp, BridgeApi, payload.SetType, setid, payload.CmdType);
+				switch (payloadtype)
 				{
-					_cmd = String.Format("{0}\"on\":{1}{2}", '{', payload.OnOff,'}');
-					break;
+					case PayloadType.RoomOnOff:
+						{
+							_cmd = String.Format("{0}\"on\":{1},\"effect\":\"{2}\"{3}", '{', payload.OnOff, payload.Effect, '}');
+							break;
+						}
+					case PayloadType.BulbOnOff:
+						{
+							_cmd = String.Format("{0}\"on\":{1}{2}", '{', payload.OnOff, '}');
+							break;
+						}
+					case PayloadType.Lvl:
+						{
+							_cmd = "{\"" + payload.LvlType + "\":" + payload.Lvl.ToString() + "}";
+							break;
+						}
+					case PayloadType.XY:
+						{
+							decimal x = (decimal)payload.Xval / 100;
+							decimal y = (decimal)payload.Yval / 100;
+							_cmd = "{\"xy\":[" + x + "," + y + "]}";
+							break;
+						}
+					case PayloadType.Scene:
+						{
+							_cmd = String.Format("{0}\"scene\":\"{1}\"{2}", '{', payload.Scene, '}');
+							break;
+						}
 				}
-                case PayloadType.Lvl:
-                {
-					_cmd = "{\"" + payload.LvlType + "\":" + payload.Lvl.ToString() + "}";
-                    break;
-                }
-                case PayloadType.XY:
-                {
-                    decimal x = (decimal)payload.Xval / 100;
-                    decimal y = (decimal)payload.Yval / 100;
-					_cmd = "{\"xy\":[" + x.ToString() + "," + y.ToString() + "]}";
-                    break;
-                }
-                case PayloadType.Scene:
-                {
-					_cmd = String.Format("{0}\"scene\":\"{1}\"{2}", '{', payload.Scene, '}');
-                    break;
-                }
-            }
-			return HttpConnect.Instance.Request(_url, _cmd, Crestron.SimplSharp.Net.Http.RequestType.Put);
+				HttpConnect.Instance.SetCmd(_url, _cmd, payload.SetType, payloadtype);
         }
+
+		static void Instance_ResponseUpdated(object sender, HueEventArgs e)
+		{
+			var setType = "";
+			var id = "";
+			var cmd = "";
+			var json = JArray.Parse(e.Response);
+			foreach (var jobj in json)
+			{
+				if (jobj.SelectToken("success") != null)
+				{
+					var jtok = jobj["success"].First;
+					var key = ((JProperty)jtok).Name;
+					var value = ((JProperty)jtok).Value;
+					var values = key.Split('/');
+					setType = values[1];
+					id = values[2];
+					cmd = values[4];
+					ProcessCmdResponse(setType, id, cmd, value);
+				}
+			}
+		}
+
+	    private static void ProcessCmdResponse(string type, string id, string cmd, JToken value)
+	    {
+		    switch (type)
+		    {
+				case "groups":
+			    {
+				    switch (cmd)
+				    {
+						case "on":
+					    {
+						    HueGroups[id].On = (bool)value;
+						    break;
+					    }
+						case "bri":
+						{
+							HueGroups[id].Bri = (ushort)value;
+							break;
+						}
+						case "hue":
+						{
+							HueGroups[id].Hue = (uint)value;
+							break;
+						}
+						case "sat":
+						{
+							HueGroups[id].Sat = (uint)value;
+							break;
+						}
+						case "ct":
+						{
+							HueGroups[id].Ct = (uint)value;
+							break;
+						}
+						case "effect":
+					    {
+							///todo add effect property
+						    break;
+					    }
+				    }
+				    break;
+			    }
+				case "lights":
+			    {
+					switch (cmd)
+					{
+						case "on":
+							{
+								HueBulbs[id].On = (bool)value;
+								break;
+							}
+						case "bri":
+							{
+								HueBulbs[id].Bri = (ushort)value;
+								break;
+							}
+						case "hue":
+							{
+								HueBulbs[id].Hue = (uint)value;
+								break;
+							}
+						case "sat":
+							{
+								HueBulbs[id].Sat = (uint)value;
+								break;
+							}
+						case "ct":
+							{
+								HueBulbs[id].Ct = (uint)value;
+								break;
+							}
+					}
+				    break;
+			    }
+		    }
+	    }
 
 		/// <summary>
 		/// raises the event for received data

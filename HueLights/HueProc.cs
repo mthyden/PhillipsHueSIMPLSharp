@@ -196,6 +196,7 @@ namespace HueLights
 		/// </summary>
         public void OnInitComplete()
         {
+			HueBridge.RegisterEvents();
             InitComplete(this, new EventArgs()); //delegate method
         }
 

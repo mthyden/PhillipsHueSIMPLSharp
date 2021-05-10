@@ -45,3 +45,4 @@ C:\Github\PhillipsHueSIMPLSharp\HueLights\obj\Debug\ResolveAssemblyReference.cac
 C:\Github\PhillipsHueSIMPLSharp\HueLights\obj\Debug\HueLights.dll
 C:\Github\PhillipsHueSIMPLSharp\HueLights\obj\Debug\HueLights.pdb
 C:\Github\PhillipsHueSIMPLSharp\HueLights\bin\Debug\Newtonsoft.Json.Compact.dll
+C:\Users\mthyden\Documents\GitHub\PhillipsHueSIMPLSharp\HueLights\bin\Debug\Newtonsoft.Json.Compact.dll

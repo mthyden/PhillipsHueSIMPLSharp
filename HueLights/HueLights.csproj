@@ -72,6 +72,7 @@
     <Compile Include="HueRoom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HttpConnect.cs" />
+    <Compile Include="StorageStructures.cs" />
     <None Include="Properties\ControlSystem.cfg">
     </None>
   </ItemGroup>
