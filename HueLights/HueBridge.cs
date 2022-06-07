@@ -10,7 +10,7 @@ namespace HueLights
 {
     public static class HueBridge
     {
-        public static event EventHandler<InfoEventArgs> InfoReceived;  //event handler indicating data received 
+        public static event EventHandler<HueEventArgs> InfoReceived;  //event handler indicating data received 
 	    //public static event EventHandler<HueEventArgs> CmdReceived;
 
 	    public static bool LocalKey;
@@ -26,8 +26,19 @@ namespace HueLights
         public static Dictionary<string, HueGroup> HueGroups = new Dictionary<string, HueGroup>();
 		public static Dictionary<string, HueSensor> HueSensors = new Dictionary<string, HueSensor>();
 		//public static List<IHueItem> HueBulbs = new List<IHueItem>();
-        
-        /// <summary>
+
+	    static HueBridge()
+	    {
+		    HttpConnect.Instance.RequestUpdated += InstanceOnRequestUpdated;
+	    }
+
+	    private static void InstanceOnRequestUpdated(object sender, HueEventArgs hueEventArgs)
+	    {
+			if (InfoReceived != null)
+				InfoReceived(null, hueEventArgs);
+	    }
+
+	    /// <summary>
         /// registers with bridge, authorizes a user based on API key from the pairing
         /// </summary>
         public static void Register()
@@ -37,7 +48,7 @@ namespace HueLights
             {
 				_url = string.Format("http://{0}/api", BridgeIp);
 	            _cmd = "{\"devicetype\":\"my_hue_app#crestron\"}";
-				_response = HttpConnect.Instance.RequestInfo(_url, _cmd, Crestron.SimplSharp.Net.Http.RequestType.Post);
+				_response = HttpConnect.Instance.RequestInfo(_url, _cmd, RequestType.Post);
 				if (_response.Contains("link button not pressed"))
                 {
                     Authorized = false;
@@ -113,22 +124,23 @@ namespace HueLights
         /// <returns></returns>
         public static string GetIp()
         {
-            try
-            {
+			if (BridgeIp != null)
+			{
+				CrestronConsole.PrintLine("Using Bridge IP: {0}", BridgeIp);
+			}
+			else
+			{
+				CrestronConsole.PrintLine("Getting Bridge IP from Discovery...");
 				_url = "https://discovery.meethue.com";
-	            _response = HttpsConnect.Instance.Request(_url, null);
-                /*
-                 [{"id":"001788fffe2ad33b","internalipaddress":"172.22.131.242"}]
-                 */
-				JArray BridgeArray = JArray.Parse(_response);
-                BridgeIp = (String)BridgeArray[0].SelectToken("internalipaddress");
-                //BridgeApi = "U8FEH-CRuHFGxXe59pitg6UeyqGKWnMsqHef8oMt";
-                CrestronConsole.PrintLine("Get IP of Bridge complete...");
-            }
-            catch (Exception e)
-            {
-                CrestronConsole.PrintLine("Exception is {0}", e);
-            }
+				var response = HttpsConnect.Instance.Request(_url, null);
+				/*
+				 [{"id":"001788fffe2ad33b","internalipaddress":"172.22.131.242"}]
+				 */
+				JArray BridgeArray = JArray.Parse(response);
+				BridgeIp = (String)BridgeArray[0].SelectToken("internalipaddress");
+				//BridgeApi = "U8FEH-CRuHFGxXe59pitg6UeyqGKWnMsqHef8oMt";
+				CrestronConsole.PrintLine("Bridge IP: {0}", BridgeIp);
+			}
             return BridgeIp;
         }
 
@@ -144,16 +156,39 @@ namespace HueLights
         /// <returns></returns>
         public static void GetBridgeInfo(string infotype)
         {
-            try
-            {
+			try
+			{
 				_url = string.Format("http://{0}/api/{1}/{2}", BridgeIp, BridgeApi, infotype);
-				string json = HttpConnect.Instance.RequestInfo(_url, null, RequestType.Get);
-				OnInfoReceived(infotype, json);
-            }
-            catch (Exception e)
-            {
-                CrestronConsole.PrintLine("Exception: {0}",e);
-            }
+				HueRequestId id = HueRequestId.None;
+				switch (infotype)
+				{
+					case "lights":
+						{
+							id = HueRequestId.Lights;
+							break;
+						}
+					case "groups":
+						{
+							id = HueRequestId.Rooms;
+							break;
+						}
+					case "scenes":
+						{
+							id = HueRequestId.Scenes;
+							break;
+						}
+					case "motion":
+						{
+							id = HueRequestId.Sensors;
+							break;
+						}
+				}
+				HttpConnect.Instance.RequestAllInfo(_url, id);
+			}
+			catch (Exception e)
+			{
+				CrestronConsole.PrintLine("Exception in getting bridge info: {0}", e);
+			}
         }
 
 		/// <summary>
@@ -297,15 +332,5 @@ namespace HueLights
 		    }
 	    }
 
-		/// <summary>
-		/// raises the event for received data
-		/// </summary>
-		/// <param name="infotype"></param>
-		/// <param name="jsondata"></param>
-        static void OnInfoReceived(string infotype, string jsondata)
-        {
-            if(infotype != null)
-                InfoReceived(null, new InfoEventArgs(){InfoType = infotype, JsonData = jsondata}); //event delegate
-        }
     }
 }

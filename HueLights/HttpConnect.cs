@@ -4,12 +4,14 @@ using System.Text;
 using Crestron.SimplSharp;
 using Crestron.SimplSharp.Net.Http;
 using Crestron.SimplSharp.Net.Https;
+using RequestType = Crestron.SimplSharp.Net.Http.RequestType;
 
 namespace HueLights
 {
 	public sealed class HttpConnect	//Singleton for HTTP client
 	{
 		public event EventHandler<HueEventArgs> ResponseUpdated;
+		public event EventHandler<HueEventArgs> RequestUpdated;
 
 		private static HttpConnect _Instance;
 		private static readonly object _Lock = new object();
@@ -17,6 +19,7 @@ namespace HueLights
 		private readonly HttpClientRequest _request;
 		private PayloadType _payloadType;
 		private string _setType;
+		private HueRequestId _id;
 
 		public static HttpConnect Instance
 		{
@@ -41,7 +44,7 @@ namespace HueLights
 			_request = new HttpClientRequest();
 		}
 
-		public string RequestInfo(string url, string cmd,Crestron.SimplSharp.Net.Http.RequestType req)
+		public string RequestInfo(string url, string cmd, RequestType req)
 		{
 				_request.Url.Parse(url);
 				_request.RequestType = req;
@@ -57,7 +60,14 @@ namespace HueLights
 				response.Encoding = Encoding.UTF8;
 				String jsontext = response.ContentString;
 			return jsontext;
+		}
 
+		public void RequestAllInfo(string url, HueRequestId id)
+		{
+			_request.Url.Parse(url);
+			_request.RequestType = RequestType.Get;
+			_id = id;
+			_client.DispatchAsync(_request, OnRequestResponse);
 		}
 
 		public void SetCmd(string url, string cmd, string settype, PayloadType payloadtype)
@@ -65,7 +75,7 @@ namespace HueLights
 			_payloadType = payloadtype;
 			_setType = settype;
 			_request.Url.Parse(url);
-			_request.RequestType = Crestron.SimplSharp.Net.Http.RequestType.Put;
+			_request.RequestType = RequestType.Put;
 			if (cmd == null)
 			{
 				_request.ContentString = "";
@@ -78,19 +88,34 @@ namespace HueLights
 
 		}
 
+		private void OnRequestResponse(HttpClientResponse response, HTTP_CALLBACK_ERROR error)
+		{
+			if (response.Code == 200)
+			{
+				response.Encoding = Encoding.UTF8;
+				OnRequestUpdated(response.ContentString, _id);
+			}	
+		}
+
 		private void OnTransferResponse(HttpClientResponse response, HTTP_CALLBACK_ERROR error)
 		{
 			if (response.Code == 200)
 			{
 				response.Encoding = Encoding.UTF8;
-				String jsontext = response.ContentString;
-				OnResponseUpdated(jsontext, _setType, _payloadType);
+				OnResponseUpdated(response.ContentString, _setType, _payloadType);
 			}	
 		}
 
 		public void OnResponseUpdated(string response, string setType, PayloadType payloadType)
 		{
+			if(ResponseUpdated != null)
 			ResponseUpdated(null, new HueEventArgs() { Response = response });
+		}
+
+		public void OnRequestUpdated(string response, HueRequestId id)
+		{
+			if(RequestUpdated != null)
+			RequestUpdated(null, new HueEventArgs() {Response = response, Id = id});
 		}
 	}
 

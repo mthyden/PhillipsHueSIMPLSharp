@@ -1,0 +1,110 @@
+/*
+Dealer Name: Crestron Electronics
+Programmer:  Monte Thyden
+Comments:
+*/
+
+//*****     COMPILER     *****
+#DEFAULT_VOLATILE
+#ENABLE_STACK_CHECKING
+#PRINT_TO_TRACE
+#ENABLE_TRACE
+
+#HELP_BEGIN
+This implementation of the Phillips Hue Will pole the local network for a Phillips Hue Bridge, 
+if Bridge is on DHCP I would create a nightly routine to request bridge IP.
+
+50 bulbs are supported in this module since a single bridge can only support 50 bulbs
+however this module could be easily augmented to increase the bulb count.
+
+After the IP for a bridge is established the Register function must run. 
+To Register press the physical button on the top of the bridge and then trigger the register function. 
+A digital feedback will show successful registration. Registration will determine the username (AKA API Key)
+used to send all commands. When the API key is parsed it is stored in the CrestronDataStore. 
+After reboots or program uploads, the regitration sequence will attempt to read from the DataStore
+before requiring the manual button on the HueBridge being pushed.
+#HELP_END
+
+//*****    INCLUDES      *****
+#USER_SIMPLSHARP_LIBRARY "HueLights"
+
+//*****       IOs        *****
+digital_input getBridgeIP, getRegister, getBulbData, resetAPIKey;
+digital_output online;
+
+string_input HueIPAddress[15];
+string_input HueAPIKey[50];
+                                                              
+string_output IPAddress, BridgeKey;
+
+digital_output BridgeAuthorized;
+analog_output BulbsNum, RoomsNum; 
+
+string_output RoomName[50], BulbName[50];
+
+HueProc myProc;
+
+//*****     EVENTS     *****
+
+push getBridgeIP
+{
+	if(len(hueIPAddress))
+	{
+       	myProc.setIP(hueIPAddress);
+	}
+	else
+	{
+    	myProc.getIP();
+    	IPAddress = myProc.IPAddress;
+    	BridgeAuthorized = myProc.Authorized;
+	}
+}
+
+push getRegister
+{
+	if(len(HueAPIKey))
+	{
+		myProc.ApiKeyIn = HueAPIKey;
+		myProc.RegisterWithKey();
+	}
+	else
+	{
+    	myProc.Register();
+    	BridgeAuthorized = myProc.Authorized;
+    	BridgeKey = myProc.ApiKeyOut;
+	}
+}
+
+push getBulbData
+{
+    myProc.getData();
+}
+
+push resetAPIKey
+{
+	myProc.ResetAPI();
+}
+
+eventhandler myInitHandler(HueProc sender, EventArgs args)
+{
+	integer i;
+	BulbsNum = myProc.BulbNum;
+	RoomsNum = myProc.GroupNum;
+
+	for (i = 1 to 49)
+	{
+		RoomName[i] = myProc.GrpName[i];
+		BulbName[i] = myProc.BlbName[i];
+	} 
+
+	if(myProc.HueOnline = 1)
+	Online = 1;
+}
+
+
+function main()
+{
+	waitforinitializationcomplete();
+    RegisterEvent(myProc, InitComplete, myInitHandler);
+
+}

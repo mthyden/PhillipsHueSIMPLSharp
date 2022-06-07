@@ -14,6 +14,7 @@ namespace HueLights
 
 	public class HueEventArgs : EventArgs
 	{
+		public HueRequestId Id;
 		public string Response;
 	}
 
@@ -31,6 +32,15 @@ namespace HueLights
 		Ct = 5,
 		Alert = 6,
 		Scene = 7
+	}
+
+	public enum HueRequestId
+	{
+		None,
+		Lights,
+		Rooms,
+		Scenes,
+		Sensors
 	}
 
 	public enum PayloadType

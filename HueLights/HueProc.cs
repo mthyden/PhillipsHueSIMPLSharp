@@ -38,7 +38,6 @@ namespace HueLights
             {
                 CrestronConsole.PrintLine("Exception: {0}", e);
             }
-
         }
 
         /// <summary>
@@ -71,7 +70,7 @@ namespace HueLights
             }
             catch (Exception e)
             {
-                CrestronConsole.PrintLine("Exception is {0}", e);
+                CrestronConsole.PrintLine("Exception in registration {0}", e);
             }
         }
 
@@ -120,6 +119,7 @@ namespace HueLights
         public void setIP(string str)
         {
             HueBridge.BridgeIp = str;
+			IPAddress = HueBridge.GetIp();
 			//CrestronConsole.PrintLine("Bridge IP is being set");
         }
 
@@ -150,40 +150,40 @@ namespace HueLights
 		/// </summary>
 		/// <param name="source"></param>
 		/// <param name="e"></param>
-        public void OnInfoReceived(object source, InfoEventArgs e)
+        public void OnInfoReceived(object source, HueEventArgs e)
         {
-            if (e.InfoType == "lights")
+            if (e.Id == HueRequestId.Lights)
             {
-                if(e.JsonData != null)
-                ProcBulbs(e.JsonData);
+                if(e.Response != null)
+					ProcBulbs(e.Response);
                 else
                 {
-                    CrestronConsole.PrintLine("no bulb data found");
+                    CrestronConsole.PrintLine("no lights data found");
                 }
             }
-            if (e.InfoType == "groups")
+			if (e.Id == HueRequestId.Rooms)
             {
-                if (e.JsonData != null)
-                    ProcRooms(e.JsonData);
+				if (e.Response != null)
+					ProcRooms(e.Response);
                 else
                 {
-                    CrestronConsole.PrintLine("no groups data found");
+                    CrestronConsole.PrintLine("no rooms data found");
                 }
                 
             }
-            if (e.InfoType == "scenes")
+			if (e.Id == HueRequestId.Scenes)
             {
-                if (e.JsonData != null)
-                    ProcScenes(e.JsonData);
+				if (e.Response != null)
+					ProcScenes(e.Response);
                 else
                 {
                     CrestronConsole.PrintLine("no scenes data found");
                 }    
             }
-	        if (e.InfoType == "sensors")
+			if (e.Id == HueRequestId.Sensors)
 	        {
-				if (e.JsonData != null)
-					ProcSensors(e.JsonData);
+				if (e.Response != null)
+					ProcSensors(e.Response);
 				else
 				{
 					CrestronConsole.PrintLine("no sensor data found");
